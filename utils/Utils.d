@@ -420,6 +420,46 @@ char[] rotX(char[] str, uint shift = 13)
     return str;
 }
 
+
+
+char[] l33t(char[] str)
+{
+    static char[][128] l33t_table= [
+        'a' : "4",
+        'c' : "<",
+        'e' : "3",
+        'g' : "9",
+        'i' : "1",
+        'o' : "0",
+        's' : "5",
+        't' : "7",
+        'z' : "2",
+        'A' : "/-\\",
+        'K' : "|<",
+        'H' : "|-|",
+        'W' : "\\/\\/"
+    ];
+    
+	char[] ret;
+    ret.length = str.length;
+    ret.length = 0;
+    
+	for(auto i = 0; i < str.length; ++i)
+	{
+        char c = str[i];
+        if(c >= 128) //utf8 string
+            continue;
+        
+        //convert ascii value
+        char[] r = l33t_table[c];
+		if(r.length)
+            ret ~= r;
+        else
+            ret ~= c;
+	}
+	return ret;
+}
+
 /*
 * apply the order of n2 to n1
 *

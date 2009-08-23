@@ -68,7 +68,8 @@ private:
 
     bool show_percent_bar = true;
     bool enable_row_colors = true;
-    ubyte rotX = false; //rotX file names
+    ubyte enable_rotx = false; //rot x file names
+    bool enable_l33t = false; //if you don't know what is l33t, then you aren't l33t ;)
 
     ushort[] getAllColumnIds()
     {
@@ -103,7 +104,8 @@ public:
         addSetting(Phrase.show_columns, &getColumnIds, &getAllColumnIds, &setColumns);
         addSetting(Phrase.show_percent_bar, &show_percent_bar);
         addSetting(Phrase.enable_row_colors, &enable_row_colors);
-        addSetting(Phrase.enable_rotX, &rotX);
+        addSetting(Phrase.enable_rotX, &enable_rotx);
+        addSetting(Phrase.enable_l33t, &enable_l33t);
     }
     
     void save(Storage s)
@@ -114,7 +116,8 @@ public:
         
         s.save("show_percent_bar", &show_percent_bar);
         s.save("enable_row_colors", &enable_row_colors);
-        s.save("rotX", &rotX);
+        s.save("enable_rotx", &enable_rotx);
+        s.save("enable_l33t", &enable_l33t);
     }
     
     void load(Storage s)
@@ -125,7 +128,8 @@ public:
         
         s.load("show_percent_bar", &show_percent_bar);
         s.load("enable_row_colors", &enable_row_colors);
-        s.load("rotX", &rotX);
+        s.load("enable_rotx", &enable_rotx);
+        s.load("enable_l33t", &enable_l33t);
     }
     
     private void setColumns(ushort[] ids)
@@ -743,11 +747,16 @@ final class NameColumn : Column
     void getCell(HtmlOut o, File d, HtmlDownloads mod)
     {
         char[] name = d.getName();
-        if(mod.rotX)
+        if(mod.enable_rotx)
         {
-            name = Utils.rotX(name.dup, mod.rotX);
+            name = Utils.rotX(name.dup, mod.enable_rotx);
         }
-        //if(mod.l33t) name = Utils.l33t(name);
+        
+        if(mod.enable_l33t)
+        {
+            name = Utils.l33t(name);
+        }
+        
         o("<td class=\"name\">\n");
         o("<a href=\"" ~ target_uri ~ "?to=")(mod.getId)(AMP~"do=show"~AMP~"id=")(d.getId)("\">")(name)("</a>\n");
         
