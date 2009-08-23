@@ -1,0 +1,90 @@
+module clients.hydranode.model.HNObject;
+
+/*
+* Copyright 2007-2009 Moritz Warning
+*
+* This file is part of P2P-GUI and is 
+* licensed under GNU General Public License.
+*/
+
+import clients.hydranode.opcodes;
+import clients.hydranode.Hydranode;
+import api.File;
+
+/*
+*
+* @author Moritz Warning <mwarning@users.sourceforge.net>
+*/
+class HNObject
+{
+    public:
+    
+    this(ubyte[] i)
+    {
+        
+    }
+    
+    void update(HNObject o)
+    {
+    
+    }
+    
+    char[] getName() { return name;   }
+    uint getId() { return id; }
+    HNObject getParent() { return parent; }
+    
+    void Object::findChildren()
+    {
+        children = children.init;
+        foreach(id; childIds)
+        {
+            HNObject tmp = parentList.findObject(id);
+            if (tmp) {
+                children[id] = tmp;
+                //tmp.m_parent = shared_from_this();
+                tmp.findChildren();
+            }
+            //++i;
+        }
+    }
+    
+    
+/*
+    size_t      dataCount()        { return data.size();  }
+    char[] getData(size_t n)  { return data.at(n);   }
+    DIter       dbegin()           { return data.begin(); }
+    DIter       dend()             { return data.end();   }
+
+    size_t childCount()  { return children.size();  }
+    CIter  begin()       { return children.begin(); }
+    CIter  end()         { return children.end();   }
+
+    void doOper(
+         char[] &opName,
+         std::map<char[], char[]> &args
+    );
+    void setData(uint8_t num,  char[] &newValue);
+*/
+    //boost::signal<void (ObjectPtr, ObjectPtr)> childAdded;
+    //boost::signal<void (ObjectPtr, ObjectPtr)> childRemoved;
+    //boost::signal<void (ObjectPtr)> onDestroyed;
+private:
+    //friend class Modules;
+
+    HNObject parent;
+    //HNModules *parentList;
+    char[][] data;
+    HNObject[uint] children;
+    uint[] childIds;
+    char[] name;
+    uint id;
+
+    //void update(ObjectPtr obj);
+    //void findChildren();
+    //void destroy();
+
+//    Object(Modules *parent);
+//    Object( Object&);
+//    Object& operator=( Object&);
+}
+

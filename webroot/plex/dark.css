@@ -1,0 +1,358 @@
+body {
+	font-family: Verdana, Arial, Helvetica, sans-serif;
+	background-color: #000000;
+	color: #BBBBBB;
+	font-size: 12px;
+	text-align: center;
+}
+
+h1, h2 {
+	color: #BBBBBB;
+}
+
+input, select, button {
+	background-color: #000000;
+	color: #BBBBBB;
+	margin: 2px;
+}
+
+a {
+	text-decoration:none;
+	color : #BBBBBB;
+}
+a:hover {
+	color:#EEEEEE;
+}
+
+img { border: none; margin: auto 4px; }
+form { margin: 4px auto; }
+
+table {
+	width: auto;
+	padding: 0px;
+	border: 0px;
+	border-collapse: collapse;
+	margin: 4px auto;
+}
+
+.main {
+	margin-bottom: 4%;
+}
+
+td, th {
+	white-space: nowrap;
+	padding: auto;
+}
+
+th {
+	color: #BBBBBB;
+    font-weight: bold;
+}
+
+td select {
+	width: 100%;
+}
+
+td input {
+	margin: auto 4px;
+}
+
+table.max {
+	width: 95%;
+}
+
+table.mid {
+	width: 50%;
+}
+
+#PageRefresh {
+	color: #BBBBBB;
+}
+
+/*download details*/
+#Downloads .details {
+	text-align: left;
+	width: auto;
+}
+
+#Titlebar {
+	width: 98%;
+	margin: 0px auto;
+}
+
+/*For Table Panel*/
+#Titlebar table.tablepanel:first-child {
+	width: 100%;
+	height: 22px;
+	border-top: 1px solid;
+	margin: 5px auto 0px;
+}
+
+#Titlebar table.tablepanel {
+	width: 100%;
+	height: 22px;
+	text-align: center;
+	font-weight: bold;
+	border-right: 1px solid;
+	border-left: 1px solid;
+	border-bottom: 1px solid;
+	margin: 0px auto;
+	background-color: #424242;
+}
+
+#Titlebar table.tablepanel td {
+	border-right: 1px solid;
+}
+
+/*For Icon Panel*/
+#Titlebar table.iconpanel td {
+	height: 80px;
+	width: 80px;
+	text-align: center;
+	vertical-align: middle;
+	background-repeat: no-repeat;
+	font-weight: bold;
+	white-space: normal;
+}
+
+#Titlebar table.iconpanel td a {
+	color: #FFFFFF;
+	font-size: 9pt;
+}
+
+#Titlebar .selected {
+	background-color: #6A6A6A;
+}
+
+#ClientSettings table {
+	margin: 10px;
+}
+
+#ClientSettings form {
+	float: left;
+	margin: 10px;
+}
+
+#search-form {
+	white-space: nowrap;
+	width: 45%;
+	margin: 10px auto;
+	float: left;
+	text-align: left;
+}
+
+#search-form button {
+	height: 40px;
+	width: 60%;
+	margin: auto 20%;
+	font-weight: bold;
+}
+
+#search-form .label {
+	width: 25%;
+	float: left;
+	text-align: right;
+	margin-right: 1em;
+	display: block;
+	font-weight: bold;
+}
+
+#search-list {
+	width: 50%;
+}
+
+#Downloads_bg, #FileBrowser_bg, #Uploads_bg {
+	background-image: url(images/LBlue.png);
+}
+
+#ClientSettings_bg, #ModuleSettings_bg, #UserSettings_bg {
+	background-image: url(images/Wine.png);
+}
+
+#Links_bg, #Searches_bg {
+	background-image: url(images/Green.png);
+}
+
+#Clients_bg, #Servers_bg{
+	background-image: url(images/Orange.png);
+}
+
+#Container_bg, #Console_bg {
+	background-image: url(images/Grey.png);
+}
+
+#UserManagement_bg, #QuickConnect_bg{
+	background-image: url(images/Violet.png);
+}
+
+#Translator_bg {
+	background-image: url(images/Beige.png);
+}
+
+/*For Plain Panel*/
+#Titlebar .plainpanel {
+	font-size: 8pt;
+	width: 100%;
+	margin: auto;
+}
+
+#Headline {
+	text-align: center;
+	width: 98%;
+}
+
+#Console pre {
+	text-align: left;
+}
+
+#Footer {
+	font-size: 8pt;
+	text-align: left;
+	width: 98%;
+	margin: auto;
+	position: fixed;
+	bottom: 1%;
+}
+
+.centered {
+	margin: 20px auto;
+}
+
+div.scrollable {
+	max-height: 12em;
+	width: 70%;
+	overflow: auto;
+	border: 1px solid #666;
+}
+
+.active a {
+	color: #BBBBBB;
+}
+
+.progress a {
+	color: #00E700
+}
+
+.stopped a {
+	color: #DB4C4C;
+}
+
+.paused a {
+	color: #DB4C4C;
+}
+
+.complete a {
+	color: #0000FF;
+}
+
+.prog-border {
+	height: 5px;
+	width: 100%;
+	background: #EEEEEE;
+	border: 1px solid silver;
+	margin: 0;
+	padding: 0;
+}
+
+.prog-bar {
+	height: 3px;
+	margin: 1px;
+	padding: 0;
+	background: #C9DDEC;
+	font-size: 8pt;
+}
+
+.selected {
+	font-weight: bold;
+}
+
+.nobr {
+	white-space: nowrap;
+}
+
+.odd {
+	background-color: #6A6A6A;
+}
+
+.even {
+	background-color: #424242;
+}
+
+.info {
+    color: green;
+    font-weight: bold;
+}
+
+.error {
+    color: red;
+    font-weight: bold;
+}
+
+.status {
+    color: blue;
+    font-weight: bold;
+}
+
+.warning {
+    color: maroon;
+    font-weight: bold;
+}
+
+.smalltext {
+    font-size: 8pt;
+}
+
+.size, .completed, .speed, .id, .priority, .sources, .lastseen, .percent {
+	text-align: right;
+	white-space: pre;
+}
+
+.owner, .networks, .state, .check {
+	text-align: center;
+}
+
+.name {
+	text-align: left;
+	width: 100%
+}
+
+.age, .priority, .eta {
+	text-align: center;
+	white-space: nowrap;
+}
+
+.selectors span {
+	cursor: pointer;
+}
+
+.software, .selectors {
+	text-align: left;
+}
+
+.speed_complete { color:#0000FF; font-weight: bold; }
+.speed_paused { color: #333333; font-weight: bold; }
+.speed_slowest { color: #CDCDCD; }
+.speed_slow { color:#10DCD5; }
+.speed_medium { color:#76B6FF; }
+.speed_fast { color:#FFAA00; }
+.speed_faster { color:#43CD49; }
+.speed_fastest { color:#00FF00; }
+
+.chunks {
+	width: 100%;
+	height: 10px;
+	margin: 0px;
+	padding: 0px;
+}
+
+/*chunk colors*/
+.c0 { background-color: #FF0000; } /*nothing downloaded, no sources*/
+.c1 { background-color: #00FFFF; }
+.c2 { background-color: #00C0FF; }
+.c3 { background-color: #00A0FF; }
+.c4 { background-color: #0080FF; }
+.c5 { background-color: #0060FF; }
+.c6 { background-color: #0040FF; }
+.c7 { background-color: #0020FF; }
+.c8 { background-color: #0000FF; }
+.c9 { background-color: #686868; } /*complete*/

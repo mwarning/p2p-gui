@@ -1,0 +1,456 @@
+<!DOCTYPE html PUBLIC "-//W3C//DTD XHTML 1.0 Transitional//EN"
+	"http://www.w3.org/TR/xhtml1/DTD/xhtml1-transitional.dtd">
+<html xmlns="http://www.w3.org/1999/xhtml">
+<head>
+	<title>Jay GUI</title>
+	<script type="text/javascript" src="/jay/jquery.js"></script>
+	<script type="text/javascript" src="/jay/jquery.json.js"></script>
+	<script type="text/javascript" src="/jay/rpc_queries.js"></script>
+	<script type="text/javascript" src="/jay/main.js"></script>
+	<script type="text/javascript" src="/jay/shadedborder.js"></script>
+	<link rel="StyleSheet" href="/jay/default.css" type="text/css" media="screen" />
+	<style type="text/css"></style>
+</head>
+
+<body>
+
+<div id='systemWorking'>
+	<img src='/jay/images/spinner.gif'>
+</div>
+
+<div id="HeadContainer">
+<div id="Navigation">
+	<div name="Downloads">Downloads</div>
+	<div name="Transfers">Transfers</div>
+	<div name="Searches">Searches</div>
+	<div name="Console">Console</div>
+	<div name="Servers">Servers</div>
+	<div name="Interfaces">Interfaces</div>
+	<div name="Networks">Networks</div>
+	<div name="Settings">Settings</div>
+	<div name="Files">Files</div>
+	<div name="Logout">Logout</div>
+</div>
+</div>
+
+<div id="Infos">
+	<table>
+	<tbody id="Infos_tbody">
+	</tbody>
+	</table>
+</div>
+
+<div id='BodyContainer'>
+<div id='Body'>
+
+<div id="Downloads">
+	<span class='selectors' name="Downloads_tbody">
+		<span class='all' onclick="allBoxes(this, true)">all</span>|
+		<span class='none' onclick="allBoxes(this, false)">none</span>|
+		<span class='invert' onclick="rangeBoxes(this)">invert</span>|
+		<span class='range' onclick="invertBoxes(this)">range</span>
+	</span>
+
+	<table id="Downloads_data">
+		<thead>
+			<tr id="Downloads_thead">
+				<th name="check">x</th>
+				<th name="id">Id</th>
+				<th name="network">Net</th>
+				<th name="name">Name</th>
+				<th name="percent">%</th>
+				<th name="eta">ETA</th>
+				<th name="completed">Completed</th>
+				<th name="size">Size</th>
+				<th name="size">Uploaded</th>
+				<th name="sources">Sources</th>
+				<th name="speed">Speed</th>
+				<!--
+				<th name="state">State</th>
+				<th name="lastseen">Last</th>
+				<th name="priority">Priority</th>
+				<th name="sources">sources</th>
+				-->
+			</tr>
+		<tr id="Downloads_empty"><td colspan="14" class="empty center">No Downloads!</td></tr>
+		</thead>
+		
+		<tbody id="Downloads_tbody">
+		<!-- place for downloads --> 
+		</tbody>
+	</table>
+	
+	<div id="FileActions">
+		<button name='cancel' onclick="removeDownload()">Cancel</button>
+		<button name='pause' onclick="pauseDownload()">Pause</button>
+		<button name='resume' onclick="resumeDownload()">Resume</button>
+		
+		<select name='priority' size='1' onchange="prioritiseDownload(this)">
+			<option value='AUTO'>Auto</option>
+			<option value='VERY_HIGH'>Very Low</option>
+			<option value='HIGH'>Low</option>
+			<option value='NORMAL' selected="selected">Normal</option>
+			<option value='LOW'>High</option>
+			<option value='VERY_LOW'>Very High</option>
+		</select>
+	</div>
+	
+	<div id="FileDetails">
+		<button id="hideFileDetails" name="hide" value="hide">Hide Details</button>
+		<ul>
+		<li>Id: <span id="FileDetailsId"> </span></li>
+		<li>Name: <span id="FileDetailsName"> </span> <!--<button id='FileDetailsRename'>Rename</button> --></li>
+		<li id='FileDetailsNewName'>New Name: <input type="text" value="test" maxlength="80"/></li>
+		<li>Size: <span id="FileDetailsSize"> </span></li>
+		<li>Downloaded: <span id="FileDetailsCompleted"> </span></li>
+		<li>Uploaded: <span id="FileDetailsUploaded"> </span></li>
+		<li id="FileDetailsRequests">Requests: <span> </span></li>
+		<li id="FileDetailsPriority">Priority: <span> </span></li>
+		<li>Last Seen: <span id="FileDetailsLastSeen"> </span></li>
+		<li id="FileDetailsState">State: <span> </span></li>
+		<li id="FileDetailsHash">Hash: <span> </span></li>
+		<li id="FileDetailsFormat">Format: <span> </span></li>
+		<li id="FileDetailsSubfileCount">SubFiles: <span> </span></li>
+		<li id="FileDetailsChunkCount">Chunks: <span> </span></li>
+		<li id="FileDetailsComments">Comments: <ul> </ul></li>
+		<!-- <li>Filenames: <ul id="FileDetailsNames"> </ul></li> -->
+		</ul>
+	</div>
+	
+	<div id="ToolBar">
+		Link: <input type="text" value="" maxlength="80"/>
+		<button id="link-field" onclick="downloadLink()">Download</button>
+	</div>
+</div>
+
+<div id="Transfers">
+	<table>
+		<thead>
+		<tr id="Transfers_thead">
+			<th name="network">Net</th>
+			<th name="name">Name</th>
+			<th name="country">Country</th>
+			<th name="connection">Connection</th>
+			<th name="filename">Filename</th>
+			<th name="age">Age</th>
+			<th name="state">State</th>
+			<th name="uploaded">Up</th>
+			<th name="downladed">Down</th>
+			<th name="software">Software</th>
+		</tr>
+		<tr id="Transfers_empty">
+			<td colspan="10" class="empty center">No Transfers!</td>
+		</tr>
+		</thead>
+		<tbody id="Transfers_tbody">
+		</tbody>
+	</table>
+</div>
+
+<div id="Files">
+	<table>
+		<thead>
+		<tr id="Files_thead">
+			<th name="name">Name</th>
+			<th name="size">Size</th>
+			<th name="type">Type</th>
+		</tr>
+		<tr id="Files_empty"><td colspan="3" class="empty center">No Files!</td></tr>
+		</thead>
+		<tbody id="Files_tbody">
+		</tbody>
+	</table>
+	<!--
+	<iframe id="file_upload">
+		<form name="form" action="" method="POST" enctype="multipart/form-data">
+		<input id="fileToUpload" type="file" size="45" name="fileToUpload" class="input">
+		<button class="button" id="buttonUpload" onclick="return ajaxFileUpload();">Upload</button>
+		</form>
+	</iframe>
+	-->
+</div>
+
+<div id="Searches">
+
+	<div id="search-form">
+		<table>
+		<tr>
+		<td>Text:</td>
+		<td colspan="2"><input id="search-query" type="text" value=""></td>
+		</tr>
+		<tr>
+		<td>Min Size:</td>
+		<td><input id="search-min-size" type="text" value="0"></td>
+		<td>MB</td>
+		</tr>
+		<tr>
+		<td>Max Size:</td>
+		<td><input id="search-max-size" type="text" value="0"></td>
+		<td>MB</td>
+		</tr>
+		<tr>
+		<td>Media:</td>
+		<td colspan="2"><select id="search-media" size='1'>
+			<option value='UNKNOWN'>All</option>
+			<option value='VIDEO'>Video</option>
+			<option value='AUDIO'>Audio</option>
+			<option value='PROGRAM'>Program</option>
+			<option value='DOCUMENT'>Document</option>
+			<option value='IMAGE'>Picture</option>
+			<option value='ARCHIVE'>Archive</option>
+			<option value='COPY'>Image</option>
+		</select></td>
+		</tr>
+		<tr>
+		<td>Max Results:</td>
+		<td colspan="2"><select id='search-max-results' size='1'>
+			<option value='0'>-</option>
+			<option value='50'>50</option>
+			<option value='100'>100</option>
+			<option value='200'>250</option>
+			<option value='400'>500</option>
+		</select><td>
+		</tr>
+		<tr>
+		<td colspan="3" rowspan="2"><button id="search-start" style="width: 100%; height: 50px;" name='start' type='submit'>Search</button><td>
+		</tr>
+		</table>
+	</div>
+	
+	<div id="search-list">
+		<span class='selectors' name="Searches_tbody">
+			<span class='all' onclick="allBoxes(this, true)">all</span>|
+			<span class='none' onclick="allBoxes(this, false)">none</span>|
+			<span class='invert' onclick="rangeBoxes(this)">invert</span>|
+			<span class='range' onclick="invertBoxes(this)">range</span>
+		</span>
+		
+		<table>
+			<thead>
+			<tr id="Searches_thead">
+				<th name="ckeck">x</th>
+				<th name="id">Id</th>
+				<th name="name">Name</th>
+				<th name="count">Sources</th>
+				<th name="state">State</th>
+			</tr>
+			<tr id="Searches_empty">
+				<td colspan="5" class="empty center">No Searches!</td>
+			</tr>
+			</thead>
+			<tbody id="Searches_tbody"><tr><td colspan="5"></td></tr></tbody>
+		</table>
+		
+		<button id="search-forget">Remove</button>
+		<button id="search-stop">Stop</button>
+		<!-- <button id="search-show-results">Show</button> -->
+	</div>
+	
+	<div style="clear: both;">&nbsp;</div>
+	
+	<div id="search-results">
+		<span class='selectors' name="Results_thead">
+			<span class='all' onclick="allBoxes(this, true)">all</span>|
+			<span class='none' onclick="allBoxes(this, false)">none</span>|
+			<span class='invert' onclick="rangeBoxes(this)">invert</span>|
+			<span class='range' onclick="invertBoxes(this)">range</span>
+		</span>
+		
+		<button id="result-start">Download</button>
+		
+		<table>
+			<thead id="Results_thead">
+			<tr>
+				<th name="ckeck">x</th>
+				<th name="id">Id</th>
+				<th name="name">Name</th>
+				<th name="count">All</th>
+				<th name="count">Complete</th>
+				<th name="size">Size</th>
+				<th name="format">Format</th>
+				<th name="state">State</th>
+			</tr>
+			<tr id="Results_empty">
+				<td colspan="8" class="empty center">No Results!</td>
+			</tr>
+			</thead>
+			<tbody id="Results_tbody"></tbody>
+		</table>
+		
+		<span class='selectors' name="Results_tbody">
+			<span class='all' onclick="allBoxes(this, true)">all</span>|
+			<span class='none' onclick="allBoxes(this, false)">none</span>|
+			<span class='invert' onclick="rangeBoxes(this)">invert</span>|
+			<span class='range' onclick="invertBoxes(this)">range</span>
+		</span>
+		
+		<button id="result-start">Download</button>
+	</div>
+</div>
+
+<div id="Interfaces">
+	<table>
+		<thead>
+		<tr id="Interfaces_thead">
+			<th name="action">Use</th>
+			<th name="id">Id</th>
+			<th name="software">Software</th>
+			<th name="version">Version</th>
+			<th name="name">Name</th>
+			<th name="protocol">Protocol</th>
+			<th name="connection">Connection</th>
+			<th name="downloaded">Downloaded</th>
+			<th name="uploaded">Uploaded</th>
+			<th name="downloadrate">DownloadRate</th>
+			<th name="uploadrate">UploadRate</th>
+			<th name="state">State</th>
+		</tr>
+		<tr id="Interfaces_empty">
+			<td colspan="12" class="empty center">No Interfaces!</td>
+		</tr>
+		</thead>
+		<tbody id="Interfaces_tbody"></tbody>
+	</table>
+	
+	<table>
+	<tr>
+	<td>Host:</td><td><input type="text" id="client-host" /><td>
+	<td>Port:</td><td><input type="text" id="client-port" /><td>
+	</tr>
+	<tr>
+	<td>User:</td><td><input type="text" id="client-user" /><td>
+	<td>Password:</td><td><input type="password" id="client-pass" /><td>
+	</tr>
+	</table>
+	
+	<select id="client-type">
+	<option value="MLDONKEY">MLDonkey</option>
+	<option value="AMULE">aMule</option>
+	<option value="GIFT">giFT</option>
+	<option value="RTORRENT">rTorrent</option>
+	<!-- <option value="HYDRANODE" >Hydranode</option> -->
+	</select>
+	<button id="client-add">Add</button>
+	<button id="client-connect">Connect</button>
+	<button id="client-disconnect">Disconnect</button>
+	<button id="client-remove">Remove</button>
+</div>
+
+<div id="Networks">
+	<table>
+		<thead>
+		<tr id="Networks_thead">
+			<th name="id">Id</th>
+			<th name="state">State</th>
+			<th name="downloaded">Downloaded</th>
+			<th name="uploaded">Uploaded</th>
+			<th name="network">Network</th>
+		</tr>
+		<tr id="Networks_empty">
+			<td colspan="6" class="empty center">No Networks!</td>
+		</tr>
+		</thead>
+		<tbody id="Networks_tbody"></tbody>
+	</table>
+</div>
+
+<div id="Servers">
+<!--
+	<div id="server-filter-box">
+		<input type="radio" name="ServerSelect" id="ServerShowConnected" />Show Connected
+		<input type="radio" name="ServerSelect" id="ServerShowAll" />Show All
+	</div>
+-->
+	<div id="server-add-box">
+		<input id="server-host" type="text" size="30" /> : <input id="server-port" type="text" size="5" />
+		<button id="add-server" >Add Server</button>
+	</div>
+	
+	<span class='selectors' name="Servers_tbody">
+		<span class='all' onclick="allBoxes(this, true)">all</span>|
+		<span class='none' onclick="allBoxes(this, false)">none</span>|
+		<span class='invert' onclick="rangeBoxes(this)">invert</span>|
+		<span class='range' onclick="invertBoxes(this)">range</span>
+	</span>
+	
+	<table>
+		<thead>
+			<tr id="Servers_thead">
+				<th name="check">x</th>
+				<th name="id">Id</th>
+				<th name="country">Country</th>
+				<th name="name">Name</th>
+				<th name="connection">Connection</th>
+				<th name="users">Users</th>
+				<th name="files">Files</th>
+				<th name="desc">Description</th>
+				<th name="state">State</th>
+				<th name="ping">Ping</th>
+			</tr>
+			<tr id="Servers_empty">
+				<td colspan="10" class="empty center">No Servers!</td>
+			</tr>
+		</thead>
+		<tbody id="Servers_tbody"></tbody>
+	</table>
+	
+	<span class='selectors' name="Servers_tbody">
+		<span class='all' onclick="allBoxes(this, true)">all</span>|
+		<span class='none' onclick="allBoxes(this, false)">none</span>|
+		<span class='invert' onclick="rangeBoxes(this)">invert</span>|
+		<span class='range' onclick="invertBoxes(this)">range</span>
+	</span>
+</div>
+
+<div id="Console">
+	<div id="console-output"> </div>
+	<br />
+	<input id="console-command" type="text" value="" />
+	<!-- <button id='console-submit' name='console' type='submit'>Send</button> -->
+</div>
+
+<div id="Settings">
+	<div id="setting-sections"></div>
+	<table>
+	<thead>
+		<tr>
+			<th name="name">Name</th>
+			<th name="value">Value</th>
+		</tr>
+		<tr id="Settings_empty">
+			<td colspan="2" class="empty center">No Settings!</td>
+		</tr>
+	</thead>
+	<tbody id="Settings_tbody"></tbody>
+	</table>
+</div>
+
+</div>
+</div>
+
+<!-- invisible -->
+<div id="Ask">
+	<div id="AskText">Some Message</div>
+	<br />
+	<button id="AskTrue" value='Ok'>Ok</button>
+	<button id="AskFalse" value='Cancel'>Cancel</button>
+</div>
+<div id="LockBG"></div>
+
+<div id="Footer">
+	<hr size="1" noshade />
+	<a id="main-weblink" href="" target="_blank" ><span id="main-name"> </span></a>
+	<span id="main-version"> </span> (Jay GUI)
+</div>
+
+<!-- trigger a request for file downloads -->
+<iframe id="trigger_request" style="display: none;"></iframe>
+
+<script language="javascript" type="text/javascript">
+	var myBorder = RUZEE.ShadedBorder.create({ corner:8, shadow:16 });
+	myBorder.render("HeadContainer");
+	myBorder.render("BodyContainer");
+</script>
+
+</body>
+</html>

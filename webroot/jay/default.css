@@ -1,0 +1,274 @@
+body {
+	font: normal 10px verdana,arial,'Bitstream Vera Sans',helvetica,sans-serif;
+	background-image: url(/jay/images/mainback.gif);
+}
+
+a { text-decoration: none; }
+
+table {
+/*	table-layout:fixed;*/
+	overflow: hidden;
+	font-size: 10pt;
+	border-collapse: collapse;
+	border-style: hidden;
+	border-width: 0;
+	width: 100%;
+	margin: 5px auto;
+}
+
+th {
+	background-color: #224c65;
+	margin: 0;
+	padding: 0;
+    color: white;
+}
+
+td { white-space: nowrap; }
+
+.selected { font-weight: bold; }
+th.selected { background-color: #003399; }
+
+/*default, JS will unhide them*/
+#MainWindow > div {
+	display: none;
+}
+
+#BodyContainer .sb-inner { background: #dddddd; }
+#BodyContainer .sb-border { background: black; }
+
+#BodyContainer {
+	margin: 30px auto;
+	padding: 10px 10px 20px;
+	width: 95%;
+}
+
+#systemWorking {
+	position: fixed;
+}
+
+#Messages {
+	top: 0%;
+	white-space: pre;
+	width: 75px;
+	display: block;
+}
+
+#FileDetails {
+	display: none;
+}
+
+#FileDetailsNewName {
+	display: none;
+}
+
+#Infos {
+	width: 33%;
+}
+
+#server-filter-box {
+	float: left;
+	margin-right: 20px;
+}
+
+#HeadContainer .sb-inner { background: #bcd2e6; }
+#HeadContainer .sb-border { background: black; }
+
+#HeadContainer {
+	margin: 10px auto;
+	width: 80%;
+	height: 33px;
+}
+
+#Navigation div {
+	float: left;
+	padding: 5px 0px;
+	margin-right: auto;
+	margin-left: auto;
+	border-left: 1px solid #224c65;
+	width: 9%;
+	text-align: center;
+	font-size: 14px;
+	color: black;
+}
+
+#Navigation div:first-child {
+	border-left-style: none;
+}
+
+#Navigation div:hover {
+	font-weight: bold;
+}
+
+#Update {
+	position: absolute;
+	right: 1%;
+	top: 1%;
+}
+
+#Footer {
+	font-size: 8pt;
+	/*position: absolute;*/
+/*	margin-top: 55%; */
+	left: 1%;
+	/*bottom: 1%;*/
+}
+
+
+#Debug {
+	position: absolute;
+	top: 90%;
+	margin: 0; padding: 0;
+	border: 1px dashed silver;
+}
+
+#Downloads tr:hover {
+	color: #003399;
+}
+
+#Downloads th:hover {
+	text-decoration: none;
+	background-color: #003399;
+}
+
+#Downloads .name {
+	vertical-align: top; /* make place for % line*/
+}
+
+#FileActions
+{
+	margin: 5px;
+}
+
+#Console {
+	margin: 50px 0px;
+	padding: 0px;
+	text-align: center;
+}
+
+#console-output {
+	font-family: monospace;
+	width: 90%;
+	margin: 0px auto;
+	text-align: left;
+	padding: 15px;
+	border: 1px dashed #333;
+	background-color: #eee;
+	font-size: 8pt;
+	white-space: pre;
+}
+
+#search-form {
+	white-space: nowrap;
+	float: left;
+	width: 25%;
+	margin: auto 1%;
+}
+
+#search-list {
+	width: 73%;
+	margin: auto 1%;
+}
+
+#search-form input, #search-form select {
+	width: 100%;
+}
+
+.selectors {
+	cursor: pointer;
+	background-color: transparent;
+	text-align: left;
+	font-size: small;
+}
+
+#Ask
+{
+	display: none;
+	position: absolute;
+	margin: -200px 0 0 50%;
+	left: -125px;
+	width: 250px;
+	top: 50%;
+	padding: 20px 20px 10px 20px;
+	color: rgb(93,87,65);
+	background-color: rgb(192,184,156);
+	border-width: 1px;
+	border-color: rgb(65,60,44);
+	border-style: solid;
+	z-index: 6;
+	font-size: 12px;
+	text-align: center;
+}
+
+#LockBG
+{
+	display: none;
+	background-color: black;
+	width: 100%;
+	position: absolute;
+	height: 100%;
+	opacity: 0.6;
+	-moz-opacity: 0.6;
+	filter: alpha(opacity = 60);
+	left: 0;
+	top: 0;
+	z-index: 5;
+}
+
+.sum {
+	font-weight: bold;
+	text-align: right;
+}
+
+/*table row background; done in JS atm.
+.odd { background-color:#ffffff; }
+.even { background-color:#edf3fe; }
+*/
+.empty { background-color: #ffffff; }
+
+/*message colors*/
+.info { color: black; }
+.status { color: blue; }
+.warning { color: orange; }
+.error { color: red; }
+.log { color: black; }
+
+/*speed colors*/
+.slowest { background-color: #cccccc; }
+.slow { background-color: #00ffff; }
+.medium { background-color: #ffce5e; }
+.fast { background-color: #ff80c0; }
+.fastest { background-color: #00ff00; }
+
+.eta, .speed, .sources {
+	width: 5%;
+}
+
+.size, .downloaded, .uploaded, .completed, .priority, .sources, .lastseen, .percent, .connection, .users, .files {
+	text-align: right;
+	white-space: pre;
+}
+
+.connect {
+	text-align: center;
+	cursor: crosshair;
+}
+
+.downloadrate, .uploadrate, .owner, .country, .network, .state, .eta, .age, .speed, .center, .user, .files, .id, .check, .connection, .sources {
+	text-align: center;
+	white-space: nowrap;
+}
+
+.format {
+	text-align: center;
+	white-space: normal;
+}
+
+.name, .software {
+	text-align: left;
+}
+
+/*for file/server/search states*/
+.active { color: green; }
+.paused { color: brown; }
+.stopped { color: red; }
+.process { color: blue; }

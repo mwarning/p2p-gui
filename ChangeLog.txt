@@ -1,0 +1,266 @@
+﻿#ChangeLog for P2P-GUI
+
+
+*P2P-GUI-0.2.0 (2009)
+Moritz Warning <mwarning@users.sourceforge.net>
+- rename project to P2P-GUI
+- web server now stores self generated ssl key (public.pem/private.pem)
+- fix --write-out-files
+aMule:
+- select right protocol version for aMule 2.2.5
+Transmission:
+- support X-Transmission-Session-Id
+   (fixes errors from JsonParser)
+Clutch gui:
+- update to Transmission > 1.74 Beta 1 (r8975)
+Jay gui
+- fix some broken stuff
+
+*P2P-GUI-0.1.3 (25.05.2009)
+Moritz Warning <mwarning@users.sourceforge.net>
+- fix shutdown with ctrl-c on Windows
+- JSON RPC rewrite, now with json input and output
+aMule:
+- support for aMule trunk EC protocol (2.2.4 and 2.2.5)
+- better authorization handling
+- allow multiple searches
+- search removal was broken
+MLDonkey:
+- fix wrong speed diplay (often displayed 28KB/s)
+- omit tags "completesources" and "availability" from search result format data
+Clutch gui:
+- update to Transmission >1.61 (r8420)
+Jay gui:
+- Note: currently broken!
+- switch to jQuery and new JSON RPC
+
+*P2P-GUI-0.1.2 (24.04.2009)
+Moritz Warning <mwarning@users.sourceforge.net>
+- save settings on ctrl+c on windows
+- add source module to error messages
+- make some sockets non-blocking as they should have been from the beginning
+Clutch gui:
+- update to Transmission 1.52
+aMule:
+- fix "Invalid id" bug
+
+*P2P-GUI-0.1.1 (11.04.2009)
+Moritz Warning <mwarning@users.sourceforge.net>
+- make the source compile with the llvm D compiler (www.dsource.org/projects/ldc)
+- add daemon support, -d command line option
+- update to Tango 0.99.8
+- renamed "Temp Directory" to "Preview Directory" (it is sneaked into the clients settings)
+- faster web server
+- fix crash on startup due to un-synchronized console output
+- added Logger
+- bugfixes
+Plex gui:
+- add Italian translation by Niko "Tokka" Pistelli
+- fix enum names for export in translator module
+- remove no-setting-files command line option, no real use
+- restore/save gui settings
+- some translation ambiguity fixes
+Transmission:
+- implement settings
+- add torrent sending
+- add file preview
+Clutch gui:
+- update to Transmission 1.51
+- enable settings
+MLDonkey:
+- password wasn't accessible
+
+*P2P-GUI-0.1.0 (16.11.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- remove dictionary hack, much better code now, saves a few 10KBs
+- replace JSON parser by faster and more usable version
+- fix settings directory detection for Windows
+- close file handler for settings files for Windows
+all guis:
+- make manual gui switching by url modification more robust
+- fix site reload bug that redisplayed the login page
+- more client images
+Plex gui:
+- increase max displayed server name length to 70 chars
+- add ROTX in download view (e.g. for ROT13) for fun
+- shorten subfile lines
+- columns for up- and download rate and a combined column.
+Clutch gui:
+- update files in ./webroot/clutch/ based on Transmission 1.40 (r7088)
+Jay gui:
+- fix broken links to JavaScript files
+Transmission:
+- fix crash for big incoming messages
+- more peer info available
+rTorrent:
+- fix wrong file size for big files
+- fix display of subfiles
+- fix display of peers up/download
+- fix download preview
+- remove canceled downloads
+MLDonkey:
+- fix bug that hides (active) connected clients
+- increase gui protocol packet size limit
+- fix wrong address parsing
+- estimate up/download speed for clients and upload speed for downloads
+
+*P2P-GUI-0.0.5 (23.09.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- major code reorganization
+- many minor bugfixes and improvements
+- add support for Transmission (www.transmissionbt.com)
+- add Clutch web gui from Transmission (www.transmissionbt.com)
+- add usage of settings files:
+  - webgui.json
+  - webclients.json
+  - webusers.json
+- replace Base64 from Phobos with Tango
+- add GeoIP-Lite database support (www.maxmind.com)
+- add login page
+- add proper program termination, by gui or by signal (SIGINT/SIGTERM)
+- remove authentification by remote IP
+- include remote IP in session id for better authentification (if SSL is disabled)
+- remove -a command line option in favor of setting files
+- remove -d and -k command line option in favor of -b
+- rename -w command line option to --write-out-files
+- add -b command line option to set working directory for:
+  - settings files
+  - optional GeoIP.dat
+  - optional "./webroot/" directory
+  - optional SSL keys (public.pem/private.pem)
+- add -no-setting-files command line option to disable disk access for settings
+- passwords are saved as md5 internally
+- change working directory to settings directory on startup
+- add method to disable accounts (accessible by html/Plex gui only atm.)
+- remove Zlib wrapper from Phobos, use Tango wrapper instead
+all guis:
+- rename html gui to Plex
+- rename json gui to Jay
+- password fields now display stars only
+- add logout option
+- make sessions (using cookies) mandatory
+- properly remove old sessions on server side
+Plex gui:
+- visual improvements
+- removed more hard coded text
+- fix default sort behavior
+- make sure site content isn't cached
+- make use of sessions
+- search for *.css files on startup for style selection (was hardcoded)
+- renamed aqua.css to default.css
+- made clients overview configurable
+- auto select first connected client
+rTorrent:
+- display peers and trackers
+aMule:
+- support kademlia and ed2k search
+- servers can be added/disconnected/connected/removed
+- fixed client IP endianess
+MLDonkey:
+- fix parsing error for clients
+rTorrent:
+- change parsed XML tag from <i8> to <i4> (<i8> is still used as fallback)
+
+*P2P-GUI-0.0.4 (29.05.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- fixed several bugs
+- several small improvements
+- only allow connects from localhost by default
+- added Makefile entries for MacOS
+- added scroll boxes for comments, subfiles and file name lists
+- added DSSS build tool support (http://dsource.org/projects/dsss)
+rTorrent:
+- avoid rTorrent crash on settings request
+aMule:
+- added chunk support
+- fixed "last seen" value
+MLDonkey:
+- improved chunk support
+- fixed client to shared file mapping
+- fixed crash on fast reconnects
+html gui:
+- improved chunk display
+- added filename column to Uploaders list
+- fixed simple settings, were not changeable
+- fixed crash on Quick Connect activation
+- improved dark style
+
+*P2P-GUI-0.0.3 (27.04.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- added -k command line option;
+   sets folder to look for public.pem and private.pem
+MLDonkey:
+- fixed wrong search results
+- filter out transfers with no up/download
+- set max. buffer size to 256Kb
+- set max. torrent size to 500Kb
+html-gui:
+- added JavaScript checkbox selectors
+json-gui:
+- fixed link to background
+
+*P2P-GUI-0.0.2 (21.04.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- added rTorrent support
+- added stub translations for Danish, Dutch, Swedish and French
+- replaced own thread pool with Tango.core.ThreadPool
+- bugfixes, code design improvements, speed-up
+- added --copyright
+- fixed default gui select
+- json backend enabled by default (disable with -no-json)
+- added more client icons
+aMule:
+- fixed file priorities, rename, file comments, alternative file names
+- update op codes to CVS-20080408 version
+MLDonkey:
+- fixed memory problem for long time connections
+html gui:
+- fixed crash when download for detailed view does not exist
+- fixed priority button for download view
+- added priority column for download view
+- added optional progress bar under download name
+- added colored lines by file status
+JavaScript gui
+- rounded corner layout
+
+*P2P-GUI-0.0.1 (29.02.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- bugfixes, code design improvements, speed increase
+- added session support for multiple people using one user account
+- added SSL support for web server
+- remove Digest authentification (not worth the trouble)
+- added table sorting for html gui
+- more table columns available
+- added initial translations for html gui:
+  (imported from PHP predecessor)
+  Spanish; Luis Miguens
+  Polish; Ixen Gerthannes
+  Galician; Ivan Blanco
+  Brazilian Portuguese; Erico Mendonca
+- added translation page to html gui to ease translations
+- replace '+' with ' ' for proper url decoding
+- improved chunk view for html gui
+- added functionality to html gui Container module
+- search size field accepts (case insensitive) units:
+   "<float-number> [|b|k|kb|kib|m|mb|mib|g|gb|gib]",
+   default is megabyte
+- changed default port to 8080 (more reasonable for web services)
+- fixed JavaScript gui for remote use
+
+*P2P-GUI-alpha6 (28.01.2008)
+Moritz Warning <mwarning@users.sourceforge.net>
+- fixed file upload
+- added Uploads panel to html gui
+- added remote preview support for MLDonkey
+- added -t [<target>] command line option;
+   sets temp directory for web server
+- added -w [<target>] command line option;
+  writes included files to disk
+- fixed web server keep-alive bug
+- display alternative file names
+- added advanced search and help text
+- added orbs for icon panel (http://www.bittbox.com/freebies/free-vector-glass-orbs/)
+- added chunk view for download details
+- page refresh without resend of post/get data
+
+==Begin Of Change Log==
