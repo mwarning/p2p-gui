@@ -1412,7 +1412,7 @@ private:
             if(Utils.is_prefix(error_string, "Invalid protocol version") && protocol_version == 0x203)
             {
                 debug(aMule)
-                    Logger.addDebug(amule_version ~ " detected, retry with older protocol");
+                    Logger.addDebug("aMule: " ~ amule_version ~ " detected, retry with older protocol");
                 
                 //retry with older protocol version used by 2.2.4 and 2.2.5
                 protocol_version = 0x200;
