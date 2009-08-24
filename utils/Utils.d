@@ -420,45 +420,71 @@ char[] rotX(char[] str, uint shift = 13)
     return str;
 }
 
-
-
 char[] l33t(char[] str)
 {
-    static char[][128] l33t_table= [
-        'a' : "4",
-        'c' : "<",
-        'e' : "3",
-        'g' : "9",
-        'i' : "1",
-        'o' : "0",
-        's' : "5",
-        't' : "7",
-        'z' : "2",
-        'A' : "/-\\",
-        'K' : "|<",
-        'H' : "|-|",
-        'W' : "\\/\\/"
+    static char[128] l33t_table= [
+        'a' : '4',
+        'c' : '<',
+        'e' : '3',
+        'g' : '9',
+        'i' : '1',
+        'o' : '0',
+        's' : '5',
+        't' : '7',
+        'z' : '2'
     ];
     
-	char[] ret;
-    ret.length = str.length;
-    ret.length = 0;
+	char[] ret = new char[str.length];
     
 	for(auto i = 0; i < str.length; ++i)
 	{
         char c = str[i];
-        if(c >= 128) //utf8 string
+        
+        if(c >= 128)
+        {
+            ret[i] = c;
             continue;
+        }
+        
+        char r = l33t_table[c];
+        if(r != char.init)
+        {
+            ret[i] = r;
+        }
+        else
+        {
+            ret[i] = c;
+        }
+        
+        /*
+        //for char => char[]
+        
+        if(c >= 128) //utf8 string
+        {
+            ret[p++] = c;
+            continue;
+        }
         
         //convert ascii value
         char[] r = l33t_table[c];
-		if(r.length)
-            ret ~= r;
+		if(r.length == 0)
+        {
+            ret[p++] = c;
+        }
+        else if(r.length == 1)
+        {
+            ret[p++] = r[0];
+        }
         else
-            ret ~= c;
+        {
+            ret.length = ret.length + r.length - 1;
+            ret[p..p+r.length] = r;
+            p += r.length;
+        }*/
 	}
 	return ret;
 }
+
 
 /*
 * apply the order of n2 to n1
