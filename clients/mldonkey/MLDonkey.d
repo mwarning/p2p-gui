@@ -337,8 +337,8 @@ public:
         
         char[256] buffer;
         size_t pos;
-        void append(char[] s) { buffer[pos..pos+s.length] = s; }
-        void appendNum(uint n) { Integer.toString(n, buffer[pos..$]); }
+        void append(char[] s) { buffer[pos..pos+s.length] = s; pos += s.length; }
+        void appendNum(uint n) { append(Integer.toString(n)); }
         
         append("GET /preview_download?q=");
         appendNum(file_id);
@@ -385,12 +385,13 @@ public:
         ulong size_from_header = extractSizeFromHeader(header);
         if(size_from_header != size)
         {
-            Logger.addError(this, "MLdonkey: Unexpected size from client!");
+            Logger.addError(this, "MLdonkey: Unexpected file size received for file transfer.");
             socket.shutdown();
             socket.close();
             return;
         }
         
+        socket.timeout(1000);
         Host.saveFile(socket, file_name, size);
     }
     
