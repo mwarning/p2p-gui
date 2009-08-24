@@ -248,7 +248,7 @@ div.scrollable {
 .prog-border {
 	height: 5px;
 	width: 100%;
-	background: #EEEEEE;
+	background: #ACBFD7;
 	border: 1px solid silver;
 	margin: 0;
 	padding: 0;
@@ -258,7 +258,7 @@ div.scrollable {
 	height: 3px;
 	margin: 1px;
 	padding: 0;
-	background: #C9DDEC;
+	background: #638CBF;
 	font-size: 8pt;
 }
 

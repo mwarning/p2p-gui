@@ -84,7 +84,7 @@ struct Host
     }
     
     /*
-    * Download a file to local disk drive.
+    * Download a file with the browser.
     * The function should offer a save/download file dialog on call.
     */
     static void function(InputStream source, char[] name, ulong size) saveFile;

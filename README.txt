@@ -87,7 +87,7 @@ and a customizeable server-side html GUI (written in D) as well as a client-side
     This is comfortable to edit these files and to see changes immediately.
 
     If you want to get the files out of the binary.
-    Use "p2p-gui -write-out-files [<target_directory>]" to write all files to the disk.
+    Use "p2p-gui --write-out-files [<target_directory>]" to write all files to the disk.
 
 
 

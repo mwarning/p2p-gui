@@ -502,16 +502,15 @@ final class JsonParser(Builder = JsonBuilder!(), bool allow_comments = false, bo
             
             skip();
             
-            if(*ptr == ']')
-            {
-                ++ptr;
-                return array;
-            }
-            
             if(*ptr == ',')
             {
                 ++ptr;
                 skip();
+            }
+            else if(*ptr == ']')
+            {
+                ++ptr;
+                return array;
             }
             else
             {
@@ -578,16 +577,15 @@ final class JsonParser(Builder = JsonBuilder!(), bool allow_comments = false, bo
             
             skip();
             
-            if(*ptr == '}')
-            {
-                ++ptr;
-                return object;
-            }
-            
             if(*ptr == ',')
             {
                 ++ptr;
                 skip();
+            }
+            else if(*ptr == '}')
+            {
+                ++ptr;
+                return object;
             }
             else
             {
