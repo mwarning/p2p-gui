@@ -379,7 +379,7 @@ public:
         disconnect(Node_.Type.CORE, id);
     }
     
-    Files getFiles() { return files; } //access disk files
+    Files getFiles() { return files.exists() ? files : null; } //access disk files
     Nodes getNodes() { return this; } //access clients
     Settings getSettings() { return this; } //access local user settings
     Metas getMetas() { return this; } //access local user to local user chat

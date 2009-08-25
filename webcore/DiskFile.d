@@ -35,7 +35,7 @@ class DiskFile : NullFile, Files
     uint id;
     DiskFile[uint] files;
     FilePath path;
-    File_.Type type = File_.Type.DIRECTORY;
+    File_.Type type;
     
     this(char[] path, uint id_offset = 0)
     {
@@ -45,11 +45,22 @@ class DiskFile : NullFile, Files
     this(FilePath path, uint id_offset = 0)
     {
         this.path = path;
+        
         if(path.exists)
         {
             type = path.isFolder ? File_.Type.DIRECTORY : File_.Type.FILE;
         }
+        else
+        {
+            type = File_.Type.DIRECTORY;
+        }
+        
         id = getFileHash(path.toString) + id_offset;
+    }
+    
+    bool exists()
+    {
+        return path.exists();
     }
     
     char[] toString()
