@@ -16,7 +16,7 @@ Clutch gui:
 Jay gui
 - fix some broken stuff
 
-*P2P-GUI-0.1.3 (25.05.2009)
+*Web-GMUI-0.1.3 (25.05.2009)
 Moritz Warning <mwarning@users.sourceforge.net>
 - fix shutdown with ctrl-c on Windows
 - JSON RPC rewrite, now with json input and output
@@ -34,7 +34,7 @@ Jay gui:
 - Note: currently broken!
 - switch to jQuery and new JSON RPC
 
-*P2P-GUI-0.1.2 (24.04.2009)
+*Web-GMUI-0.1.2 (24.04.2009)
 Moritz Warning <mwarning@users.sourceforge.net>
 - save settings on ctrl+c on windows
 - add source module to error messages
@@ -44,7 +44,7 @@ Clutch gui:
 aMule:
 - fix "Invalid id" bug
 
-*P2P-GUI-0.1.1 (11.04.2009)
+*Web-GMUI-0.1.1 (11.04.2009)
 Moritz Warning <mwarning@users.sourceforge.net>
 - make the source compile with the llvm D compiler (www.dsource.org/projects/ldc)
 - add daemon support, -d command line option
@@ -70,7 +70,7 @@ Clutch gui:
 MLDonkey:
 - password wasn't accessible
 
-*P2P-GUI-0.1.0 (16.11.2008)
+*Web-GMUI-0.1.0 (16.11.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - remove dictionary hack, much better code now, saves a few 10KBs
 - replace JSON parser by faster and more usable version
@@ -104,7 +104,7 @@ MLDonkey:
 - fix wrong address parsing
 - estimate up/download speed for clients and upload speed for downloads
 
-*P2P-GUI-0.0.5 (23.09.2008)
+*Web-GMUI-0.0.5 (23.09.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - major code reorganization
 - many minor bugfixes and improvements
@@ -161,7 +161,7 @@ MLDonkey:
 rTorrent:
 - change parsed XML tag from <i8> to <i4> (<i8> is still used as fallback)
 
-*P2P-GUI-0.0.4 (29.05.2008)
+*Web-GMUI-0.0.4 (29.05.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - fixed several bugs
 - several small improvements
@@ -185,7 +185,7 @@ html gui:
 - fixed crash on Quick Connect activation
 - improved dark style
 
-*P2P-GUI-0.0.3 (27.04.2008)
+*Web-GMUI-0.0.3 (27.04.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - added -k command line option;
    sets folder to look for public.pem and private.pem
@@ -199,7 +199,7 @@ html-gui:
 json-gui:
 - fixed link to background
 
-*P2P-GUI-0.0.2 (21.04.2008)
+*Web-GMUI-0.0.2 (21.04.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - added rTorrent support
 - added stub translations for Danish, Dutch, Swedish and French
@@ -223,7 +223,7 @@ html gui:
 JavaScript gui
 - rounded corner layout
 
-*P2P-GUI-0.0.1 (29.02.2008)
+*Web-GMUI-0.0.1 (29.02.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - bugfixes, code design improvements, speed increase
 - added session support for multiple people using one user account
@@ -247,7 +247,7 @@ Moritz Warning <mwarning@users.sourceforge.net>
 - changed default port to 8080 (more reasonable for web services)
 - fixed JavaScript gui for remote use
 
-*P2P-GUI-alpha6 (28.01.2008)
+*Web-GMUI-alpha6 (28.01.2008)
 Moritz Warning <mwarning@users.sourceforge.net>
 - fixed file upload
 - added Uploads panel to html gui
