@@ -220,8 +220,10 @@ public:
                 Stdout("(D) HttpResponse: send body:\n")(tmp).newline;
             }
         }
-        else
+        else //file download
         {
+            sc.timeout = 5 * 1000; //give user time to accept the file download
+            
             sbuf.append("Content-Length: ");
             sbuf.append(Integer.toString(source_size));
             sbuf.append("\r\n\r\n");
