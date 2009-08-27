@@ -6,6 +6,7 @@ Moritz Warning <mwarning@users.sourceforge.net>
 - rename project to P2P-GUI
 - web server now stores self generated ssl key (public.pem/private.pem)
 - add referrer mechanism to login page
+- make realm for basic authentification configurable
 - fix --write-out-files
 aMule:
 - select right protocol version for aMule 2.2.5
