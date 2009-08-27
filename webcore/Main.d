@@ -268,6 +268,7 @@ private void sendBasicAuthRequest(HttpResponse res)
 
 private void sendLoginPage(HttpResponse res, char[] uri)
 {
+    /*
     if(uri == "/index.html")
     {
         res.setCode(HttpResponse.Code.OK);
@@ -277,7 +278,13 @@ private void sendLoginPage(HttpResponse res, char[] uri)
     {
         res.setCode(HttpResponse.Code.FOUND);
         res.addHeader("Location: /index.html");
-    }
+    }*/
+    
+    //We use this to preserve the URI in the browser line to act a referrer (for login.html).
+    //A redirect would reset it.
+    res.setCode(HttpResponse.Code.OK);
+    res.addHeader("Cache-Control: no-store");
+    Webroot.getFile(res, "/index.html");
 }
 
 private MainUser checkLoginAuth(HttpRequest req)
