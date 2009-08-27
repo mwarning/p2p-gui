@@ -185,6 +185,7 @@ private
     char[] server_mask = "0.0.0.0";
     bool ssl_enabled = false;
     bool disable_json = false;
+    char[] basic_realm = "Authentication required"; //realm for basic access authentication
 }
 
 private MainUser checkBasicAuth(HttpRequest req)
@@ -260,7 +261,7 @@ private void sendBasicAuthRequest(HttpResponse res)
     */
     res.setContentType("text/html");
     res.setCode(HttpResponse.Code.UNAUTHORIZED);
-    res.addHeader("WWW-Authenticate: Basic realm=\"" ~ Host.main_name ~ "\"");
+    res.addHeader("WWW-Authenticate: Basic realm=\"" ~ basic_realm ~ "\"");
     res.addHeader("Connection: close");
     //auto o = res.getWriter();
     //o(unauthorized_page);
@@ -594,6 +595,7 @@ private void loadGlobalSettings()
     s.load("server_ssl_enabled", &ssl_enabled);
     s.load("use_basic_auth", &use_basic_auth);
     s.load("auto_disconnect_clients", &ClientManager.max_client_age);
+    s.load("basic_realm", &basic_realm);
 }
 
 private void saveGlobalSettings()
@@ -607,6 +609,7 @@ private void saveGlobalSettings()
     s.save("use_basic_auth", &use_basic_auth);
     s.save("auto_disconnect_clients", &ClientManager.max_client_age);
     s.save("version", Host.main_version); //for diagnostics
+    s.save("basic_realm", &basic_realm);
     
     Storage.saveFile(webgui_file, s);
 }
