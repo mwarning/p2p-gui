@@ -12,9 +12,9 @@ aMule:
 - select right protocol version for aMule 2.2.5
 Transmission:
 - support X-Transmission-Session-Id
-   (fixes errors from JsonParser)
+   (fix errors from JsonParser)
 Clutch gui:
-- update to Transmission > 1.74 Beta 1 (r8975)
+- update to Transmission 1.74
 Jay gui:
 - fix some broken stuff
 
