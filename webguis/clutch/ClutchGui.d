@@ -624,8 +624,41 @@ class ClutchGui : Main.Gui
                     }
                     obj[field] = wanted;
                     break;
+                case "recheckProgress":
+                    obj[field] = 0.0; //TODO
+                    break;
+                case "uploadRatio":
+                    obj[field] = 0.0; //TODO
+                    break;
+                case "seedRatioLimit":
+                    obj[field] = 0.0; //TODO
+                    break;
+                case "seedRatioMode":
+                    //TR_RATIOLIMIT_GLOBAL    = 0, /* follow the global settings */
+                    //TR_RATIOLIMIT_SINGLE    = 1, /* override the global settings, seeding until a certain ratio */
+                    //TR_RATIOLIMIT_UNLIMITED = 2  /* override the global settings, seeding regardless of ratio */
+                    obj[field] = 0; //TODO
+                    break;
+                case "downloadDir":
+                    obj[field] = ""; //TODO
+                    break;
+                case "fileStats":
+                    auto array = new JsonArray();
+                    foreach(sub_file; sub_files)
+                    {
+                        auto object = new JsonObject();
+                        object["bytesCompleted"] = sub_file.getDownloaded();
+                        object["wanted"] = false; ///TODO
+                        object["priority"] = 0; //TODO
+                        array ~= object;
+                    }
+                    obj[field] = array;
+                    break;
                 default:
-                    Logger.addWarning("ClutchGui: Unknown torrent field requested: {}", field);
+                    debug
+                    {
+                        Logger.addWarning("ClutchGui: Unknown torrent field requested: {}", field);
+                    }
                 }
                 
             }
