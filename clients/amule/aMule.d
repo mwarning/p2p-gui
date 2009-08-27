@@ -361,9 +361,7 @@ public:
         }
         
         auto fc = new Tango.File(path.toString);
-        Host.saveFile (
-            fc, file.getName, path.fileSize
-        );
+        Host.saveFile(fc, file.getName, path.fileSize);
     }
     
     Nodes getNodes()

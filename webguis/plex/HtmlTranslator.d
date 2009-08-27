@@ -26,6 +26,7 @@ static import Main = webcore.Main;
 import webcore.Logger;
 import webcore.MainUser;
 
+
 /*
 * This module enables a user to alter the internal translation tables.
 * It is meant to easy improving translations.

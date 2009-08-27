@@ -22,6 +22,7 @@ import webguis.plex.PlexGui;
 import webguis.plex.HtmlElement;
 import webguis.plex.HtmlUtils;
 
+
 final class HtmlTitlebar : HtmlElement
 {
 private:

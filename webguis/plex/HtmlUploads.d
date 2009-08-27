@@ -25,6 +25,7 @@ import webguis.plex.HtmlElement;
 import webguis.plex.HtmlServers;
 import utils.Utils;
 
+
 Column delegate()[ushort] column_loaders;
 
 void uploads_init()
@@ -48,6 +49,7 @@ void uploads_init()
         Phrase.UploadRate : { return cast(Column) new UploadRateColumn; }
     ];
 }
+
 
 final class HtmlUploads : HtmlElement
 {

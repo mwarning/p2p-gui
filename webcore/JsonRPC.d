@@ -54,6 +54,7 @@ Request Syntax example for
                 "getInteger", 
                 { "method" : "getObject", "chain" : ["getName"], "retalias" : "name"},
                 "getBoolean"
+            ]
         }
     }
 }

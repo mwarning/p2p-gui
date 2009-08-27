@@ -14,6 +14,7 @@ import tango.io.FilePath;
 import tango.io.Stdout;
 static import Tango = tango.io.device.File;
 import tango.io.FileSystem;
+import tango.io.model.IConduit;
 
 import api.Host;
 import api.Search;
@@ -26,6 +27,7 @@ import api.User;
 static import Main = webcore.Main;
 static import Utils = utils.Utils;
 import webcore.Logger;
+
 
 /*
 *  Allow access to the local file system using the Files api.
@@ -167,7 +169,6 @@ class DiskFile : NullFile, Files
         }
     }
     
-    //not used yet
     void removeFiles(File_.Type type, uint[] ids)
     {
         foreach(id; ids)

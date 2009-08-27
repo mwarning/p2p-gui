@@ -19,6 +19,7 @@ import webguis.plex.HtmlElement;
 import webguis.plex.HtmlSettings;
 import utils.Utils;
 
+
 final class HtmlUserSettings : HtmlElement
 {
 private:

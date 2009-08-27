@@ -174,7 +174,6 @@ ThreadPool!() pool;
 
 private
 {
-    
     HttpServer server;
 
     Gui function()[] gui_loaders;

@@ -21,6 +21,7 @@ import api.File;
 
 import webcore.Dictionary;
 
+
 //some helpfull constants
 const char[] N = "\n";
 const char[] BN = "<br />\n";
@@ -30,7 +31,6 @@ const char[] AMP = "&amp;";
 
 const char[] SP = "&nbsp;";
 const char[] SP2 = "&nbsp;&nbsp;";
-const char[] SP3 = "&nbsp;&nbsp;&nbsp;";
 const char[] SP4 = "&nbsp;&nbsp;&nbsp;&nbsp;";
 
 /*

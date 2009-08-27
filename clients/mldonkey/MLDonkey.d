@@ -328,14 +328,7 @@ public:
     {
         if(size == 0) return;
         
-        auto socket = new Socket();
-        scope(failure)
-        {
-            socket.shutdown();
-            socket.close();
-        }
-        
-        char[256] buffer;
+        auto buffer = new char[256];
         size_t pos;
         void append(char[] s) { buffer[pos..pos+s.length] = s; pos += s.length; }
         void appendNum(uint n) { append(Integer.toString(n)); }
@@ -361,6 +354,14 @@ public:
         }
         append("\r\n");
         
+        auto socket = new Socket();
+        
+        scope(failure)
+        {
+            socket.shutdown();
+            socket.close();
+        }
+        
         socket.connect(new IPv4Address(host, http_port));
         socket.write(buffer[0..pos]);
 
@@ -369,7 +370,7 @@ public:
 
         //token found?
         if(header.length == 512)
-            return;
+            return null;
         
         //extract file size from header to validate response
         static ulong extractSizeFromHeader(char[] header)
@@ -388,10 +389,9 @@ public:
             Logger.addError(this, "MLdonkey: Unexpected file size received for file transfer.");
             socket.shutdown();
             socket.close();
-            return;
+            return null;
         }
-        
-        socket.timeout(1000);
+    
         Host.saveFile(socket, file_name, size);
     }
     
@@ -449,9 +449,8 @@ public:
             return;
         }
         
-        auto file = new Tango.File(path.toString);
-        
-        Host.saveFile(file, path.file, path.fileSize);
+        auto fc = new Tango.File(path.toString);
+        Host.saveFile(fc, path.file, path.fileSize);
     }
     
     void addMeta(Meta_.Type type, char[] value, int rating)

@@ -476,9 +476,8 @@ public:
             return;
         }
         
-        auto file = new Tango.File(path.toString);
-        
-        Host.saveFile(file, path.file, path.fileSize);
+        auto fc = new Tango.File(path.toString);
+        Host.saveFile(fc, path.file, path.fileSize);
     }
     
     private void getJsonSettings()
