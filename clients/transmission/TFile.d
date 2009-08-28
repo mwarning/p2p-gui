@@ -24,6 +24,7 @@ class TFile : NullFile
     char[] full_name; //includes path
     ulong length;
     ulong bytes_completed;
+    bool wanted = true;
     
     alias JsonBuilder!().JsonValue JsonValue;
     alias JsonBuilder!().JsonString JsonString;
@@ -85,15 +86,18 @@ class TFile : NullFile
     
     void update(JsonObject obj)
     {
-        foreach(char[] key, JsonValue val; obj)
+        foreach(char[] key, JsonValue value; obj)
         {
             switch(key)
             {
+            case "bytesCompleted":
+                bytes_completed = value.toInteger();
+                break;
             case "name":
                 if(name.length == 0)
                 {
                     //can be preceded by a path
-                    full_name = val.toString();
+                    full_name = value.toString();
                     auto pos = rfind(full_name, '/');
                     if(pos < full_name.length)
                     {
@@ -109,11 +113,14 @@ class TFile : NullFile
             case "length":
                 if(length == 0)
                 {
-                    length = val.toInteger();
+                    length = value.toInteger();
                 }
                 break;
-            case "bytesCompleted":
-                bytes_completed = val.toInteger();
+            case "priority":
+                priority = value.toInteger();
+                break;
+            case "wanted":
+                wanted = value.toBool();
                 break;
             default:
             }

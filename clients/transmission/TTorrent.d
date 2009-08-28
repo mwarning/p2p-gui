@@ -282,43 +282,23 @@ class TTorrent : NullFile, Nodes, Metas
     {
         foreach(char[] key, JsonValue value; object)
         {
+            //Stdout("'")(key)("'").newline;
             switch(key)
             {
-            case "leftUntilDone":
-                left_until_done = value.toInteger();
+            case "activityDate":
+                //activityDate = value.toInteger();
                 break;
-            case "swarmSpeed":
-                swarm_speed = value.toInteger();
+            case "addedDate":
+                //addedDate = value.toInteger();
                 break;
-            case "rateDownload":
-                download_rate = value.toInteger();
+            case "announceResponse":
+                //announceResponse = value.toString();
                 break;
-            case "rateUpload":
-                upload_rate = value.toInteger();
+            case "announceURL":
+                //announceURL = value.toString();
                 break;
-            case"peersGettingFromUs":
-                uploaders = value.toInteger();
-                break;
-            case"peersSendingToUs":
-                downloaders = value.toInteger();
-                break;
-            case "id":
-                id = value.toInteger();
-                break;
-            case "name":
-                if(name.length == 0)
-                {
-                    name = value.toString();
-                }
-                break;
-            case "downloadLimit":
-                download_limit = value.toInteger();
-                break;
-            case "totalSize":
-                if(total_size == 0)
-                {
-                    total_size = value.toInteger();
-                }
+            case "bandwidthPriority":
+                //bandwidthPriority = value.toInteger();
                 break;
             case "comment":
                 if(comment.length == 0)
@@ -326,31 +306,121 @@ class TTorrent : NullFile, Nodes, Metas
                     comment = value.toString();
                 }
                 break;
+            case "corruptEver":
+                //corruptEver = value.toInteger();
+                break;
+            case "creator":
+                //creator = value.toString();
+                break;
+            case "dateCreated":
+                //dateCreated = value.toInteger();
+                break;
+            case "desiredAvailable":
+                //desiredAvailable = value.toInteger();
+                break;
+            case "doneDate":
+                //doneDate = value.toInteger();
+                break;
+            case "downloadDir":
+                //downloadDir = value.toString();
+                break;
+            case "downloadedEver":
+                //downloadedEver = value.toInteger();
+                break;
+            case "downloaders":
+                downloaders = value.toInteger();
+                break;
+            case "downloadLimit":
+                download_limit = value.toInteger();
+                break;
+            case "downloadLimited":
+                //downloadLimited = value.toBool();
+                break;
+            case "error":
+                //errorString = value.toInteger();
+                break;
+            case "errorString":
+                //errorString = value.toString();
+                break;
+            case "eta":
+                //eta = value.toInteger();
+                break;
+            case "files":
+                if(files.length) break;
+                TFile[] files;
+                foreach(JsonValue v; value)
+                {
+                    if(auto data = cast(JsonObject) v.ptr)
+                    {
+                        files ~= new TFile(data);
+                    }
+                }
+                this.files = files;
+                break;
+            case "fileStats":
+                foreach(uint i, JsonValue d; value)
+                {
+                    if(i >= files.length)
+                        break;
+                    
+                    if(auto data = cast(JsonObject) d.ptr)
+                    {
+                        files[i].update(data);
+                    }
+                }
+                break;
             case "hashString":
-                if(hash.length  == 0)
+                if(hash.length == 0)
                 {
                     hash = value.toString();
                 }
                 break;
-            case "startDate":
+            case "haveUnchecked":
+                //haveUnchecked = value.toInteger();
                 break;
-            case "pieceCount":
+            case "haveValid":
+                //haveValid = value.toInteger();
                 break;
-            case "pieceSize":
+             case "honorsSessionLimits":
+                //honorsSessionLimits = value.getBool();
+            case "id":
+                id = value.toInteger();
                 break;
-            case "files":
-                if(files.length == 0)
+               case "isPrivate":
+                //isPrivate = value.toBool();
+                break;
+            case "lastAnnounceTime":
+                //lastAnnounceTime = value.toInteger();
+                break;
+            case "lastScrapeTime":
+                //lastScrapeTime = value.toInteger();
+                break;
+            case "leechers":
+                //leechers = value.toInteger();
+                break;
+            case "leftUntilDone":
+                left_until_done = value.toInteger();
+                break;
+            case "manualAnnounceTime":
+                //manualAnnounceTime = value.toInteger();
+                break;
+            case "maxConnectedPeers":
+                //maxConnectedPeers = value.toInteger();
+                break;
+            case "name":
+                if(name.length == 0)
                 {
-                    TFile[] files;
-                    foreach(JsonValue f; value)
-                    {
-                        if(auto file = cast(JsonObject) f.ptr)
-                        {
-                            files ~= new TFile(file);
-                        }
-                    }
-                    this.files = files;
+                    name = value.toString();
                 }
+                break;
+            case "nextAnnounceTime":
+                //nextAnnounceTime = value.toInteger();
+                break;
+            case "nextScrapeTime":
+                //nextScrapeTime = value.toInteger();
+                break;
+            case "peer-limit":
+                //peer_limit = value.toInteger();
                 break;
             case "peers":
                 foreach(p; value)
@@ -363,11 +433,35 @@ class TTorrent : NullFile, Nodes, Metas
                     }
                 }
                 break;
+            case "peersConnected":
+                //peersConnected = value.toInteger();
+                break;
             case "peersFrom":
                 if(auto peers_from = cast(JsonObject) value.ptr)
                 {
                     parsePeersFrom(peers_from);
                 }
+                break;
+            case "peersGettingFromUs":
+                //peersGettingFromUs = value.toInteger();
+                break;
+            case "peersKnown":
+                //peersKnown = value.toInteger();
+                break;
+            case "peersSendingToUs":
+                //peersSendingToUs = value.toInteger();
+                break;
+            case "percentDone":
+                //percentDone = value.toFloat();
+                break;
+            case "pieces":
+                //pieces = value.toString();
+                break;
+            case "pieceCount":
+                //pieceCount = value.toInteger();
+                break;
+            case "pieceSize":
+                //pieceSize = value.toInteger();
                 break;
             case "priorities":
                 auto array = value.toJsonArray();
@@ -378,17 +472,36 @@ class TTorrent : NullFile, Nodes, Metas
                 {
                     files[sid].priority = priority.toInteger();
                 }
-                break;    
-            case "trackers":
-                foreach(t; value)
-                {
-                    if(auto tracker = cast(JsonObject) t.ptr)
-                    {
-                        trackers.add (
-                            new TTracker(tracker)
-                        );
-                    }
-                }
+                break;
+            case "rateDownload":
+                download_rate = value.toInteger();
+                break;
+            case "rateUpload":
+                upload_rate = value.toInteger();
+                break;
+            case "recheckProgress":
+                //recheckProgress = value.toFloat();
+                break;
+            case "scrapeResponse":
+                //scrapeResponse = value.toString();
+                break;
+            case "scrapeURL":
+                //scrapeURL = value.toString();
+                break;
+            case "seeders":
+                //seeders = value.toInteger();
+                break;
+            case "seedRatioLimit":
+                //seedRatioLimit = value.toFloat();
+                break;
+            case "seedRatioMode":
+                //seedRatioMode = value.toInteger();
+                break;
+            case "sizeWhenDone":
+                //sizeWhenDone = value.toInteger();
+                break;
+            case "startDate":
+                //startDate = value.toInteger();
                 break;
             case "status":
                 auto state_num = value.toInteger();
@@ -412,8 +525,57 @@ class TTorrent : NullFile, Nodes, Metas
                 default:
                     Logger.addWarning(tc, "TTorrent: Unknown file state {}.", state_num);
                 }
-                break;    
+                break;
+            case "swarmSpeed":
+                swarm_speed = value.toInteger();
+                break;
+            case "timesCompleted":
+                //timesCompleted = value.toInteger();
+                break;
+            case "trackers":
+                foreach(t; value)
+                {
+                    if(auto tracker = cast(JsonObject) t.ptr)
+                    {
+                        trackers.add (
+                            new TTracker(tracker)
+                        );
+                    }
+                }
+                break;
+            case "totalSize":
+                if(total_size == 0)
+                {
+                    total_size = value.toInteger();
+                }
+                break;
+            case "torrentFile":
+                //torrentFile = value.toString();
+                break;
+            case "uploadedEver":
+                //uploadedEver = value.toInteger();
+                break;
+            case "uploadLimit":
+                //uploadLimit = value.toInteger();
+                break;
+            case "uploadLimited":
+                //uploadLimited = value.toBool();
+                break;
+            case "uploadRatio":
+                //uploadRatio = value.toFloat();
+                break;
+            case "wanted":
+                break;
+            case "webseeds":
+                break;
+            case "webseedsSendingToUs":
+                //webseedsSendingToUs = value.toInteger();
+                break;
             default:
+                debug(Transmission)
+                {
+                    Logger.addWarning(tc, "TTorrent: Unhandled value for '{}'.", key);
+                }
             }
         }
     }
@@ -437,7 +599,10 @@ class TTorrent : NullFile, Nodes, Metas
                     //auto from_tracker = value.toInteger();
                     break;
                 default:
-                    Logger.addWarning(tc, "TTorrent: Unknown name for '{}'.", name);
+                    debug(Transmission)
+                    {
+                        Logger.addWarning(tc, "TTorrent: Unhandled peer value for '{}'.", key);
+                    }
             }
         }
     }

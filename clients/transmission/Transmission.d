@@ -173,7 +173,7 @@ public:
         if(is_connected) return;
         is_connected = true;
         
-        Timer.add(&updateSlow, 0.5, 10);
+        Timer.add(&updateSlow, 0.5, 5);
         Timer.add(&updateFast, 1, 2);
         Timer.add(&statsRequest, 1, 2);
         //Timer.add(&getJsonSettings, 2, 6);
@@ -362,6 +362,9 @@ public:
         stopTorrents(ids);
     }
     
+    /*
+    * Set priority for files.
+    */
     void prioritiseFiles(File_.Type type, uint[] ids, Priority priority)
     {
         if(ids.length == 0)
@@ -486,18 +489,27 @@ public:
         send(`{ "method" : "session-get", "tag": 3 }`);
     }
     
-    //request slow changing data for torrents
+    //request static data for torrents
     private void updateSlow()
     {
         assert(torrent_get_tag == 1);
-        send(`{"method":"torrent-get","tag":1,"arguments":{"fields":["id","name","totalSize","status","comment","downloadLimit","files","trackers","priorities","hashString"]}}`);
+        
+        send(`{"method":"torrent-get","tag":1,"arguments":{ "fields":[`
+            `"id","addedDate", "announceURL", "comment", "creator", "dateCreated", "hashString", "id", "isPrivate", "name", "totalSize", "files"] }}`
+        );
     }
     
-    //request fast changing data for torrents
+    //request dynamic data for torrents
     private void updateFast()
     {
         assert(torrent_get_tag == 1);
-        send(`{"method":"torrent-get","tag":1,"arguments":{ "fields":["id","files","leftUntilDone","rateDownload","rateUpload","swarmSpeed","seeders","peers","leechers","peersGettingFromUs","peersSendingToUs"]}`
+        
+        send(`{"method":"torrent-get","tag":1,"arguments":{"fields":[` //"ids":"recently-active", //not supported by older versions
+            `"id","downloadedEver", "error", "errorString", `
+            `"haveUnchecked", "haveValid", "leechers", "leftUntilDone", "peersConnected",`
+            `"peersGettingFromUs", "peersSendingToUs", "rateDownload", "rateUpload",`
+            `"recheckProgress", "seeders", "sizeWhenDone", "status", "swarmSpeed",`
+            `"uploadedEver", "uploadRatio", "seedRatioLimit", "seedRatioMode", "downloadDir", "fileStats"] }}`
         );
     }
     
@@ -711,7 +723,7 @@ public:
         {
             /*
             *    If we receive a 409 http error code,
-            *    then we haven't set the header key/value pair yet.
+            *    then we haven't set the  X-Transmission-Session-Id header yet.
             */
             if(Utils.is_prefix(packet_header, "HTTP/1.1 409") && session_id.length == 0)
             {
@@ -791,7 +803,6 @@ public:
             if(file is null) continue;
             
             uint id = file["id"].toInteger();
-            
             if(id == 0) continue;
             
             if(auto download = (id in downloads))
@@ -817,24 +828,6 @@ public:
         {
             switch(key)
             {
-            case "cumulative-stats":
-                auto object = value.toJsonObject();
-                if(object is null) break;
-                downloaded = object["downloadedBytes"].toInteger;
-                //object["filesAdded"].toInteger;
-                //object["secondsActive"].toInteger;
-                //object["sessionCount"].toInteger;
-                uploaded = object["uploadedBytes"].toInteger;
-                break;
-            case "current-stats":
-                auto object = value.toJsonObject();
-                if(object is null) break;
-                //object["downloadedBytes"].toInteger;
-                //object["filesAdded"].toInteger;
-                auto age = object["secondsActive"].toInteger;
-                //object["sessionCount"].toInteger;
-                //object["uploadedBytes"].toInteger;
-                break;
             case "activeTorrentCount":
                 //active_torrent_count = value.toInteger();
                 break;
@@ -850,7 +843,29 @@ public:
             case "uploadSpeed":
                 upload_speed = value.toInteger();
                 break;
+            case "cumulative-stats":
+                auto object = value.toJsonObject();
+                if(object is null) break;
+                uploaded = object["uploadedBytes"].toInteger;
+                downloaded = object["downloadedBytes"].toInteger;
+                //object["filesAdded"].toInteger;
+                //object["sessionCount"].toInteger;
+                //object["secondsActive"].toInteger;
+                break;
+            case "current-stats":
+                auto object = value.toJsonObject();
+                if(object is null) break;
+                //object["uploadedBytes"].toInteger;
+                //object["downloadedBytes"].toInteger;
+                //object["filesAdded"].toInteger;
+                //object["sessionCount"].toInteger;
+                auto age = object["secondsActive"].toInteger;
+                break;
             default:
+                debug(Transmission)
+                {
+                    Logger.addWarning(tc, "Transmission: Unhandled value for '{}'.", key);
+                }
             }
         }
     }
