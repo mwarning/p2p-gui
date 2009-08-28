@@ -69,14 +69,16 @@ class TFile : NullFile
         switch(priority)
         {
             case -1: return Priority.LOW;
-            case 0: return Priority.NORMAL;
+            //case 0: return Priority.NORMAL;
             case 1: return Priority.HIGH;
+            default:
+                return Priority.NORMAL;
         }
     }
     
     File_.State getState()
     {
-        return File_.State.ACTIVE;
+        return wanted ? File_.State.ACTIVE : File_.State.STOPPED;
     }
     
     File_.Type getType()

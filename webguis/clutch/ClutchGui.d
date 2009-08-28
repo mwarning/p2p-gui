@@ -502,7 +502,7 @@ class ClutchGui : Main.Gui
                     obj[field] = file.getId();
                     break;
                 case "isPrivate":
-                    obj[field] = 0;
+                    obj[field] = false;
                     break;
                 case "leechers":
                     if(auto nodes = file.getNodes)
@@ -648,8 +648,33 @@ class ClutchGui : Main.Gui
                     {
                         auto object = new JsonObject();
                         object["bytesCompleted"] = sub_file.getDownloaded();
-                        object["wanted"] = false; ///TODO
-                        object["priority"] = 0; //TODO
+                        switch(sub_file.getState())
+                        {
+                            case File_.State.PAUSED:
+                            case File_.State.STOPPED:
+                                object["wanted"] = false;
+                                break;
+                            default:
+                                object["wanted"] = true;
+                        }
+                        
+                        switch(sub_file.getPriority())
+                        {
+                            case Priority.VERY_LOW:
+                            case Priority.LOW:
+                                object["priority"] = -1;
+                                break;
+                            case Priority.NORMAL:
+                            case Priority.NONE:
+                            case Priority.AUTO:
+                                object["priority"] = 0;
+                                break;
+                            case Priority.HIGH:
+                            case Priority.VERY_HIGH:
+                                object["priority"] = 1;
+                                break;
+                        }
+                        
                         array ~= object;
                     }
                     obj[field] = array;
@@ -725,7 +750,7 @@ class ClutchGui : Main.Gui
         }
         else try
         {
-            auto paused = (req.getParameter("paused") == "true");
+            auto paused = (req.getParameter("paused") == "true"); //TODO
             
             foreach(file; files)
             {

@@ -367,9 +367,6 @@ public:
     */
     void prioritiseFiles(File_.Type type, uint[] ids, Priority priority)
     {
-        if(ids.length == 0)
-            return;
-            
         //missing files indexes match all
         static const uint[] all;
         
@@ -377,16 +374,16 @@ public:
         {
             case Priority.VERY_LOW:
             case Priority.LOW:
-                torrentSet("priority-low", ids, all);
+                torrentSet(ids, "priority-low", all);
                 break;
             case Priority.NONE:
             case Priority.AUTO:
             case Priority.NORMAL:
-                torrentSet("priority-normal", ids, all);
+                torrentSet(ids, "priority-normal", all);
                 break;
             case Priority.HIGH:
             case Priority.VERY_HIGH:
-                torrentSet("priority-high", ids, all);
+                torrentSet(ids, "priority-high", all);
                 break;
         }
     }
@@ -555,40 +552,40 @@ public:
 
     void setPeerLimit(uint[] ids, uint max_peers)
     {
-        torrentSet("peer-limit", ids, max_peers);
+        torrentSet(ids, "peer-limit", max_peers);
     }
     
     void setFilesWanted(uint[] ids, uint[] subfiles_wanted)
     {
-        torrentSet("files-wanted", ids, subfiles_wanted);
+        torrentSet(ids, "files-wanted", subfiles_wanted);
     }
     
     void setFilesUnwanted(uint[] ids, uint[] subfiles_unwanted)
     {
-        torrentSet("files-unwanted", ids, subfiles_unwanted);
+        torrentSet(ids, "files-unwanted", subfiles_unwanted);
     }
     
     void setSpeedLimitDown(uint[] ids, uint speed_limit_down)
     {
-        torrentSet("speed-limit-down", ids, speed_limit_down);
+        torrentSet(ids, "speed-limit-down", speed_limit_down);
     }
     
     void setSpeedLimitDownEnabled(uint[] ids, bool enable)
     {
-        torrentSet("speed-limit-down-enabled", ids, enable);
+        torrentSet(ids, "speed-limit-down-enabled", enable);
     }
     
     void setSpeedLimitUp(uint[] ids, uint speed_limit_up)
     {
-        torrentSet("speed-limit-up", ids, speed_limit_up);
+        torrentSet(ids, "speed-limit-up", speed_limit_up);
     }
     
     void setSpeedLimitUpEnabled(uint[] ids, bool enable)
     {
-        torrentSet("speed-limit-up-enabled", ids, enable);
+        torrentSet(ids, "speed-limit-up-enabled", enable);
     }
     
-    private void torrentSet(T)(char[] arg_name, uint[] ids, T arg_value)
+    private void torrentSet(T)(uint[] ids, char[] arg_name, T arg_value)
     {
         if(ids.length == 0)
             return;
@@ -597,9 +594,9 @@ public:
         auto packet = new JsonObject();
         
         args[arg_name] = arg_value;
+        args["ids"] = ids;
         
         packet["method"] = "torrent-set";
-        packet["ids"] = ids;
         packet["arguments"] = args;
         
         send(packet);

@@ -31,6 +31,7 @@ class TTorrent : NullFile, Nodes, Metas
     ulong left_until_done;
     char[] comment;
     char[] hash;
+    uint peers_connected;
     uint uploaders;
     uint downloaders;
     uint download_rate;
@@ -264,18 +265,33 @@ class TTorrent : NullFile, Nodes, Metas
         {
             case Priority.VERY_LOW:
             case Priority.LOW:
-                tc.torrentSet("priority-low", [id], ids);
+                tc.torrentSet([id], "priority-low", ids);
                 break;
             case Priority.NONE:
             case Priority.AUTO:
             case Priority.NORMAL:
-                tc.torrentSet("priority-normal", [id], ids);
+                tc.torrentSet([id], "priority-normal", ids);
                 break;
             case Priority.HIGH:
             case Priority.VERY_HIGH:
-                tc.torrentSet("priority-high", [id], ids);
+                tc.torrentSet([id], "priority-high", ids);
                 break;
         }
+    }
+    
+    void pauseFiles(File_.Type type, uint[] ids)
+    {
+        stopFiles(type, ids);
+    }
+    
+    void stopFiles(File_.Type type, uint[] ids)
+    {
+        tc.torrentSet([id], "files-unwanted", ids);
+    }
+    
+    void startFiles(File_.Type type, uint[] ids)
+    {
+        tc.torrentSet([id], "files-wanted", ids);
     }
     
     void update(JsonObject object)
@@ -386,7 +402,7 @@ class TTorrent : NullFile, Nodes, Metas
             case "id":
                 id = value.toInteger();
                 break;
-               case "isPrivate":
+               case "isPrivate": //private tracker
                 //isPrivate = value.toBool();
                 break;
             case "lastAnnounceTime":
@@ -434,7 +450,7 @@ class TTorrent : NullFile, Nodes, Metas
                 }
                 break;
             case "peersConnected":
-                //peersConnected = value.toInteger();
+                peers_connected = value.toInteger();
                 break;
             case "peersFrom":
                 if(auto peers_from = cast(JsonObject) value.ptr)
@@ -572,7 +588,7 @@ class TTorrent : NullFile, Nodes, Metas
                 //webseedsSendingToUs = value.toInteger();
                 break;
             default:
-                debug(Transmission)
+                debug
                 {
                     Logger.addWarning(tc, "TTorrent: Unhandled value for '{}'.", key);
                 }
@@ -599,7 +615,7 @@ class TTorrent : NullFile, Nodes, Metas
                     //auto from_tracker = value.toInteger();
                     break;
                 default:
-                    debug(Transmission)
+                    debug
                     {
                         Logger.addWarning(tc, "TTorrent: Unhandled peer value for '{}'.", key);
                     }
