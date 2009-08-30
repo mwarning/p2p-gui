@@ -377,16 +377,6 @@ private char[] getSessionId(HttpRequest req)
 }
 
 /*
-* Invalidate own session / logout
-*/
-public void invalidateSession()
-{
-    auto session = SessionManager.getThreadSession();
-    assert(session);
-    SessionManager.remove(session);
-}
-
-/*
 * This function is called by the webserver for every request.
 */
 private void service(HttpRequest req, HttpResponse res)
@@ -647,7 +637,7 @@ private void main(char[][] args)
     }
     
     //global hook :(
-    Host.saveFile = &Session.saveFile;
+    Host.saveFile = &Session.setSource;
     
     Host.main_version = "0.2.0svn";
     Host.main_name = "P2P-GUI";

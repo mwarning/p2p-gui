@@ -31,6 +31,7 @@ import webguis.plex.PlexGui;
 import webguis.plex.HtmlElement;
 import webguis.plex.HtmlUtils;
 
+
 Column delegate()[ushort] column_loaders;
 
 void file_browser_init()
@@ -198,23 +199,50 @@ public:
         {
             //start selected files
             Files directory = user.getFiles();
-            if(directory is null) return;
-            
             uint[] ids = req.getParameter!(uint[])("ids");
             auto client = cast(Client) session.getGui!(PlexGui).getClient();
-            if(client) foreach(id_; ids) try
+            
+            if(directory is null || client is null || ids.length == 0)
             {
-                auto file = directory.getFile(File_.Type.UNKNOWN, id_);
-                if(file && file.getName.length > 8 && file.getName[$-8..$] == ".torrent")
-                {
-                    auto fd = new tango.io.device.File.File(file.getName);
-                    if(fd.length > 200 * 1024) continue;
-                    auto data = new char[](fd.length);
-                    fd.read(data);
-                    client.addLink(cast(char[]) data);
-                }
+                return;
             }
-            catch(Exception e) {}
+            
+            foreach(id_; ids) try
+            {
+                directory.previewFile(File_.Type.FILE, id_);
+               
+                auto stream = session.getSourceStream();
+                auto name = session.getSourceName();
+                auto size = session.getSourceSize();
+                
+                session.resetSource();
+                
+                if(stream is null)
+                {
+                    Logger.addError("HtmlFileBrowser: File not found: '{}'", name);
+                    continue;
+                }
+
+                if(!Utils.is_suffix(name, ".torrent"))
+                {
+                    Logger.addWarning("HtmlFileBrowser: File is no torrent file: '{}'", name);
+                    continue;
+                }
+                
+                if(size > 200 * 1024 || size == 0)
+                {
+                    Logger.addWarning("HtmlFileBrowser: Torrent file is too big or zero: '{}'", name);
+                    continue;
+                }
+                
+                auto data = new void[](size);
+                stream.read(data);
+                client.addLink(cast(char[]) data);
+            }
+            catch(Exception e)
+            {
+                Logger.addError("HtmlFileBrowser: {}", e.toString);
+            }
         }
     }
     

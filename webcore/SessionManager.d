@@ -39,8 +39,18 @@ struct SessionManager
         Thread.setLocal(0, cast(void*) session);
     }
     
+    /*
+    * Invalidate own session / logout
+    */
+    static void invalidateSession()
+    {
+        auto session = getThreadSession();
+        if(session) remove(session);
+    }
+    
     static void remove(Session session)
     {
+        assert(session);
         remove(session.getSid);
     }
     

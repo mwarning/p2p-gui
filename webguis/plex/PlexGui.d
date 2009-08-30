@@ -234,12 +234,6 @@ final class PlexGui : HtmlElement, Main.Gui
     
     HtmlElement loadModule(ushort id)
     {
-        if(elements.length + 1 > 30)
-        {
-            Logger.addWarning("PlexGui: Too many modules to load!");
-            return null;
-        }
-        
         if(id == this.getId) return null;
         
         HtmlElement element = null;
@@ -336,7 +330,7 @@ final class PlexGui : HtmlElement, Main.Gui
         //may set source variable in session
         handle(req, session);
         
-        if(session.hasFile())
+        if(session.getSourceStream())
         {
             session.sendFile(res);
             return true;

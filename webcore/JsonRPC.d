@@ -20,6 +20,7 @@ import utils.json.JsonBuilder;
 import webcore.Logger;
 import webcore.MainUser;
 import webcore.Main;
+import webcore.SessionManager;
 
 import api.Node;
 import api.File;
@@ -75,6 +76,10 @@ Response example:
 
 */
 
+private void logout()
+{
+    SessionManager.invalidateSession();
+}
 
 class JsonRPC
 {
@@ -86,7 +91,7 @@ class JsonRPC
         add!("getAppVersion", "main_version");
         add!("getAppWebLink", "main_weblink");
         
-        add!("invalidateSession", "logout");
+        add!("logout");
         add!("addLink", "add_link");
         add!("shutdownClient", "shutdown_client");
         

@@ -50,6 +50,11 @@ private:
         addSetting(Phrase.num_lines, &num_lines);
     }
     
+    public void resetSelected()
+    {
+        selected = null;
+    }
+    
     void save(Storage s)
     {
         s.save("num_lines", &num_lines);

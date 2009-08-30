@@ -19,19 +19,20 @@ import webcore.MainUser;
 import webcore.SessionManager;
 import webcore.Logger;
 
+
 /*
 * HTTP session class.
 */
 class Session
 {
 private:
-    
+
     char[] sid;
     MainUser user;
     ulong last_accessed;
 
     //source info for a file that is going to be uploaded to the user.
-    InputStream source;
+    InputStream source_stream;
     ulong source_size;
     char[] source_name;
 
@@ -78,18 +79,38 @@ public:
     */
     void sendFile(HttpResponse res)
     {
-        if(source && source_name.length)
+        if(source_stream && source_name.length)
         {
             res.addHeader("Content-Disposition: attachment; filename=\"" ~ source_name ~ "\"");
             res.setContentType("application/octet-stream");
-            res.setBodySource(source, source_size);
+            res.setBodySource(source_stream, source_size);
         }
         else
         {
             res.setCode(HttpResponse.Code.NOT_FOUND);
         }
         
-        source = null;
+        resetSource();
+    }
+    
+    InputStream getSourceStream()
+    {
+        return source_stream;
+    }
+    
+    char[] getSourceName()
+    {
+        return source_name;
+    }
+    
+    size_t getSourceSize()
+    {
+        return source_size;
+    }
+    
+    void resetSource()
+    {
+        source_stream = null;
         source_size = 0;
         source_name = null;
     }
@@ -97,24 +118,16 @@ public:
     /*
     * Set file source to be put into the http response body.
     */
-    static void saveFile(InputStream source, char[] name, ulong size)
+    static void setSource(InputStream source_stream, char[] name, ulong size)
     {
         auto s = SessionManager.getThreadSession();
         if(s is null)
         {
             Logger.addError("Session: Can't find session to set download source!");
         }
-        s.source = source;
+        s.source_stream = source_stream;
         s.source_size = size;
         s.source_name = name;
-    }
-    
-    /*
-    * Check if this session has a file attached.
-    */
-    bool hasFile()
-    {
-        return (source && source_name.length);
     }
 
     /*

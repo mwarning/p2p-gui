@@ -7,9 +7,9 @@ ADD_DMD_PARAMS = -version=JAY_GUI -version=PLEX_GUI -version=CLUTCH_GUI -version
 ADD_GDC_PARAMS = -fversion=JAY_GUI -fversion=PLEX_GUI -fversion=CLUTCH_GUI -fversion=MLDONKEY -fversion=AMULE -fversion=RTORRENT -fversion=GIFT -fversion=TRANSMISSION
 ADD_LDC_PARAMS = -d-version=JAY_GUI -d-version=PLEX_GUI -d-version=CLUTCH_GUI -d-version=MLDONKEY -d-version=AMULE -d-version=RTORRENT -d-version=GIFT -d-version=TRANSMISSION
 
-DMD_RELEASE = #-release -O #-debug -gc
-GDC_RELEASE = #-O3 -finline-functions -frelease #-fdebug
-LDC_RELEASE = #-release #-d-debug
+DMD_RELEASE = -d#-release -O #-debug -gc
+GDC_RELEASE = -d#-O3 -finline-functions -frelease #-fdebug
+LDC_RELEASE = -d#-release #-d-debug
 
 #-L-lbfd //for debugging with jive
 LIBS_POSIX_DMD = -L-L/usr/lib -I/usr/include -L-lz -L-lssl

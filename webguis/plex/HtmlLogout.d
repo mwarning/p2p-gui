@@ -12,10 +12,11 @@ import webserver.HttpResponse;
 
 import tango.io.Stdout;
 
-static import Main = webcore.Main;
+import webcore.SessionManager;
 
 import webguis.plex.HtmlElement;
 import webguis.plex.HtmlUtils;
+import webguis.plex.HtmlTitlebar;
 
 
 /*
@@ -25,19 +26,36 @@ final class HtmlLogout : HtmlElement
 {
     this()
     {
-        exec_only = true;
+        //exec_only = true;
         super(Phrase.Logout);
     }
     
     void handle(HttpRequest req, Session session)
     {
-        Main.invalidateSession();
+        SessionManager.invalidateSession();
     }
     
     void handle(HttpResponse res, Session session)
     {
-        //Main.invalidateSession();
-        //HtmlOut o = {res.getWriter(), &session.getUser.translate};
-        //o("<meta http-equiv=\"refresh\" content=\"0;url=/\" />\n");
+        if(Main.use_basic_auth)
+        {
+            HtmlOut o = {res.getWriter(), &session.getUser.translate};
+            o("<b><center>Please clear the browser cache to logout.</center></b>\n");
+        }
+        
+        /*
+        auto titlebar = cast(HtmlTitlebar) session.getGui!(PlexGui).getModule(Phrase.Titlebar);
+        if(titlebar)
+        {
+            //make sure this site isn't displayed on the next login
+            titlebar.resetSelected();
+        }
+        
+        if(SessionManager.invalidateSession())
+        {
+            HtmlOut o = {res.getWriter(), &session.getUser.translate};
+            o("<meta http-equiv=\"refresh\" content=\"1\" />\n");
+        }
+        */
     }
 }
