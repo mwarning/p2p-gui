@@ -25,6 +25,7 @@ static import Convert = tango.util.Convert;
 
 static import Utils = utils.Utils;
 
+
 enum HttpMethod
 {
     GET,
@@ -59,7 +60,7 @@ private:
 
     char[] uri;
     
-    char[][char[]] params; //parameter given in uri
+    char[][char[]] params; //parameters given by GET or POST
     char[][char[]] headers; //header parameters
     
     char[] body_data;
@@ -600,7 +601,7 @@ public:
         
         parseHeader(window[0..header_size+2]);
         
-        body_size = getHeader!(ulong)("Content-Length");
+        body_size = getHeader!(ulong)("Content-Length", 0);
         
         skip(header_size + 2); //we leave one "\r\n" pair for readMultiPart to work with
         
@@ -624,6 +625,7 @@ public:
     
         while(true)
         {
+            assert(end < buffer.length);
             auto read = sc.read(buffer[end .. $]);
             
             if(read == IConduit.Eof)
@@ -703,12 +705,12 @@ public:
         
         uint next()
         {
-            foreach(i, c; str)
+            for(auto i = 0; i < str.length; i++)
             {
-                if(c == '%') return i;
+                if(str[i] == '%') return i;
             }
             return str.length;
-        };
+        }
         
         if(str.length == 0) return ret;
         
@@ -719,9 +721,9 @@ public:
             ret = str.dup;
             
             //replace '+' with ' '
-            foreach(i, c; ret)
+            for(auto i = 0; i < ret.length; i++)
             {
-                if(c == '+') ret[i] = ' ';
+                if(ret[i] == '+') ret[i] = ' ';
             }
             
             return ret;
@@ -729,9 +731,10 @@ public:
         
         ret = str[0..pos].dup;
         
-        foreach(i, c; ret)
+        //replace '+' with ' '
+        for(auto i = 0; i < ret.length; i++)
         {
-            if(c == '+') ret[i] = ' ';
+            if(ret[i] == '+') ret[i] = ' ';
         }
         
         for(; pos < str.length; pos++)

@@ -20,6 +20,7 @@ import tango.core.Thread;
 import tango.core.Array;
 static import Integer = tango.text.convert.Integer;
 
+
 char[][ushort] descriptions;
 
 final class HttpResponse
@@ -142,6 +143,7 @@ public:
 
     void addHeader(char[] line)
     {
+        assert(line.length && line[$-1] > 32);
         if(header_count >= headers.length)
         {
             throw new Exception("Maximum header lines reached.");
