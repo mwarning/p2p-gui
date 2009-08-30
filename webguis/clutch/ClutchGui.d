@@ -9,6 +9,7 @@ module webguis.clutch.ClutchGui;
 
 import tango.io.Stdout;
 import tango.util.Convert;
+static import tango.io.device.File;
 static import Base64 = tango.io.encode.Base64;
 
 import api.File;
@@ -30,6 +31,7 @@ import webserver.HttpResponse;
 import utils.json.JsonParser;
 import utils.json.JsonBuilder;
 import utils.Storage;
+
 
 /*
 * Backend for the clutch gui in Transmission.
@@ -65,16 +67,32 @@ class ClutchGui : Main.Gui
         empty_json_array = new JsonArray();
         
         settings_map = [
-            cast(char[]) "download-dir" : Rec(Phrase.download_dir__setting, Setting.Type.STRING),
+           cast(char[]) "alt-speed-down" : Rec(0, Setting.Type.NUMBER),
+            "alt-speed-enabled" : Rec(0, Setting.Type.BOOL),
+            "alt-speed-time-begin" : Rec(0, Setting.Type.NUMBER),
+            "alt-speed-time-enabled" : Rec(0, Setting.Type.BOOL),
+            "alt-speed-time-end" : Rec(0, Setting.Type.NUMBER),
+            "alt-speed-time-day" : Rec(0, Setting.Type.NUMBER),
+            "blocklist-enabled" : Rec(0, Setting.Type.BOOL),
+            "blocklist-size" : Rec(0, Setting.Type.NUMBER),
+            "dht-enabled" : Rec(0, Setting.Type.BOOL),
             "encryption" : Rec(0, Setting.Type.STRING),
-            "peer-limit" : Rec(Phrase.peer_limit__setting, Setting.Type.STRING),
-            "pex-allowed" : Rec(0, Setting.Type.BOOL),
-            "port" : Rec(Phrase.port__setting, Setting.Type.NUMBER),
+            "download-dir" : Rec(Phrase.download_dir__setting, Setting.Type.STRING),
+            "peer-limit-global" : Rec(0, Setting.Type.NUMBER),
+            "peer-limit-per-torrent" : Rec(0, Setting.Type.NUMBER),
+            "pex-enabled" : Rec(0, Setting.Type.BOOL),
+            "peer-port" : Rec(Phrase.port__setting, Setting.Type.NUMBER),
+            "peer-port-random-on-start" : Rec(0, Setting.Type.BOOL),
             "port-forwarding-enabled" : Rec(0, Setting.Type.BOOL),
+            //"rpc-version"
+            //"rpc-version-minimum"
+            "seedRatioLimit" : Rec(0, Setting.Type.NUMBER),
+            "seedRatioLimited" : Rec(0, Setting.Type.BOOL),
             "speed-limit-down" : Rec(Phrase.speed_limit_down__setting, Setting.Type.NUMBER),
             "speed-limit-down-enabled" : Rec(0, Setting.Type.BOOL),
             "speed-limit-up" : Rec(Phrase.speed_limit_up__setting, Setting.Type.NUMBER),
             "speed-limit-up-enabled" : Rec(0, Setting.Type.BOOL)
+            //"version"
         ];
     }
     
@@ -344,7 +362,7 @@ class ClutchGui : Main.Gui
             {
                 set(meta, name, value.toString);
             }
-            else
+            else debug
             {
                 Logger.addWarning("ClutchGui: Setting name '" ~ name ~ "' unknown.");
             }
@@ -685,7 +703,6 @@ class ClutchGui : Main.Gui
                         Logger.addWarning("ClutchGui: Unknown torrent field requested: {}", field);
                     }
                 }
-                
             }
             
             torrents ~= obj;
@@ -738,9 +755,9 @@ class ClutchGui : Main.Gui
     {
         res.setContentType("text/xml");
         
-        char[][] files = req.getFiles();
+        char[][] file_names = req.getFiles();
         char[] status_string = "success";
-        if(files.length == 0)
+        if(file_names.length == 0)
         {
             status_string = "No files were send.";
         }
@@ -752,11 +769,12 @@ class ClutchGui : Main.Gui
         {
             auto paused = (req.getParameter("paused") == "true"); //TODO
             
-            foreach(file; files)
+            foreach(file_name; file_names)
             {
-                if(Utils.is_suffix(file, ".torrent"))
+                if(Utils.is_suffix(file_name, ".torrent"))
                 {
-                    client.addLink(file);
+                    auto content = tango.io.device.File.File.get(file_name);
+                    client.addLink(cast(char[]) content);
                 }
             }
         }

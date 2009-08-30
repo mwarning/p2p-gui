@@ -21,6 +21,7 @@ import clients.transmission.TFile;
 import clients.transmission.TPeer;
 import clients.transmission.TTracker;
 
+
 class TTorrent : NullFile, Nodes, Metas
 {
     uint id;
@@ -28,6 +29,8 @@ class TTorrent : NullFile, Nodes, Metas
     uint download_limit;
     uint swarm_speed;
     ulong total_size;
+    ulong uploaded_ever;
+    ulong downloaded_ever;
     ulong left_until_done;
     char[] comment;
     char[] hash;
@@ -78,7 +81,7 @@ class TTorrent : NullFile, Nodes, Metas
     
     ulong getUploaded()
     {
-        return 0;
+        return uploaded_ever;
     }
     
     ulong getDownloaded()
@@ -138,6 +141,7 @@ class TTorrent : NullFile, Nodes, Metas
     {
         if(type == Node_.Type.CLIENT)
         {
+            //TODO: include state and use other data
             return peers.length;
         }
         else if(type == Node_.Type.SERVER)
@@ -341,7 +345,7 @@ class TTorrent : NullFile, Nodes, Metas
                 //downloadDir = value.toString();
                 break;
             case "downloadedEver":
-                //downloadedEver = value.toInteger();
+                downloaded_ever = value.toInteger();
                 break;
             case "downloaders":
                 downloaders = value.toInteger();
@@ -569,7 +573,7 @@ class TTorrent : NullFile, Nodes, Metas
                 //torrentFile = value.toString();
                 break;
             case "uploadedEver":
-                //uploadedEver = value.toInteger();
+                uploaded_ever = value.toInteger();
                 break;
             case "uploadLimit":
                 //uploadLimit = value.toInteger();
@@ -581,6 +585,7 @@ class TTorrent : NullFile, Nodes, Metas
                 //uploadRatio = value.toFloat();
                 break;
             case "wanted":
+                state = value.toBool() ? File_.State.ACTIVE : File_.State.STOPPED;
                 break;
             case "webseeds":
                 break;

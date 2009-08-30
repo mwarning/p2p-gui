@@ -176,7 +176,6 @@ public:
         Timer.add(&updateSlow, 0.5, 5);
         Timer.add(&updateFast, 1, 2);
         Timer.add(&statsRequest, 1, 2);
-        //Timer.add(&getJsonSettings, 2, 6);
         
         changed();
     }
@@ -254,6 +253,7 @@ public:
     
     Settings getSettings()
     {
+        if(!is_connected) return null;
         getJsonSettings();
         return this;
     }
