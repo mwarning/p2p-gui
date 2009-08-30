@@ -319,7 +319,11 @@ private:
             req.init(socket);
             res.init(socket);
             
-            req.receive();
+            try //socket throws on timeout!?
+            {
+                req.receive();
+            }
+            catch(Exception e) {}
             
             //check if connection was closed or the header was invalid
             if(req.getHttpMethod() == HttpMethod.UNKNOWN)
@@ -345,7 +349,7 @@ private:
                 //set keep alive
                 if(find(connection, "keep-alive") != connection.length)
                 {
-                    keep_alive = req.getHeader!(uint)("Keep-Alive");
+                    keep_alive = req.getHeader!(uint)("Keep-Alive", 0);
                     if(keep_alive > max_keep_alive)
                     {
                         keep_alive = max_keep_alive;
@@ -374,8 +378,12 @@ private:
             
             handler(req, res);
             
-            res.send();
-            
+            try //just in case
+            {
+                res.send();
+            }
+            catch(Exception e) {}
+           
             if(keep_alive == 0)
             {
                 break;
