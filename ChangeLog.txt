@@ -13,8 +13,12 @@ aMule:
 Transmission:
 - support X-Transmission-Session-Id
    (fix errors from JsonParser)
+- better support for sub files
+Plex gui:
+- add l33t text transform for downloads
 Clutch gui:
 - update to Transmission 1.74
+- better support for sub files
 Jay gui:
 - fix some broken stuff
 
