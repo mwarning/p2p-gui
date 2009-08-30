@@ -162,7 +162,8 @@ class DiskFile : NullFile, Files
     void previewFile(File_.Type type, uint id)
     {
         auto file = getDiskFile(type, id);
-        if(file && type == File_.Type.FILE)
+        
+        if(file && file.getType == File_.Type.FILE)
         {
             auto fc = new Tango.File(file.path.toString);
             Host.saveFile(fc, file.path.file, file.path.fileSize);
