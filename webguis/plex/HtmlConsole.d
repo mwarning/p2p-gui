@@ -80,7 +80,8 @@ final class HtmlConsole : HtmlElement
             
             o("<textarea cols=\"150\" rows=\"")(row_count)("\" readonly=\"readonly\">\n");
             auto min = row_count  > lines.length ? lines.length : row_count;
-            foreach(line; lines[min..$])
+            
+            foreach(line; lines[$-min..$])
             {
                 o(line.getMeta)("\n");
             }
@@ -96,8 +97,8 @@ final class HtmlConsole : HtmlElement
     
     void displayForm(HtmlOut o)
     {
-        o("<form action=\"" ~ target_uri ~ "\" method=\"post\">");
-        o("<input type=\"text\" name=\"command\" size=\"50\" value=\"\" />   ");
+        o("<form action=\"" ~ target_uri ~ "\" method=\"post\">\n");
+        o("<input type=\"text\" name=\"command\" size=\"50\" value=\"\" />\n");
         o("<button type=\"submit\" name=\"to\" value=\"")(this.getId)("\">");
         o(Phrase.Send);
         o("</button>\n");
