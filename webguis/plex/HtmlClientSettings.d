@@ -34,7 +34,7 @@ private:
 
     bool show_description = false;
     uint max_per_col = 10;
-    uint[] category_ids;
+    uint[] category_ids; //selected categories
     uint selected;
 
 public:
@@ -53,6 +53,7 @@ public:
         //select category
         category_ids = req.getParameter!(uint[])("category");
         
+        /*
         //select module
         char[] mod = req.getParameter("module");
         if(mod.length)
@@ -72,7 +73,7 @@ public:
             }
             
             return;
-        }
+        }*/
         
         //get settings handler
         auto client = session.getGui!(PlexGui).getClient();
@@ -100,6 +101,8 @@ public:
     {
         HtmlOut o = { res.getWriter(), &session.getUser.translate};
         
+        auto client = session.getGui!(PlexGui).getClient();
+/*
         Client client;
         Node[] clients;
         uint node_count;
@@ -110,19 +113,19 @@ public:
             clients = nodes.getNodeArray(Node_.Type.CORE, Node_.State.ANYSTATE, 0);
             node_count = nodes.getNodeCount(Node_.Type.CORE, Node_.State.ANYSTATE);
         }
-        
+    
         if(clients is null)
         {
             o("<b>")(Phrase.Not_Supported)("</b>\n");
             return;
         }
-        
+    
         if(node_count == 0)
         {
             o("<b>")(Phrase.Not_Available)("</b>\n");
             return;
         }
-        
+    
         //display list of client with settings count
         o("<div class=\"centered\">\n");
         //o("<b>")(Phrase.Clients)(":</b>\n");
@@ -159,21 +162,35 @@ public:
             o("</span>\n");
         }
         o("<div>\n");
+        */
         
-        if(client is null) return;
+        
+        if(client is null)
+        {
+            o("<b>")(Phrase.Not_Available)("</b>\n");
+            return;
+        }
         
         auto settings = client.getSettings;
-
+        
         if(settings is null)
         {
             o("<h3>")(Phrase.Not_Supported)("</h3>\n");
             return;
         }
         
+        /*
+        o("<span class=\"nobr\">");
+        o("<b>");
+        o(client.getSoftware)(" ")(client.getName)("@")(client.getHost)(":")(client.getPort);
+        o("</b>");
+        o("</span>\n");
+        */
+        
         if(category_ids.length)
         {
             char[] path;
-            foreach(uint id; category_ids)
+            foreach(id; category_ids)
             {
                 displayCategories(o, settings, id);
                 

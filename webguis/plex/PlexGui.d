@@ -424,7 +424,7 @@ final class PlexGui : HtmlElement, Main.Gui
         auto client = this.getClient();
         if(client)
         {
-            o(" | ");
+            o(" |  ");
             o(client.getSoftware);
             if(client.getState == Node_.State.CONNECTED)
             {
@@ -434,6 +434,8 @@ final class PlexGui : HtmlElement, Main.Gui
                 {
                     o(" [")(prot)("]");
                 }
+                o(" |  ");
+                o(client.getName)("@")(client.getHost)(":")(client.getPort);
             }
         }
         
