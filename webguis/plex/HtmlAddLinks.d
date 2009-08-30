@@ -12,6 +12,7 @@ import webserver.HttpResponse;
 
 import tango.io.Stdout;
 import tango.io.FileSystem;
+import Path = tango.io.Path;
 static import tango.io.device.File;
 
 import api.Client;
@@ -41,19 +42,34 @@ final class HtmlAddLinks : HtmlElement
         if(action == "start_uploaded_torrents")
         {
             //start transmitted files
-            char[][] files = req.getFiles();
-            foreach(name; files) if(Utils.is_suffix(name, ".torrent")) try
+            char[][] paths = req.getFiles();
+            foreach(path; paths)
             {
-                auto file = new tango.io.device.File.File(name);
-                
-                if(file.length > 200 * 1024)
+                if(!Utils.is_suffix(path, ".torrent"))
+                {
+                    Logger.addWarning("HtmlAddLinks: File is no torrent file: '{}'", name);
                     continue;
+                }
                 
-                auto data = new char[](file.length);
-                file.read(data);
-                client.addLink(cast(char[]) data);
+                if(!Path.exists(path))
+                {
+                    Logger.addWarning("HtmlAddLinks: File not found.");
+                    continue;
+                }
+                
+                auto size = Path.fileSize(path);
+                if(size > 200 * 1024 || size == 0)
+                {
+                    Logger.addWarning("HtmlAddLinks: Torrent file is too big or zero: '{}'", name);
+                    continue;
+                }
+                
+                try {
+                    auto data = tango.io.device.File.File.get(path);
+                    client.addLink(cast(char[]) data);
+                }
+                catch(Exception e){}
             }
-            catch(Exception e){}
         }
         else if(action == "start_link")
         {
