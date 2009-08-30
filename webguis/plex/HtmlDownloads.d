@@ -27,6 +27,7 @@ import webguis.plex.HtmlUtils;
 import webguis.plex.HtmlElement;
 import utils.Utils;
 
+
 Column delegate()[ushort] column_loaders;
 
 void downloads_init()
@@ -782,6 +783,7 @@ final class NameColumn : Column
     }
 }
 
+/*
 final class NamePercentColumn : Column
 {
     Phrase getName() { return Phrase.Name; }
@@ -804,6 +806,7 @@ final class NamePercentColumn : Column
         return a.getName > b.getName;
     }
 }
+*/
 
 final class StateColumn : Column
 {

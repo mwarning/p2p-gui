@@ -609,7 +609,7 @@ final class NameColumn : Column
     void getCell(HtmlOut o, File a, ushort mod_id)
     {
         o("<td class=\"name\">");
-        o(cropFileName(a.getName, 80));
+        o(cropFileName(a.getName, 120));
         o("</td>\n");
     }
     

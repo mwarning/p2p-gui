@@ -8,6 +8,7 @@ Moritz Warning <mwarning@users.sourceforge.net>
 - add referrer mechanism to login page
 - make realm for basic authentification configurable
 - fix --write-out-files
+- multiple minor fixes
 aMule:
 - select right protocol version for aMule 2.2.5
 Transmission:
