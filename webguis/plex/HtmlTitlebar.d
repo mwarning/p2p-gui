@@ -47,7 +47,7 @@ private:
         
         addSetting(Phrase.design, &designs, &design, &setTitlebar);
         addSetting(Phrase.elements, &elements);
-        addSetting(Phrase.num_lines, &num_lines);
+        addSetting(Phrase.Number_of_Lines, &num_lines);
     }
     
     public void resetSelected()

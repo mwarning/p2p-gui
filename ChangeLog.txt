@@ -16,6 +16,7 @@ Transmission:
 - better support for sub files
 Plex gui:
 - add l33t text transform for downloads
+- make number of displayed console lines configurable
 Clutch gui:
 - update to Transmission 1.74
 - better support for sub files

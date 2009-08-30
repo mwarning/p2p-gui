@@ -26,21 +26,25 @@ import webguis.plex.HtmlUtils;
 final class HtmlConsole : HtmlElement
 {
     bool cmd_on_top = true;
+    uint row_count = 35;
     
     this()
     {
         super(Phrase.Console);
         addSetting(Phrase.cmd_on_top, &cmd_on_top);
+        addSetting(Phrase.Number_of_Lines, &row_count);
     }
     
     void save(Storage s)
     {
         s.save("cmd_on_top", &cmd_on_top);
+        s.save("number_of_lines", &row_count);
     }
     
     void load(Storage s)
     {
         s.load("cmd_on_top", &cmd_on_top);
+        s.load("number_of_lines", &row_count);
     }
     
     void handle(HttpRequest req, Session session)
@@ -74,8 +78,9 @@ final class HtmlConsole : HtmlElement
         {
             if(cmd_on_top) displayForm(o);
             
-            o("<textarea cols=\"150\" rows=\"35\" readonly=\"readonly\">\n");
-            foreach(line; lines)
+            o("<textarea cols=\"150\" rows=\"")(row_count)("\" readonly=\"readonly\">\n");
+            auto min = row_count  > lines.length ? lines.length : row_count;
+            foreach(line; lines[min..$])
             {
                 o(line.getMeta)("\n");
             }
