@@ -15,9 +15,12 @@ Transmission:
 - support X-Transmission-Session-Id
    (fix errors from JsonParser)
 - better support for sub files
+- fix preview
 Plex gui:
 - add l33t text transform for downloads
 - make number of displayed console lines configurable
+- remove client selection for settings (simplification)
+- add login name and IP/port to footer
 Clutch gui:
 - update to Transmission 1.74
 - better support for sub files

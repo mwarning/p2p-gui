@@ -8,9 +8,9 @@
 */
 
 import tango.io.Stdout;
-import tango.io.FilePath;
+import Path = tango.io.Path;
 import tango.io.device.Array;
-static import Tango = tango.io.device.File;
+static import tango.io.device.File;
 import tango.io.model.IFile;
 import tango.io.model.IConduit;
 import tango.net.device.Socket;
@@ -45,6 +45,7 @@ import clients.transmission.TTorrent;
 import clients.transmission.TTracker;
 import clients.transmission.TFile;
 import clients.transmission.TPeer;
+import clients.transmission.TSetting;
 
 
 final class Transmission : Client, Files, Nodes, Settings
@@ -59,34 +60,13 @@ private:
     alias JsonBuilder!().JsonArray JsonArray;
     alias JsonBuilder!().JsonObject JsonObject;
 
-    class TSetting : NullSetting
-    {
-        uint id;
-        char[] name;
-        char[] value;
-        Setting.Type type;
-        
-        this(uint id, char[] name, Setting.Type type)
-        {
-            this.id = id;
-            this.name = name;
-            this.type = type;
-        }
-        
-        uint getId() { return id; }
-        Setting.Type getType() { return type; }
-        char[] getName() { return name; }
-        char[] getValue() { return value; }
-        char[] getDescription() { return null; }
-        Settings getSettings() { return null; }
-    }
-
     uint id;
     char[] host = "127.0.0.1";
     ushort port = 9091;
     char[] session_id; //value for request header key X-Transmission-Session-Id
     
     bool is_connected;
+    TSetting preview_directory;
     
     uint upload_speed;
     uint download_speed;
@@ -137,26 +117,7 @@ public:
         network = new BtNetwork(this);
         buffer = new Array(8 * 1024, 2 * 1024);
         
-        struct Rec { uint id; char[] name; Setting.Type type; }
-        static Rec[] recs = [
-            {Phrase.download_dir__setting, "download-dir", Setting.Type.STRING},
-            {0, "encryption", Setting.Type.STRING},
-            {Phrase.peer_limit__setting, "peer-limit", Setting.Type.NUMBER},
-            {0, "pex-allowed", Setting.Type.BOOL},
-            {Phrase.port__setting, "port", Setting.Type.NUMBER}, 
-            {Phrase.port_forwarding_enabled__setting, "port-forwarding-enabled", Setting.Type.BOOL},
-            {Phrase.speed_limit_down__setting, "speed-limit-down", Setting.Type.NUMBER},
-            {0, "speed-limit-down-enabled", Setting.Type.BOOL},
-            {Phrase.speed_limit_up__setting, "speed-limit-up", Setting.Type.NUMBER},
-            {0, "speed-limit-up-enabled", Setting.Type.BOOL},
-            {Phrase.Preview_Directory__setting, "preview_directory", Setting.Type.STRING} //sneak in own setting
-        ];
-        
-        foreach(i, ref rec; recs)
-        {
-            uint sid = rec.id ? rec.id : (i + Phrase.max);
-            settings[sid] = new TSetting(sid, rec.name, rec.type);
-        }
+        preview_directory = new TSetting(Phrase.Preview_Directory__setting, "Preview Directory", null, Setting.Type.STRING);
     }
     
     uint getId() { return id; }
@@ -177,6 +138,9 @@ public:
         Timer.add(&updateFast, 1, 2);
         Timer.add(&statsRequest, 1, 2);
         
+        //sneak in own setting
+        settings[preview_directory.getId] = preview_directory;
+        
         changed();
     }
     
@@ -191,12 +155,10 @@ public:
         upload_speed = 0;
         download_speed = 0;
         downloads = null;
+        settings = null;
         downloaded = 0;
         uploaded = 0;
         client_version = null;
-        
-        foreach(s; settings)
-            s.value = null;
         
         //remove all callers related to this instance
         Timer.remove(this); 
@@ -388,38 +350,39 @@ public:
         }
     }
 
-    void setPreviewDirectory(char[] directory)
+    void setPreviewDirectory(char[] path)
     {
-        if(directory.length == 0)
+        auto setting = preview_directory;
+        if(setting is null) return;
+        
+        if(path.length == 0)
         {
-            if(auto setting = (Phrase.Preview_Directory__setting in settings))
-            {
-                setting.value = null;
-            }
+            setting.value = null;
             return;
         }
         
-        if(directory[$-1] != FileConst.PathSeparatorChar)
+        if(path[$-1] != FileConst.PathSeparatorChar)
         {
-            directory ~= FileConst.PathSeparatorChar;
+            path ~= FileConst.PathSeparatorChar;
         }
         
-        auto path = new FilePath(directory);
-        if(!path.exists || !path.isFolder)
+        if(!Path.exists(path))
         {
-            Logger.addWarning(this, "Transmission: Directory '{}' does not exist.", directory);
+            Logger.addWarning(this, "Transmission: Directory '{}' does not exist.", path);
             return;
         }
         
-        if(auto setting = (Phrase.Preview_Directory__setting in settings))
-        {
-            setting.value = directory;
-        }
+        setting.value = path;
     }
     
     Setting getSetting(uint id)
     {
-        if(!is_connected) return null;
+        if(!is_connected)
+            return null;
+        
+        if(settings.length <= 1)
+            getJsonSettings();
+        
         auto ptr = (id in settings);
         return ptr ? *ptr : null;
     }
@@ -427,7 +390,7 @@ public:
     void setSetting(uint id, char[] value)
     {
         //sneak in own setting
-        if(id == Phrase.Preview_Directory__setting)
+        if(id == preview_directory.getId)
         {
             return setPreviewDirectory(value);
         }
@@ -448,36 +411,46 @@ public:
     
     void previewFile(char[] name)
     {
-        auto setting = (Phrase.Preview_Directory__setting in settings);
+        char[] path;
         
-        if(setting is null)
+        if(preview_directory.value.length)
         {
+            path = preview_directory.value;
+        }
+        else
+        {
+            auto id = getSettingId("download-dir");
+            auto setting = getSetting(id);
+            
+            if(setting is null || setting.getValue().length == 0)
+            {
+                Logger.addWarning(this, "Transmission: The preview directory nor download-dir is set for file preview.");
+                return;
+            }
+            else
+            {
+                path = setting.getValue();
+            }
+        }
+        
+        Utils.appendSlash(path);
+        
+        path ~= name;
+        
+        if(!Path.exists(path))
+        {
+            Logger.addWarning(this, "Transmission: Can't find file '{}' for preview.", path);
             return;
         }
         
-        if(setting.value.length == 0)
+        if(Path.isFolder(path))
         {
-            Logger.addInfo(this, "Transmision: Please set preview directory first.");
+            Logger.addWarning(this, "Transmission: Can only preview files, found folder '{}'.", path);
             return;
         }
         
-        auto path = new FilePath(setting.getValue);
-        path.append = name;
-        
-        if(!path.exists)
-        {
-            Logger.addWarning(this, "Transmission: Can't find file '{}' for preview.", path.toString);
-            return;
-        }
-        
-        if(path.isFolder)
-        {
-            Logger.addWarning(this, "Transmission: Can only preview files, found folder '{}'.", path.toString);
-            return;
-        }
-        
-        auto fc = new Tango.File(path.toString);
-        Host.saveFile(fc, path.file, path.fileSize);
+        auto fc = new tango.io.device.File.File(path);
+        Host.saveFile(fc, name, Path.fileSize(path));
     }
     
     private void getJsonSettings()
@@ -604,8 +577,10 @@ public:
     
     private void sessionSet(TSetting setting, char[] new_value)
     {
-        if(setting is null || new_value.length > 160)
+        if(setting is null || new_value.length > 160 || setting.getValue == new_value)
+        {
             return;
+        }
         
         auto args = new JsonObject();
         
@@ -657,7 +632,7 @@ public:
     {
         buffer.clear();
         query.print((char[] s) { buffer.append(s); }, false);
-        send(cast(char[]) buffer.slice.dup);
+        Stdout(cast(char[]) buffer.slice).newline;
     }
 
     private synchronized void send(char[] query)
@@ -867,32 +842,61 @@ public:
         }
     }
     
+    private static uint getSettingId(char[] name)
+    {
+        auto id = jhash(name);
+        if(id <= Phrase.max)
+        {
+            id+= Phrase.max;
+        }
+        return id;
+    }
+    
     private void handleSettings(JsonObject object)
     {
-        foreach(char[] key, JsonValue value; object)
+        Setting.Type getType(JsonValue value)
         {
-            if(key == "version")
+            switch(value.type)
             {
-                client_version = value.toString();
+                case JsonType.String: return Setting.Type.STRING;
+                case JsonType.Number: return Setting.Type.NUMBER;
+                case JsonType.Bool: return Setting.Type.BOOL;
+                default: assert(0);
             }
-            else foreach(setting; settings)
+        }
+        
+        char[] toString(JsonValue value)
+        {
+            if(auto n = value.toJsonNumber)
+                return n.toString();
+            if(auto n = value.toJsonString)
+                return n.toString();
+            if(auto n = value.toJsonBool)
+                return n.toString();
+            assert(0);
+        }
+        
+        foreach(char[] name, JsonValue value; object)
+        {
+            if(name == "version")
             {
-                if(setting.name != key)
-                    continue;
-                
-                if(auto n = value.toJsonNumber)
+                client_version = toString(value);
+            }
+        
+            auto id = getSettingId(name);
+            auto type = getType(value);
+            char[] string = toString(value);
+            
+            if(auto setting = (id in settings))
+            {
+                if(setting.getType == type && setting.value != string)
                 {
-                    setting.value = n.toString();
+                    setting.value = value.toString();
                 }
-                else if(auto n = value.toJsonString)
-                {
-                    setting.value = n.toString();
-                }
-                else if(auto n = value.toJsonBool)
-                {
-                    setting.value = n.toString();
-                }
-                break;
+            }
+            else
+            {
+                settings[id] = new TSetting(id, name, string, type);
             }
         }
     }
