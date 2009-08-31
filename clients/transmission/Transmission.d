@@ -632,7 +632,7 @@ public:
     {
         buffer.clear();
         query.print((char[] s) { buffer.append(s); }, false);
-        Stdout(cast(char[]) buffer.slice).newline;
+        send(cast(char[]) buffer.slice.dup);
     }
 
     private synchronized void send(char[] query)
@@ -844,12 +844,29 @@ public:
     
     private static uint getSettingId(char[] name)
     {
-        auto id = jhash(name);
-        if(id <= Phrase.max)
+        //map to unified id
+        switch(name)
         {
-            id+= Phrase.max;
+            case "download-dir":
+                return Phrase.download_dir__setting;
+            case "peer-limit":
+                return Phrase.peer_limit__setting;
+            case "peer-port":
+                return Phrase.port__setting;
+            case "port-forwarding-enabled":
+                return Phrase.port_forwarding_enabled__setting;
+            case "speed-limit-down":
+                return Phrase.speed_limit_down__setting;
+            case "speed-limit-up":
+                return Phrase.speed_limit_up__setting;
+            default:
+                uint id = jhash(name);
+                if(id <= Phrase.max)
+                {
+                    id+= Phrase.max;
+                }
+                return id;
         }
-        return id;
     }
     
     private void handleSettings(JsonObject object)
@@ -861,7 +878,7 @@ public:
                 case JsonType.String: return Setting.Type.STRING;
                 case JsonType.Number: return Setting.Type.NUMBER;
                 case JsonType.Bool: return Setting.Type.BOOL;
-                default: assert(0);
+                default: return Setting.Type.UNKNOWN;
             }
         }
         
@@ -873,7 +890,7 @@ public:
                 return n.toString();
             if(auto n = value.toJsonBool)
                 return n.toString();
-            assert(0);
+            return null;
         }
         
         foreach(char[] name, JsonValue value; object)
@@ -891,10 +908,10 @@ public:
             {
                 if(setting.getType == type && setting.value != string)
                 {
-                    setting.value = value.toString();
+                    setting.value = string;
                 }
             }
-            else
+            else if(type != Setting.Type.UNKNOWN)
             {
                 settings[id] = new TSetting(id, name, string, type);
             }

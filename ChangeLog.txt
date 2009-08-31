@@ -16,6 +16,7 @@ Transmission:
    (fix errors from JsonParser)
 - better support for sub files
 - fix preview
+- fix settings
 Plex gui:
 - add l33t text transform for downloads
 - make number of displayed console lines configurable

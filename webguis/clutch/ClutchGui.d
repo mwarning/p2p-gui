@@ -9,6 +9,7 @@ module webguis.clutch.ClutchGui;
 
 import tango.io.Stdout;
 import tango.util.Convert;
+import tango.text.Util;
 static import tango.io.device.File;
 static import Base64 = tango.io.encode.Base64;
 
@@ -52,48 +53,10 @@ class ClutchGui : Main.Gui
     
     char[] clutch_dir;
     
-    struct Rec
-    {
-        uint global_id;
-        Setting.Type type;
-    }
-    
-    //valid setting names with meta informations
-    static Rec[char[]] settings_map;
-    
     static this()
     {
         empty_json_object = new JsonObject();
         empty_json_array = new JsonArray();
-        
-        settings_map = [
-           cast(char[]) "alt-speed-down" : Rec(0, Setting.Type.NUMBER),
-            "alt-speed-enabled" : Rec(0, Setting.Type.BOOL),
-            "alt-speed-time-begin" : Rec(0, Setting.Type.NUMBER),
-            "alt-speed-time-enabled" : Rec(0, Setting.Type.BOOL),
-            "alt-speed-time-end" : Rec(0, Setting.Type.NUMBER),
-            "alt-speed-time-day" : Rec(0, Setting.Type.NUMBER),
-            "blocklist-enabled" : Rec(0, Setting.Type.BOOL),
-            "blocklist-size" : Rec(0, Setting.Type.NUMBER),
-            "dht-enabled" : Rec(0, Setting.Type.BOOL),
-            "encryption" : Rec(0, Setting.Type.STRING),
-            "download-dir" : Rec(Phrase.download_dir__setting, Setting.Type.STRING),
-            "peer-limit-global" : Rec(0, Setting.Type.NUMBER),
-            "peer-limit-per-torrent" : Rec(0, Setting.Type.NUMBER),
-            "pex-enabled" : Rec(0, Setting.Type.BOOL),
-            "peer-port" : Rec(Phrase.port__setting, Setting.Type.NUMBER),
-            "peer-port-random-on-start" : Rec(0, Setting.Type.BOOL),
-            "port-forwarding-enabled" : Rec(0, Setting.Type.BOOL),
-            //"rpc-version"
-            //"rpc-version-minimum"
-            "seedRatioLimit" : Rec(0, Setting.Type.NUMBER),
-            "seedRatioLimited" : Rec(0, Setting.Type.BOOL),
-            "speed-limit-down" : Rec(Phrase.speed_limit_down__setting, Setting.Type.NUMBER),
-            "speed-limit-down-enabled" : Rec(0, Setting.Type.BOOL),
-            "speed-limit-up" : Rec(Phrase.speed_limit_up__setting, Setting.Type.NUMBER),
-            "speed-limit-up-enabled" : Rec(0, Setting.Type.BOOL)
-            //"version"
-        ];
     }
     
     this(Storage s)
@@ -306,10 +269,6 @@ class ClutchGui : Main.Gui
             char[] value = setting.getValue();
             Setting.Type type = setting.getType();
             
-            auto meta = (name in settings_map);
-            if(meta is null || meta.type != type)
-                continue;
-            
             switch(type)
             {
                 case Setting.Type.STRING:
@@ -321,6 +280,11 @@ class ClutchGui : Main.Gui
                 case Setting.Type.BOOL:
                     args[name] = new JsonBool(value);
                     break;
+                default:
+                    debug
+                    {
+                        Logger.addWarning("ClutchGui: Unexpected setting type fpr '{}'.", name);
+                    }
             }
         }
         
@@ -336,35 +300,92 @@ class ClutchGui : Main.Gui
         
         if(settings is null)
             return empty_json_object;
-        
-        void set(Rec* meta, char[] name, char[] value)
+
+        uint getId(char[] name)
         {
-            assert(meta);
-            //there is a global id available
-            if(auto id = meta.global_id)
+            switch(name)
             {
-                settings.setSetting(id, value);
+                //map to unified id
+                //enables limited settings when backend is not Transmission
+                case "download-dir":
+                    return Phrase.download_dir__setting;
+                case "peer-limit":
+                    return Phrase.peer_limit__setting;
+                case "peer-port":
+                    return Phrase.port__setting;
+                case "port-forwarding-enabled":
+                    return Phrase.port_forwarding_enabled__setting;
+                case "speed-limit-down":
+                    return Phrase.speed_limit_down__setting;
+                case "speed-limit-up":
+                    return Phrase.speed_limit_up__setting;
+                default:
+                    foreach(setting; settings.getSettingArray)
+                    {
+                        if(setting.getName == name)
+                            return setting.getId();
+                    }
+                    /*
+                    //Transmission specific
+                    if(client.getSoftware == "Transmission")
+                    {
+                        uint id = jhash(name);
+                        if(id <= Phrase.max)
+                            id += Phrase.max;
+                        return id;
+                    }
+                    */
+                    debug {
+                        Logger.addWarning("ClutchGui: No setting id found for '{}'.", name);
+                    }
+                    return 0;
             }
-            else foreach(setting; settings.getSettingArray)
+        }
+        
+        Setting.Type getType(JsonValue value)
+        {
+            switch(value.type)
             {
-                if(name == setting.getName)
-                {
-                    settings.setSetting(setting.getId, value);
-                    break;
-                }
+                case JsonType.String: return Setting.Type.STRING;
+                case JsonType.Number: return Setting.Type.NUMBER;
+                case JsonType.Bool: return Setting.Type.BOOL;
+                default: return Setting.Type.UNKNOWN;
             }
+        }
+        
+        char[] toString(JsonValue value)
+        {
+            if(auto n = value.toJsonNumber)
+                return n.toString();
+            if(auto n = value.toJsonString)
+                return n.toString();
+            if(auto n = value.toJsonBool)
+                return n.toString();
+            return null;
         }
         
         foreach(char[] name, JsonValue value; in_args)
         {
-            auto meta = (name in settings_map);
-            if(meta)
+            auto id = getId(name);
+            auto type = getType(value);
+            auto setting = settings.getSetting(id);
+            
+            if(setting is null)
             {
-                set(meta, name, value.toString);
+                debug
+                {
+                    Logger.addWarning("ClutchGui: Setting not found '{}'.", name);
+                }
+                continue;
+            }
+            
+            if(setting.getType == type)
+            {
+                settings.setSetting(id, toString(value));
             }
             else debug
             {
-                Logger.addWarning("ClutchGui: Setting name '" ~ name ~ "' unknown.");
+                Logger.addWarning("ClutchGui: Unknown setting type for '{}'.", name);
             }
         }
         

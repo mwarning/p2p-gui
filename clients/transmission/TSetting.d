@@ -21,30 +21,6 @@ class TSetting : NullSetting
     
     this(uint id, char[] name, char[] value, Setting.Type type)
     {
-        //map to unified id
-        switch(name)
-        {
-            case "download-dir":
-                id = Phrase.download_dir__setting;
-                break;
-            case "peer-limit":
-                id = Phrase.peer_limit__setting;
-                break;
-            case "peer-port":
-                id = Phrase.port__setting;
-                break;
-            case "port-forwarding-enabled":
-                id = Phrase.port_forwarding_enabled__setting;
-                break;
-            case "speed-limit-down":
-                id = Phrase.speed_limit_down__setting;
-                break;
-            case "speed-limit-up":
-                id = Phrase.speed_limit_up__setting;
-                break;
-            default:
-        }
-        
         this.id = id;
         this.name = name;
         this.value = value;
