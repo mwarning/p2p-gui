@@ -135,6 +135,7 @@ TRANSMISSION_FILES = clients/transmission/Transmission.d \
 	clients/transmission/TTracker.d \
 	clients/transmission/TFile.d \
 	clients/transmission/TPeer.d \
+	clients/transmission/TSetting.d \
 
 #MultiUser
 MU_FILES = clients/multiuser/MultiUser.d \
