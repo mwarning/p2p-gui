@@ -32,30 +32,21 @@ final class HtmlLogout : HtmlElement
     
     void handle(HttpRequest req, Session session)
     {
-        SessionManager.invalidateSession();
     }
     
     void handle(HttpResponse res, Session session)
     {
+        HtmlOut o = {res.getWriter(), &session.getUser.translate};
         if(Main.use_basic_auth)
         {
-            HtmlOut o = {res.getWriter(), &session.getUser.translate};
             o("<b><center>Please clear the browser cache to logout.</center></b>\n");
         }
-        
-        /*
-        auto titlebar = cast(HtmlTitlebar) session.getGui!(PlexGui).getModule(Phrase.Titlebar);
-        if(titlebar)
+        else if(auto titlebar = cast(HtmlTitlebar) session.getGui!(PlexGui).getModule(Phrase.Titlebar))
         {
-            //make sure this site isn't displayed on the next login
+           //make sure this site isn't displayed on the next login
             titlebar.resetSelected();
+            SessionManager.invalidateSession(); //logout
+            o("<meta http-equiv=\"refresh\" content=\"0\" />\n");
         }
-        
-        if(SessionManager.invalidateSession())
-        {
-            HtmlOut o = {res.getWriter(), &session.getUser.translate};
-            o("<meta http-equiv=\"refresh\" content=\"1\" />\n");
-        }
-        */
     }
 }

@@ -24,6 +24,7 @@ Plex gui:
 - remove client selection for settings (simplification)
 - add client access name and IP/port to footer
 - hide home directory and disable account settings from normal user access
+- add auto refresh to logout
 Clutch gui:
 - update to Transmission 1.74
 - better support for sub files

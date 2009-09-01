@@ -52,7 +52,11 @@ private:
     
     public void resetSelected()
     {
-        selected = null;
+        if(selected)
+        {
+            selected.visible = false;
+            selected = null;
+        }
     }
     
     void save(Storage s)
