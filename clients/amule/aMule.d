@@ -80,8 +80,7 @@ final class aMule : Client, Files, Nodes, Searches, Settings
     ASearchInfo[uint] searches;
     AFileInfo[uint] files;
     AServerInfo[uint] servers;
-    APreference[uint] preferences;
-    APreference[] categories;
+    APreference[uint] settings;
     AClientInfo[uint] uploaders;
     
     Socket socket;
@@ -215,7 +214,7 @@ public:
             sendLogin();
             changed();
             
-            categories ~= preview_directory;
+            settings[preview_directory.getId] = preview_directory;
         }
         catch(Exception e)
         {
@@ -235,8 +234,7 @@ public:
         current_search_id = 0;
         
         searches = null;
-        preferences = null;
-        categories = null;
+        settings = null;
         uploaders = null;
         files = null;
         servers = null;
@@ -828,58 +826,66 @@ public:
     
     Setting getSetting(uint id)
     {
-        auto pref = (id in preferences);
-        return pref ? *pref : null;
+        foreach(setting; settings)
+        {
+            if(setting.getId == id)
+                return setting;
+            
+            auto s = setting.getSetting(id);
+            if(s) return s;
+        }
+        return null;
     }
     
-    void setSetting(uint id, char[] value_str)
+    void setSetting(uint id, char[] value)
     {
         //bypass for local setting
         if(id == Phrase.Preview_Directory__setting)
         {
-            setPreviewDirectory(value_str);
+            setPreviewDirectory(value);
             return;
         }
         
-        auto pref = (id in preferences);
-        if(pref is null)
+        auto setting = cast(APreference) getSetting(id);
+        if(setting is null || (cast(APreferences) setting) !is null || setting.value == value)
             return;
         
         auto packet = new ECPacket(ECOpCodes.EC_OP_SET_PREFERENCES);
-        auto category_tag = new ECTag(pref.category_code);
-        switch(pref.type)
+        auto category_tag = new ECTag(setting.category_code);
+        
+        switch(setting.type)
         {
         case ECTagTypes.EC_TAGTYPE_UINT8:
-            ubyte value = Convert.to!(ubyte)(value_str);
-            category_tag.addTag(pref.category_code, value);
+            ubyte val = Convert.to!(ubyte)(value);
+            category_tag.addTag(setting.code, val);
             break;
         case ECTagTypes.EC_TAGTYPE_UINT16:
-            ushort value = Convert.to!(ushort)(value_str);
-            category_tag.addTag(pref.category_code, value);
+            ushort val = Convert.to!(ushort)(value);
+            category_tag.addTag(setting.code, val);
             break;
         case ECTagTypes.EC_TAGTYPE_UINT32:
-            uint value = Convert.to!(uint)(value_str);
-            category_tag.addTag(pref.category_code, value);
+            uint val = Convert.to!(uint)(value);
+            category_tag.addTag(setting.code, val);
             break;
         case ECTagTypes.EC_TAGTYPE_UINT64:
-            ulong value = Convert.to!(ulong)(value_str);
-            category_tag.addTag(pref.category_code, value);
+            ulong val = Convert.to!(ulong)(value);
+            category_tag.addTag(setting.code, val);
             break;
         case ECTagTypes.EC_TAGTYPE_STRING:
-            category_tag.addTag(pref.category_code, value_str);
+            category_tag.addTag(setting.code, value);
             break;
         //TODO: implement
         case ECTagTypes.EC_TAGTYPE_DOUBLE:
-            //double value = Convert.to!(double)(value_str);
-            //category_tag.addTag(pref.category_code, value);
+            //double value = Convert.to!(double)(value);
+            //category_tag.addTag(setting.code, value);
             return;
         case ECTagTypes.EC_TAGTYPE_IPV4:
             return;
         case ECTagTypes.EC_TAGTYPE_HASH16:
-            if(value_str.length != 32)
+            if(value.length != 32)
                 return;
             //convert hex string to ubyte[]
-            //category_tag.addTag(pref.category_code, value_str);
+            //category_tag.addTag(setting.code, value);
             break;
         default:
             return;
@@ -888,13 +894,15 @@ public:
         packet.addTag(category_tag);
         
         send(packet);
+        
+        Timer.add(&getPreferences, 1); //update settings in one second
     }
     
-    uint getSettingCount() { return preferences.length; }
+    uint getSettingCount() { return settings.length; }
     
     Setting[] getSettingArray()
     {
-        return Utils.convert!(Setting)(categories);
+        return Utils.convert!(Setting)(settings);
     }
 
     void addLink(char[] ed2k_link)
@@ -1215,7 +1223,7 @@ private:
                     break;
                 }
                 
-                ubyte[] packet = cast(ubyte[]) data[0..8 + msg_size];
+                ubyte[] packet = cast(ubyte[]) data[0..8+msg_size];
                 
                 handle(flags, packet);
                 buffer.seek(packet.length, IOStream.Anchor.Current);
@@ -1515,36 +1523,38 @@ private:
     void parsePreferences(ECPacket packet)
     {
         ECTag[] tags = packet.getTags();
-        //every tag is a category with preferences as sub tags
+        
+        //every tag is a category, single settings are child tags
         foreach(ECTag tag; tags)
         {
-            auto tag_code = tag.getCode();
+            auto category_id = tag.getCode();
+            
             //we drop the detail level tag
-            if(tag_code < ECTagNames.EC_TAG_PREFS_CATEGORIES)
+            if(category_id < ECTagNames.EC_TAG_PREFS_CATEGORIES)
             {
                 continue;
             }
             
-            assert(tag_code != Phrase.Preview_Directory__setting, "Conflicting global id and amule preference id.");
+            assert(category_id != Phrase.Preview_Directory__setting, "Conflicting global id and amule preference id.");
             
-            APreferences category;
-            if(auto tmp = (tag_code in preferences))
+            if(auto category = (category_id in settings))
             {
-                category = cast(APreferences) *tmp;
-                if(category is null) return;
+                foreach(ECTag sub_tag; tag.getTags)
+                {
+                    auto setting = new APreference(category_id, sub_tag);
+                    category.add(setting);
+                }
             }
             else
             {
-                category = new APreferences(tag_code);
-                preferences[category.getId] = category;
-                categories ~= category;
-            }
-            
-            foreach(ECTag tag_; tag.getTags)
-            {
-                auto pref = new APreference(tag_code, tag_);
-                preferences[pref.getId] = pref;
-                category.add(pref);
+                auto category = new APreferences(category_id);
+                settings[category_id] = category;
+                
+                foreach(ECTag sub_tag; tag.getTags)
+                {
+                    auto setting = new APreference(category_id, sub_tag);
+                    category.add(setting);
+                }
             }
         }
     }

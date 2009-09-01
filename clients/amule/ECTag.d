@@ -16,6 +16,7 @@ import webcore.Logger;
 import clients.amule.Utf8_Numbers;
 import clients.amule.ECCodes;
 
+
 final class ECTag
 {
     static Exception exception_wrong_size;
@@ -475,7 +476,7 @@ public:
     void print(char[] indent = "")
     {
         indent ~= "  ";
-        Stdout(indent)("tag_code: ")(Utils.toHexString(cast(ushort) tag_code))("\n");
+        Stdout(indent)("tag_code: 0x")(Utils.toHexString(cast(ushort) tag_code))("\n");
         
         Stdout(indent)("tag_type: ");
         switch(tag_type)

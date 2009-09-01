@@ -17,6 +17,146 @@ import clients.amule.ECPacket;
 import clients.amule.ECCodes;
 import clients.amule.ECTag;
 
+import tango.io.Stdout;
+
+
+class APreference : Setting
+{
+public:
+    
+    ECTagNames category_code;
+    ECTagNames code;
+    ECTagTypes type;
+
+    char[] name;
+    char[] value;
+    
+    this(ECTagNames category_code, ECTag tag)
+    {
+        this.category_code = category_code;
+        this.code = tag.getCode();
+        this.type = tag.getType();
+        this.name = getTagName(this.code);
+        
+        switch(this.type)
+        {
+        case ECTagTypes.EC_TAGTYPE_UINT8:
+            this.value = Utils.toString(tag.get8);
+            break;
+        case ECTagTypes.EC_TAGTYPE_UINT16:
+            this.value = Utils.toString(tag.get16);
+            break;
+        case ECTagTypes.EC_TAGTYPE_UINT32:
+            this.value = Utils.toString(tag.get32);
+            break;
+        case ECTagTypes.EC_TAGTYPE_UINT64:
+            this.value = Utils.toString(tag.get64);
+            break;
+        case ECTagTypes.EC_TAGTYPE_STRING:
+            this.value = tag.getString();
+            break;
+        //TODO: implement
+        case ECTagTypes.EC_TAGTYPE_DOUBLE:
+            break;
+        case ECTagTypes.EC_TAGTYPE_IPV4:
+            break;
+        case ECTagTypes.EC_TAGTYPE_HASH16:
+            this.value = tag.getHash();
+            break;
+        case ECTagTypes.EC_TAGTYPE_CUSTOM:
+            /*
+            Logger.addDebug("got custom {}", Utils.toHexString(code));
+            Logger.addDebug("subtags {}", tag.getTags.length);
+            ubyte[] dta = tag.getRawValue();
+            Debug.hexDump(dta);
+            */
+            break;
+        case ECTagTypes.EC_TAGTYPE_UNKNOWN:
+            //never received before
+        default:
+            Logger.addError("APreference: Unknown setting type {}", this.type);
+        }
+    }
+    
+    //for custom preferences
+    this(uint id, char[] name, char[] value)
+    {
+        //check lower bound for preference ids used by aMule
+        //to prevent id collisions
+        assert(id < ECTagNames.EC_TAG_SELECT_PREFS);
+        
+        this.code = cast(ECTagNames) id;
+        this.name = name;
+        this.value = value;
+        this.type = ECTagTypes.EC_TAGTYPE_STRING;
+    }
+    
+    private this(ECTagNames code, char[] name)
+    {
+        this.code = code;
+        this.name = name;
+    }
+    
+    void add(APreference pref)
+    {
+        assert(0);
+    }
+    
+    uint getId() { return code; }
+    Setting.Type getType() { return Setting.Type.STRING; }
+    char[] getName() { return name; }
+    char[] getValue() { return value; }
+    char[] getDescription() { return ""; }
+    Settings getSettings() { return null; }
+    Setting getSetting(uint id) { return null; }
+    void setSetting(uint id, char[] value) { }
+    uint getSettingCount() { return 0; }
+    Setting[] getSettingArray() { return null; }
+}
+
+final class APreferences : APreference, Settings
+{
+    APreference[uint] settings;
+    
+    this(ECTagNames tag_code)
+    {
+        char[] name = getTagName(tag_code);
+        super(tag_code, name);
+    }
+    
+    void add(APreference setting)
+    {
+        settings[setting.getId] = setting;
+    }
+    
+    Setting.Type getType()
+    {
+        return Setting.Type.MULTIPLE;
+    }
+    
+    Settings getSettings()
+    {
+        return this;
+    }
+    
+    Setting getSetting(uint id)
+    {
+        auto tmp = (id in settings);
+        return tmp ? *tmp : null;
+    }
+    
+    void setSetting(uint id, char[] value) {}
+    
+    uint getSettingCount()
+    {
+        return settings.length;
+    }
+    
+    Setting[] getSettingArray()
+    {
+        return Utils.convert!(Setting)(settings);
+    }
+}
 
 private static char[][ECTagNames] names;
 
@@ -159,124 +299,4 @@ private char[] getTagName(ECTagNames tag_code)
     }
     
     return name;
-}
-
-class APreference : Setting
-{
-public:
-    
-    ECTagNames category_code;
-    ECTagNames code;
-    ECTagTypes type;
-
-    char[] name;
-    char[] value;
-    
-    this(ECTagNames category_code, ECTag tag)
-    {
-        this.category_code = category_code;
-        
-        this.code = tag.getCode();
-        this.type = tag.getType();
-        
-        this.name = getTagName(this.code);
-//ECTagNames.EC_TAG_CONN_AUTOCONNECT
-        switch(this.type)
-        {
-        case ECTagTypes.EC_TAGTYPE_UINT8:
-            this.value = Utils.toString(tag.get8);
-            break;
-        case ECTagTypes.EC_TAGTYPE_UINT16:
-            this.value = Utils.toString(tag.get16);
-            break;
-        case ECTagTypes.EC_TAGTYPE_UINT32:
-            this.value = Utils.toString(tag.get32);
-            break;
-        case ECTagTypes.EC_TAGTYPE_UINT64:
-            this.value = Utils.toString(tag.get64);
-            break;
-        case ECTagTypes.EC_TAGTYPE_STRING:
-            this.value = tag.getString();
-            break;
-        //TODO: implement
-        case ECTagTypes.EC_TAGTYPE_DOUBLE:
-            break;
-        case ECTagTypes.EC_TAGTYPE_IPV4:
-            break;
-        case ECTagTypes.EC_TAGTYPE_HASH16:
-            this.value = tag.getHash();
-            break;
-        case ECTagTypes.EC_TAGTYPE_CUSTOM:
-            /*
-            Logger.addDebug("got custom {}", Utils.toHexString(code));
-            Logger.addDebug("subtags {}", tag.getTags.length);
-            ubyte[] dta = tag.getRawValue();
-            Debug.hexDump(dta);
-            */
-            break;
-        case ECTagTypes.EC_TAGTYPE_UNKNOWN:
-            //never received before
-        default:
-            Logger.addError("APreference: Unknown setting type {}", this.type);
-        }
-    }
-    
-    //to fit in local preferences
-    this(uint id, char[] name, char[] value)
-    {
-        //check lower bound for preference ids used by aMule
-        //to prevent id collisions
-        assert(id < ECTagNames.EC_TAG_SELECT_PREFS);
-        
-        this.code = cast(ECTagNames) id;
-        this.name = name;
-        this.value = value;
-        this.type = ECTagTypes.EC_TAGTYPE_STRING;
-    }
-    
-    private this(ECTagNames code, char[] name)
-    {
-        this.code = code;
-        this.name = name;
-    }
-    
-    uint getId() { return code; }
-    
-    Setting.Type getType() { return Setting.Type.STRING; }
-    
-    char[] getName() { return name; }
-    char[] getValue() { return value; }
-    char[] getDescription() { return ""; }
-    
-    Settings getSettings() { return null; }
-    
-    Setting getSetting(uint id) { return null; }
-    void setSetting(uint id, char[] value) { }
-    uint getSettingCount() { return 0; }
-    Setting[] getSettingArray() { return null; }
-}
-
-final class APreferences : APreference, Settings
-{
-    APreference[] prefs;
-    
-    this(ECTagNames tag_code)
-    {
-        char[] name = getTagName(tag_code);
-        super(tag_code, name);
-    }
-    
-    void add(APreference pref) { prefs ~= pref; }
-    
-    Setting.Type getType() { return Setting.Type.MULTIPLE; }
-    
-    Settings getSettings() { return this; }
-    
-    Setting getSetting(uint id) { return null; }
-    void setSetting(uint id, char[] value) {}
-    uint getSettingCount() { return prefs.length; }
-    Setting[] getSettingArray()
-    {
-        return Utils.convert!(Setting)(prefs);
-    }
 }

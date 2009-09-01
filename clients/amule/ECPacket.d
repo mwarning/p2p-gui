@@ -14,6 +14,7 @@ import Utils = utils.Utils : swapBytes, toHexString;
 
 import tango.io.Stdout;
 
+
 /**
 * High level EC packet handler class
 * for the application layer data
@@ -161,7 +162,7 @@ public:
     */
     void print()
     {
-        Stdout("op_code: ")(Utils.toHexString(op_code))("\n");
+        Stdout("op_code: 0x")(Utils.toHexString(op_code))("\n");
         Stdout("utf8: ")(utf8_numbers)("\n");
         Stdout("tags: ")(tags.length)("\n\n");
         foreach(tag; tags)
