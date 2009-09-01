@@ -4,6 +4,9 @@ written in the D programming language.
 This program combines a simple web server with gui-protocol interfaces to MLDonkey/aMule/rTorrent and giFT
 and a customizeable server-side html GUI (written in D) as well as a client-side GUI (written in JavaScript).
 
+For help with common problems go to http://p2p-gui.sourceforge.net/
+
+
 0. About
 1. Compiling
 2. Change Translations 
