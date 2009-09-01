@@ -1,7 +1,7 @@
 ﻿#ChangeLog for P2P-GUI
 
 
-*P2P-GUI-0.2.0 (2009)
+*P2P-GUI-0.2.0 (01.09.2009)
 Moritz Warning <mwarning@users.sourceforge.net>
 - rename project to P2P-GUI
 - web server now stores self generated ssl key (public.pem/private.pem)

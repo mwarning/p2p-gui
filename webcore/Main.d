@@ -639,7 +639,7 @@ private void main(char[][] args)
     //global hook :(
     Host.saveFile = &Session.setSource;
     
-    Host.main_version = "0.2.0svn";
+    Host.main_version = "0.2.0";
     Host.main_name = "P2P-GUI";
     Host.main_weblink = "http://p2p-gui.sourceforge.net";
     
@@ -750,7 +750,7 @@ private void main(char[][] args)
             Stdout(copyright_terms).newline;
             return;
         default:
-            Stdout("Unknown parameter '")(args[i])("'!\n");
+            Stdout("Unknown parameter '")(args[i])("'.\n");
             return;
         }
     }
