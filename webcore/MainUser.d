@@ -9,13 +9,13 @@
 
 import tango.io.device.Conduit;
 import tango.io.device.File;
-import tango.io.FilePath;
-import tango.io.Path;
+import Path = tango.io.Path;
 import tango.io.model.IFile;
 import tango.core.Array;
 import tango.time.Clock;
 import tango.util.container.more.Stack;
 import tango.text.convert.Format;
+import tango.io.Stdout;
 
 import api.Client;
 import api.Node;
@@ -63,6 +63,7 @@ class MainUser : User, Nodes, Metas, Settings
     DiskFile files;
     Message[uint] logs;
     Setting[] settings;
+    Setting[] hidden_settings;
     Language* language;
     
     public this(uint id, char[] username, char[] password = null, bool is_admin = false)
@@ -103,8 +104,9 @@ class MainUser : User, Nodes, Metas, Settings
         settings ~= createSetting(Phrase.default_interface, &getDefaultGuiName, &getAllGuiNames, &setDefaultGui);
         settings ~= createSetting(Phrase.password, { return cast(char[]) null; }, &setPassword);
         
-        settings ~= createSetting(Phrase.Home_Directory, &getDirectory, &setDirectory);
-        settings ~= createSetting(Phrase.Disable_Account, &is_disabled);
+        //only to see for admin
+        hidden_settings ~= createSetting(Phrase.Home_Directory, &getDirectory, &setDirectory);
+        hidden_settings ~= createSetting(Phrase.Disable_Account, &is_disabled);
         
         //global settings
         if(is_admin)
@@ -241,28 +243,29 @@ private:
     /*
     * Set directory for file browser.
     */
-    void setDirectory(char[] directory)
+    void setDirectory(char[] path)
     {
-        if(directory.length == 0)
+        if(path.length == 0)
         {
             this.files = null;
             return;
         }
         
-        directory = standard(directory);
+        path = Path.standard(path);
         
-        if(directory[$-1] != '/')
+        if(path[$-1] != '/')
         {
-            directory ~= '/';
+            path ~= '/';
         }
         
-        auto path = new FilePath(directory);
-        if(!path.exists) // || !path.isFolder) //temp change
+        if(Path.exists(path) && Path.isFolder(path))
         {
-            Logger.addWarning("MainUser: Directory \"" ~ directory ~ "\" does not exist!");
+            this.files = new DiskFile(path);
         }
-        
-        this.files = new DiskFile(path);
+        else
+        {
+            Logger.addWarning("MainUser: Directory \"" ~ path ~ "\" does not exist!");
+        }
     }
 
 public:
@@ -379,7 +382,7 @@ public:
         disconnect(Node_.Type.CORE, id);
     }
     
-    Files getFiles() { return files.exists() ? files : null; } //access disk files
+    Files getFiles() { return files ? (files.exists() ? files : null) : null; } //access disk files
     Nodes getNodes() { return this; } //access clients
     Settings getSettings() { return this; } //access local user settings
     Metas getMetas() { return this; } //access local user to local user chat
@@ -610,9 +613,26 @@ public:
     {
         foreach(setting; settings)
         {
-            if(setting.getId == id) return setting;
+            if(setting.getId == id)
+                return setting;
+        }
+        
+        if(accessByAdmin())
+        {
+            foreach(setting; hidden_settings)
+            {
+                if(setting.getId == id)
+                    return setting;
+            }
         }
         return null;
+    }
+    
+    private static bool accessByAdmin()
+    {
+        auto session = SessionManager.getThreadSession();
+        auto user = session ? session.getUser() : null;
+        return user ? user.is_admin : false;
     }
     
     void setSetting(uint id, char[] value)
@@ -624,15 +644,34 @@ public:
                 setting.setSetting(id, value);
             }
         }
+        
+        if(accessByAdmin())
+        {
+            foreach(setting; hidden_settings)
+            {
+                if(setting.getId == id)
+                {
+                    setting.setSetting(id, value);
+                }
+            }
+        }
     }
     
     uint getSettingCount()
     {
+        if(accessByAdmin())
+        {
+            return settings.length + hidden_settings.length;
+        }
         return settings.length;
     }
     
     Setting[] getSettingArray()
     {
+        if(accessByAdmin())
+        {
+            return Utils.convert!(Setting)(settings ~ hidden_settings);
+        }
         return Utils.convert!(Setting)(settings);
     }
 }
