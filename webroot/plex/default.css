@@ -29,6 +29,12 @@ table {
 	margin-bottom: 4%;
 }
 
+.reset, .reset:hover
+{
+	color: black;
+	font-weight: bold;
+}
+
 /*
 input, select, button {
 	margin: 2px;
@@ -145,6 +151,7 @@ th a {
 
 #ClientSettings form {
 	float: left;
+	height: 25em;
 	margin: 10px;
 }
 

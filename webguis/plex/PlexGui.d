@@ -435,7 +435,11 @@ final class PlexGui : HtmlElement, Main.Gui
                     o(" [")(prot)("]");
                 }
                 o(" |  ");
-                o(client.getName)("@")(client.getHost)(":")(client.getPort);
+                if(auto name = client.getName)
+                {
+                    o(client.getName)("@");
+                }
+                o(client.getHost)(":")(client.getPort);
             }
         }
         

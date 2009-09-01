@@ -34,7 +34,6 @@ private:
 
     bool show_description = false;
     uint max_per_col = 10;
-    uint[] category_ids; //selected categories
     uint selected;
 
 public:
@@ -48,37 +47,16 @@ public:
 
     void handle(HttpRequest req, Session session)
     {
-        auto user = session.getUser;
-        
-        //select category
-        category_ids = req.getParameter!(uint[])("category");
-        
-        /*
-        //select module
-        char[] mod = req.getParameter("module");
-        if(mod.length)
+        char[] select = req.getParameter("select");
+        if(select.length)
         {
-            uint client_id = Convert.to!(uint)(mod, uint.max);
-            
-            Node node;
-            if(auto nodes = user.getNodes)
-            {
-                node = nodes.getNode(Node_.Type.CORE, client_id);
-            }
-            
-            if(node)
-            {
-                selected = client_id;
-                category_ids = category_ids.init;
-            }
-            
+            selected = Convert.to!(uint)(select, 0);
             return;
-        }*/
-        
+        }
+
         //get settings handler
         auto client = session.getGui!(PlexGui).getClient();
-        Settings settings;
-        if(client) settings = client.getSettings();
+        Settings settings = client ? client.getSettings() : null;
         if(settings is null) return;
         
         //change settings
@@ -99,79 +77,16 @@ public:
 
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = { res.getWriter(), &session.getUser.translate};
-        
+        HtmlOut o = {res.getWriter(), &session.getUser.translate};
         auto client = session.getGui!(PlexGui).getClient();
-/*
-        Client client;
-        Node[] clients;
-        uint node_count;
-        
-        if(auto nodes = session.getUser.getNodes)
-        {
-            client = cast(Client) nodes.getNode(Node_.Type.CORE, selected);
-            clients = nodes.getNodeArray(Node_.Type.CORE, Node_.State.ANYSTATE, 0);
-            node_count = nodes.getNodeCount(Node_.Type.CORE, Node_.State.ANYSTATE);
-        }
-    
-        if(clients is null)
-        {
-            o("<b>")(Phrase.Not_Supported)("</b>\n");
-            return;
-        }
-    
-        if(node_count == 0)
-        {
-            o("<b>")(Phrase.Not_Available)("</b>\n");
-            return;
-        }
-    
-        //display list of client with settings count
-        o("<div class=\"centered\">\n");
-        //o("<b>")(Phrase.Clients)(":</b>\n");
-        
-        foreach(c, Node elem; clients)
-        {
-            //select first client when nothing selected
-            if(client is null)
-            {
-                client = cast(Client) elem;
-                if(client) selected = client.getId();
-            }
-            
-            auto settings = elem.getSettings();
-            
-            o("<span class=\"nobr\">");
-            if(c) o("| ");
-            if(elem.getId == selected) o("<b>");
-            
-            //print accounts
-            o("<a href=\"" ~ target_uri ~ "?to=")(this.getId)(AMP~"module=")(elem.getId)("\">");
-            o(elem.getSoftware)(" ")(elem.getName)("@")(elem.getHost)(":")(elem.getPort);
-            o("</a>");
-            
-            if(elem.getId == selected) o("</b>");
-            if(settings)
-            {
-                o(" (")(settings.getSettingCount)(")");
-            }
-            else
-            {
-                o(" (0)");
-            }
-            o("</span>\n");
-        }
-        o("<div>\n");
-        */
-        
-        
+
         if(client is null)
         {
-            o("<b>")(Phrase.Not_Available)("</b>\n");
+            o("<h3>")(Phrase.Not_Available)("</h3>\n");
             return;
         }
         
-        auto settings = client.getSettings;
+        auto settings = client.getSettings();
         
         if(settings is null)
         {
@@ -179,60 +94,40 @@ public:
             return;
         }
         
-        /*
-        o("<span class=\"nobr\">");
-        o("<b>");
-        o(client.getSoftware)(" ")(client.getName)("@")(client.getHost)(":")(client.getPort);
-        o("</b>");
-        o("</span>\n");
-        */
+        //reset selection
+        o("<a class=\"reset\" href=\"" ~ target_uri ~ "?to=")(this.getId)(AMP~"select=0\">");
+        o(Phrase.Categories);
+        o("</a>:\n");
         
-        if(category_ids.length)
+        if(selected)
         {
-            char[] path;
-            foreach(id; category_ids)
+            displayCategories(o, settings, selected);
+            
+            auto tmp = settings.getSetting(selected);
+            if(tmp && tmp.getType == Setting.Type.MULTIPLE)
             {
-                displayCategories(o, settings, id);
-                
-                auto tmp = settings.getSetting(id);
-                if(tmp && tmp.getType == Setting.Type.MULTIPLE)
-                {
-                    settings = tmp;
-                }
-                else
-                {
-                    break;
-                }
+                settings = tmp;
+            }
+            else
+            {
+                o("<h3>")(Phrase.Not_Found)("</h3>\n");
+                selected = 0;
+                return;
             }
         }
-        else
-        {
-            displayCategories(o, settings);
-        }
+
+        auto array = settings.getSettingArray();
         
-        if(auto setting = cast(Setting) settings)
-        {
-            o("<h3>")(setting.getName)("</h3>\n\n");
-        }
-        
-        auto iter = settings.getSettingArray();
-        
-        if(iter is null)
-        {
-            o("<h3>")(Phrase.Not_Available)("</h3>\n");
-            return;
-        }
-        
-        //Setting[] categories;
+        Setting[] categories;
         Setting[] simple;
         Setting[] complex;
 
-        //filter out simple- and complex settings
-        foreach(s; iter)
+        //filter settings
+        foreach(s; array)
         {
             if(s.getType == Setting.Type.MULTIPLE)
             {
-                //categories ~= s;
+                categories ~= s;
             }
             else if(true)
             {
@@ -244,10 +139,10 @@ public:
             }
         }
         
-        if(!simple.length && !complex.length)
+        //display categories
+        if(categories.length)
         {
-            o("<h3>")(Phrase.Not_Found)("</h3>\n");
-            return;
+            displayCategories(o, categories);
         }
         
         //display simple settings
@@ -279,9 +174,9 @@ public:
     void displayCategories(HtmlOut o, Settings setting, uint select = 0)
     {
         Setting[] settings;
-        Setting[] iter = setting.getSettingArray();
-        if(iter is null) return;
-        foreach(s; iter)
+        Setting[] array = setting.getSettingArray();
+        if(array is null) return;
+        foreach(s; array)
         {
             if(s.getType == Setting.Type.MULTIPLE)
             {
@@ -291,9 +186,11 @@ public:
         displayCategories(o, settings, select);
     }
     
+    /*
+    * Display category selection
+    */
     void displayCategories(HtmlOut o, Setting[] settings, uint select = 0)
     {
-        o("<div class=\"centered\">\n");
         size_t c;
         foreach(setting; settings)
         {
@@ -307,7 +204,7 @@ public:
             
             if(id == select) o("<b>");
             
-            o("<a href=\"" ~ target_uri ~ "?to=")(this.getId)(AMP~"category=")(id)("\">");
+            o("<a href=\"" ~ target_uri ~ "?to=")(this.getId)(AMP~"select=")(id)("\">");
             o(setting.getName);
             o("</a>");
             
@@ -318,6 +215,5 @@ public:
             o("</span>\n");
             c++;
         }
-        o("</div>\n\n");
     }
 }

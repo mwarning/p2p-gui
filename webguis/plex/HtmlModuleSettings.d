@@ -33,7 +33,6 @@ private:
 
     bool show_description = false;
     uint max_per_col = 10;
-    uint category_id;
     uint selected;
 
 public:
@@ -47,25 +46,11 @@ public:
 
     void handle(HttpRequest req, Session session)
     {
-        //select category
-        char[] category = req.getParameter("category");
-        if(category.length)
-        {
-            category_id = Convert.to!(uint)(category, uint.max);
-        }
-        
         //select module
         char[] selected_module = req.getParameter("module");
         if(selected_module.length)
         {
-            uint new_selected = Convert.to!(uint)(selected_module, uint.max);
-            auto selected_obj = session.getGui!(PlexGui).getModule(new_selected);
-            
-            if(selected_obj)
-            {
-                selected = new_selected;
-                category_id = uint.max;
-            }
+            selected = Convert.to!(uint)(selected_module, 0);
             return;
         }
         
@@ -76,10 +61,10 @@ public:
             uint pos = locate(name_string, delim);
             if(pos == name_string.length) continue;
             
-            uint source_id = Convert.to!(uint)( name_string[0..pos], uint.max );
-            uint setting_id = Convert.to!(uint)( name_string[pos+1..$], uint.max );
+            uint source_id = Convert.to!(uint)( name_string[0..pos], 0 );
+            uint setting_id = Convert.to!(uint)( name_string[pos+1..$], 0 );
             
-            if(source_id == uint.max || setting_id == uint.max) continue;
+            if(source_id == 0 || setting_id == 0) continue;
             
             auto mod = session.getGui!(PlexGui).getModule(source_id);
             if(mod) mod.setSetting(setting_id, value_string);
@@ -93,14 +78,11 @@ public:
         Setting[] settings;
         uint source_id;
         
-        o("<b>")(Phrase.User)(":</b>   ");
-        o("<a href=\"" ~ target_uri ~ "?to=")(this.getId)(AMP~"category=0\">"); //reset selection
-        o(session.getUser.getName);
-        o("</a>\n\n");
-        o(BBN);
-    
-        //web module header
-        o("<b>")(Phrase.Modules)(":</b>\n");
+        //reset selection
+        o("<a class=\"reset\" href=\"" ~ target_uri ~ "?to=")(this.getId)(AMP~"module=0\">");
+        o(Phrase.Modules);
+        o("</a>:\n");
+        
         auto c = 0;
         foreach(element; session.getGui!(PlexGui).elements)
         {

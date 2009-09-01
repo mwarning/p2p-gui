@@ -13,7 +13,6 @@ import tango.core.Thread;
 import webcore.Logger;
 static import Utils = utils.Utils;
 
-private:
 
 /*
 * Call a function in float_time seconds with an interval of float_interval.
