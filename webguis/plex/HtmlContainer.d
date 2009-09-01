@@ -80,9 +80,7 @@ final class HtmlContainer : HtmlElement
         }
         else try
         {
-            auto file = new Tango.File(source);
-            content = new char[](file.length);
-            file.read(content);
+            content = cast(char[]) Tango.File.get(source);
             file_path = source;
         }
         catch(Object e)
@@ -101,9 +99,7 @@ final class HtmlContainer : HtmlElement
         {
             try
             {
-                auto file = new Tango.File(file_path);
-                content = new char[](file.length);
-                file.read(content);
+                content = cast(char[]) Tango.File.get(file_path);
                 o(content);
             }
             catch(Object e)
@@ -117,7 +113,7 @@ final class HtmlContainer : HtmlElement
         }
         else
         {
-            o(Phrase.Nothing_Selected);
+            o("<h3>")(Phrase.Nothing_Selected)("</h3>\n");
         }
     }
 }
