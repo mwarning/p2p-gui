@@ -40,7 +40,8 @@ final class HtmlQuickConnect : HtmlElement
     
     override Phrase getName()
     {
-        const Phrase def = Phrase.Nothing_Selected;
+        //default phrase for quick connect
+        const Phrase def = Phrase.Connect; //Phrase.Nothing_Selected;
         
         auto session = SessionManager.getThreadSession();
         if(session is null) return def;
@@ -61,7 +62,11 @@ final class HtmlQuickConnect : HtmlElement
     void handle(HttpRequest req, Session session)
     {
         auto client = cast(Client) session.getGui!(PlexGui).getClient();
-        if(client is null) return;
+        if(client is null)
+        {
+            Logger.addInfo("QuickConnect: Please select a client first.");
+            return;
+        }
         
         switch(client.getState)
         {
