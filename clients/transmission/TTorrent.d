@@ -302,7 +302,6 @@ class TTorrent : NullFile, Nodes, Metas
     {
         foreach(char[] key, JsonValue value; object)
         {
-            //Stdout("'")(key)("'").newline;
             switch(key)
             {
             case "activityDate":
@@ -378,7 +377,8 @@ class TTorrent : NullFile, Nodes, Metas
                 this.files = files;
                 break;
             case "fileStats":
-                foreach(uint i, JsonValue d; value)
+                size_t i;
+                foreach(size_t i, JsonValue d; value)
                 {
                     if(i >= files.length)
                         break;
