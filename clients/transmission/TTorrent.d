@@ -377,7 +377,6 @@ class TTorrent : NullFile, Nodes, Metas
                 this.files = files;
                 break;
             case "fileStats":
-                size_t i;
                 foreach(size_t i, JsonValue d; value)
                 {
                     if(i >= files.length)
