@@ -24,7 +24,7 @@ For help with common problems go to http://p2p-gui.sourceforge.net/
 
 1. Compiling:
     Following programs and libraries are needed in order to compile P2P-GUI:
-      - a D compiler: DMD (v1.040+, http://digitalmars.com/d), LDC (http://dsource.prg/projects/ldc) or GDC-svn
+      - a D compiler: DMD (v1.041+, v1.047 doesn't work, http://digitalmars.com/d), LDC (http://dsource.prg/projects/ldc) or GDC-svn
       - the Tango library (svn version, http://dsource.org/projects/tango)
       - zlib library
       - OpenSSL library
