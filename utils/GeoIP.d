@@ -84,9 +84,9 @@ private:
 /*
 * Changes from the original (GeoIPJava-1.2.2/source/maxmind/geoip/LookupService.java) version:
 * - only getID(long), init(), seekCountry(long) and _check_mtime() were ported
-* - variable databaseFile was removed (needed?)
+* - variable called databaseFile was removed (needed?)
 * - databaseSegments was changed from int[] to int;
-*    only the first element was used
+*    only the first element was used anway
 */
 class GeoIP
 {

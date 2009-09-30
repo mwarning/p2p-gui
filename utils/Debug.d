@@ -11,6 +11,7 @@ import tango.io.Console;
 import tango.text.convert.Format;
 static import Integer = tango.text.convert.Integer;
 
+
 /**
 * Print a hex dump:
 *

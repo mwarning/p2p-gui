@@ -97,7 +97,7 @@ For help with common problems go to http://p2p-gui.sourceforge.net/
 4. Source Code Organisation
    P2P-GUI consists of several parts:
    - ./api/ an API to describe the p2p network environment entities and relationships
-   - /clients/ - several client interfaces in on top of the api
+   - /clients/ - several client interfaces on top of the api
    - ./webserver/ - a webserver to serve data
    - ./webroot/ - repository of files in for html, css, js or image files to be severed by the webserver
    - ./webguis/ - server side code for GUIs 
@@ -110,7 +110,7 @@ For help with common problems go to http://p2p-gui.sourceforge.net/
       - DiskFile.d: wrapper for file system access that conforms the api
       - Dictionary.d: translations
       - Webroot.d: a container/accessor for files to be included into the binary
-      - JsonRPC.d: a JSON RPC interface for the api, not JSON-RPC compatible yet
+      - JsonRPC.d: a JSON RPC interface for the api (not JSON-RPC compatible)
       - ...
    - ./utils/ - several helpful stuff
       - Selector.d: a socket handler to watch over socket events
@@ -118,4 +118,4 @@ For help with common problems go to http://p2p-gui.sourceforge.net/
       - GeoIP.d: an interface for GeoIP databases
       - Utils.d: a collection of helpful tools
       - Includer.d: a helper program to copy files and directories into a source file (Webroot.d)
-      - Storage.d: a JSON based storage interface for setting files
+      - Storage.d: wrapper around a JSON based storage to store settings in files
