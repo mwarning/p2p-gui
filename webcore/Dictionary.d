@@ -1649,7 +1649,7 @@ struct Dictionary
     *
     * Needed for:
     * - to print out source code for new translations (HtmlTranslator.d)
-    * - to have human readable names for settings
+    * - to have human readable names for stored settings (e.g. json)
     */
     static const char[][Phrase.max+1] string_dict =
     [

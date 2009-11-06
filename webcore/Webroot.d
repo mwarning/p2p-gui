@@ -11,7 +11,7 @@
 * This file may contain an alternative file system
 * in variable "files" to be included into the binary.
 *
-* Use helper program Includer.d to fill variable included_files in this file.
+* Use helper program ./utils/Includer.d to fill variable included_files in this file.
 *
 * Start using "./Includer ../webcore/Webroot.d *"
 */

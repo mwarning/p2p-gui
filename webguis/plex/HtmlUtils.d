@@ -97,25 +97,24 @@ void formatSize(FormatOutput!(char) o, ulong bytes)
 
 char[] formatSize(ulong bytes)
 {
-    auto o = &Format.convert;
     if (bytes < 1024)
     {
-        return o("{}  B", bytes);
+        return Format("{}  B", bytes);
     }
     else if (bytes < 1024 * 1024)
     {
-        return o("{0:0.1} KB", bytes / 1024.0);
+        return Format("{0:0.1} KB", bytes / 1024.0);
     }
     else if (bytes < 1024 * 1024 * 1024)
     {
-        return o("{0:0.1} MB", bytes / (1024.0 * 1024.0));
+        return Format("{0:0.1} MB", bytes / (1024.0 * 1024.0));
     }
     else if (bytes < 1024uL * 1024uL * 1024uL * 1024uL)
     {
-        return o("{0:0.1} GB", bytes / (1024.0 * 1024.0 * 1024.0));
+        return Format("{0:0.1} GB", bytes / (1024.0 * 1024.0 * 1024.0));
     }
     
-    return o("{0:0.1} TB", bytes / (1024.0 * 1024.0 * 1024.0 * 1024.0));
+    return Format("{0:0.1} TB", bytes / (1024.0 * 1024.0 * 1024.0 * 1024.0));
 }
 
 void formatTime(FormatOutput!(char) o, uint seconds)
@@ -125,8 +124,6 @@ void formatTime(FormatOutput!(char) o, uint seconds)
 
 char[] formatTime(uint seconds)
 {
-    auto convert = &Format.convert;
-    
     if(seconds == 0 || seconds == typeof(seconds).max)
     {
         return "-";
@@ -134,27 +131,27 @@ char[] formatTime(uint seconds)
     
     if(seconds < 60)
     {
-        return convert("{}s", seconds);
+        return Format("{}s", seconds);
     }
     
     if(seconds < 60 * 60)
     {
-        return convert("{:f1}m", seconds / (60.0));
+        return Format("{:f1}m", seconds / (60.0));
     }
     
     if(seconds < 60 * 60 * 24)
     {
-        return convert("{:f1}h", seconds / (60.0 * 60.0));
+        return Format("{:f1}h", seconds / (60.0 * 60.0));
     }
     
     if(seconds < 60 * 60 * 24 * 356)
     {
-        return convert("{:f1}d", seconds / (60.0 * 60.0 * 24.0));
+        return Format("{:f1}d", seconds / (60.0 * 60.0 * 24.0));
     }
     
     if(seconds < 60 * 60 * 24 * 356 * 100)
     {
-        return convert("{:f1}y", seconds / (60.0 * 60.0 * 24.0 * 356.0));
+        return Format("{:f1}y", seconds / (60.0 * 60.0 * 24.0 * 356.0));
     }
     
     return "-";
@@ -167,21 +164,19 @@ void formatSpeed(FormatOutput!(char) o, uint bytes)
 
 char[] formatSpeed(uint bytes)
 {
-    auto o = &Format.convert;
-
     if (bytes == 0)
     {
-        return o("-");
+        return Format("-");
     }
     else if (bytes < 1024*1024)
     {
-        return o("{0:0.1} KB/s", bytes/1024.0);
+        return Format("{0:0.1} KB/s", bytes/1024.0);
     } 
     else if (bytes < 1024*1024*1024)
     {
-        return o("{0:0.1} MB/s", bytes/1024.0/1024.0);
+        return Format("{0:0.1} MB/s", bytes/1024.0/1024.0);
     }
-    return o("{0:0.1} GB/s", bytes/1024.0/1024.0/1024.0);
+    return Format("{0:0.1} GB/s", bytes/1024.0/1024.0/1024.0);
 }
 
 alias Connection.Priority Priority;

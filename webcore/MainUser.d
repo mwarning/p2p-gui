@@ -436,7 +436,7 @@ public:
         if(!is_admin)
         {
             Logger.addWarning("MainUser: Only admins can set password for other users!");
-            return null;
+            return;
         }
         
         auto user = UserManager.getUser(id);

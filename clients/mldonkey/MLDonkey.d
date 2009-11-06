@@ -370,7 +370,7 @@ public:
 
         //token found?
         if(header.length == 512)
-            return null;
+            return;
         
         //extract file size from header to validate response
         static ulong extractSizeFromHeader(char[] header)
@@ -389,7 +389,7 @@ public:
             Logger.addError(this, "MLdonkey: Unexpected file size received for file transfer.");
             socket.shutdown();
             socket.close();
-            return null;
+            return;
         }
     
         Host.saveFile(socket, file_name, size);

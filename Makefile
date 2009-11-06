@@ -44,7 +44,7 @@ BASE_FILES = webserver/HttpServer.d \
 	webcore/Session.d \
 	webcore/SessionManager.d \
 	webcore/ClientManager.d \
-	webcore/Logger.d
+	webcore/Logger.d \
 
 API_FILES = api/Client.d \
 	api/Host.d \

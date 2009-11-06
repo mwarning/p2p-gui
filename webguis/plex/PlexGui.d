@@ -380,7 +380,7 @@ final class PlexGui : HtmlElement, Main.Gui
 
         HtmlOut o = {res.getWriter(), &session.getUser.translate};
 
-        o("<!DOCTYPE html PUBLIC \"-//W3C//DTD HTML 4.01//EN\" \"http://www.w3.org/TR/1999/REC-html401-19991224/strict.dtd\">\n\n");
+        o("<!DOCTYPE html>\n\n");
         o("<html>\n");
         o("<head>\n");
         o("<meta http-equiv=\"Content-Type\" content=\"text/html;charset=utf-8\" />\n");

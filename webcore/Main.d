@@ -252,7 +252,7 @@ private void sendBasicAuthRequest(HttpResponse res)
 {
     /*
     static const char[] unauthorized_page =
-        "<!DOCTYPE HTML PUBLIC \"-//W3C//DTD HTML 4.01 Transitional//EN\">"
+        "<!DOCTYPE HTML>"
         "<html>"
         "<head><title>401 Unauthorized</title></head>"
         "<h1>401 Unauthorized</h1>"
@@ -609,10 +609,9 @@ private void main(char[][] args)
     version(Posix)
     {
         //prevent exit on file upload
-        sigset_t set;
-        sigemptyset(&set);
-        sigaddset(&set, SIGPIPE);
-        sigprocmask(SIG_BLOCK, &set, null);
+        sigaction_t sa;
+        sa.sa_handler = SIG_IGN;
+        sigaction(SIGPIPE, &sa, null);
         
         //allow clean shutdown on signal
         static extern(C) void shutdown(int sig)
