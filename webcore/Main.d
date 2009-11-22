@@ -327,11 +327,9 @@ private char[] setSessionId(HttpResponse res)
     char[] sid = Utils.toHexString(id);
     char[] max_age = Utils.toString(SessionManager.max_session_age);
     
-    res.addHeader (
-        "Set-Cookie: sid=\"" ~ sid ~ "\";"
-        "Path=\"/\";"
-        "Max-Age=" ~ max_age ~ ";"
-    );
+    res.addHeader("Set-Cookie: sid=\"" ~ sid ~ "\";");
+    res.addHeader("Path=\"/\";");
+    res.addHeader("Max-Age=" ~ max_age ~ ";");
     
     return sid;
 }
@@ -638,7 +636,7 @@ private void main(char[][] args)
     //global hook :(
     Host.saveFile = &Session.setSource;
     
-    Host.main_version = "0.2.0";
+    Host.main_version = "0.2.1svn";
     Host.main_name = "P2P-GUI";
     Host.main_weblink = "http://p2p-gui.sourceforge.net";
     

@@ -1,5 +1,8 @@
 ﻿#ChangeLog for P2P-GUI
 
+*P2P-GUI-0.2.1 (2009)
+Moritz Warning <mwarning@users.sourceforge.net>
+- fix login problem for IE8
 
 *P2P-GUI-0.2.0 (01.09.2009)
 Moritz Warning <mwarning@users.sourceforge.net>
