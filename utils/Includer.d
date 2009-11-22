@@ -142,11 +142,12 @@ void main(char[][] args)
     
     if(args.length < 3)
     {
-        Stdout("Missing arguments!\n");
-        Stdout("Use: " ~ args[0] ~ " output_file [file/directory]*\n\n");
-        Stdout("This program includes all files under given directories in a D source file.\n");
-        Stdout("Within the file everything is in an associative array \"ubyte[][char[]] files\".\n");
-        Stdout("It maps the file path and name to its content.\n");
+        Stdout("Use: " ~ args[0] ~ " target_file [file/directory]*\n\n");
+        Stdout("This program includes all given files and directories in a D source file.\n");
+        Stdout("The target file is expected to have line \"included_files = included_files.init;\"\n");
+        Stdout("inside. included_files has to be of type ubyte[][char[]].\n");
+        Stdout("\n");
+        Stdout("Example:  ./Includer ../webcore/Webroot.d *\n").newline;
         return;
     }
     
