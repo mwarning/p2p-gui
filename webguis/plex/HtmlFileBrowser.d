@@ -10,7 +10,6 @@
 import webserver.HttpRequest;
 import webserver.HttpResponse;
 
-import tango.io.protocol.Writer;
 import tango.io.Stdout;
 import tango.io.FileSystem;
 import tango.io.FilePath;

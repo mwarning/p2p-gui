@@ -24,7 +24,7 @@ import webserver.HttpRequest;
 import webserver.HttpResponse;
 
 static import Utils = utils.Utils;
-static import Base64 = tango.io.encode.Base64;
+static import Base64 = tango.util.encode.Base64;
 import webcore.Logger;
 
 

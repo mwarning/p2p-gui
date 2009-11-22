@@ -21,7 +21,7 @@ import tango.core.Array;
 import tango.time.Clock;
 static import Integer = tango.text.convert.Integer;
 static import Convert = tango.util.Convert;
-static import Base64 = tango.io.encode.Base64;
+static import Base64 = tango.util.encode.Base64;
 
 import api.Client;
 import api.Host;

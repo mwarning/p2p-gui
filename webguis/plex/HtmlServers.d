@@ -9,7 +9,6 @@
 
 import tango.core.Array;
 import tango.io.Stdout;
-import tango.io.protocol.Writer;
 
 import webserver.HttpRequest;
 import webserver.HttpResponse;

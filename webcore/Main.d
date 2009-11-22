@@ -19,8 +19,7 @@ import tango.time.Clock;
 import tango.sys.Environment;
 import tango.math.random.Kiss;
 static import Convert = tango.util.Convert;
-static import Base64 = tango.io.encode.Base64;
-static import PathUtil = tango.util.PathUtil;
+static import Base64 = tango.util.encode.Base64;
 
 version(Posix)
 {
@@ -489,7 +488,7 @@ private char[] setupBaseDir(char[] preset_dir)
     if(preset_dir.length)
     {
         preset_dir = standard(preset_dir); //replace '\' on Windows
-        preset_dir = PathUtil.normalize(preset_dir ~ "/");
+        preset_dir = Path.normalize(preset_dir ~ "/");
     }
     
     //set base directory
@@ -872,9 +871,9 @@ void daemonize(bool change_path = true)
         }
 
         //redirect to /dev/null
-        freopen( "/dev/null", "r", stdin);
-        freopen( "/dev/null", "w", stdout);
-        freopen( "/dev/null", "w", stderr);
+        freopen( "/dev/null", "r", tango.stdc.stdio.stdin);
+        freopen( "/dev/null", "w", tango.stdc.stdio.stdout);
+        freopen( "/dev/null", "w", tango.stdc.stdio.stderr);
     }
     else version(Windows)
     {

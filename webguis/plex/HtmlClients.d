@@ -9,7 +9,6 @@ module webguis.plex.HtmlClients;
 
 import tango.core.Array;
 import tango.io.Stdout;
-import tango.io.protocol.Writer;
 import tango.text.Ascii;
 
 import webserver.HttpRequest;

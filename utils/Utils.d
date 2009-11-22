@@ -8,7 +8,7 @@
 */
 
 import tango.io.Stdout;
-import tango.io.digest.Md5;
+import tango.util.digest.Md5;
 import tango.io.device.Conduit;
 import tango.time.Clock;
 import tango.core.Exception;

@@ -11,7 +11,7 @@ import tango.io.Stdout;
 import tango.util.Convert;
 import tango.text.Util;
 static import tango.io.device.File;
-static import Base64 = tango.io.encode.Base64;
+static import Base64 = tango.util.encode.Base64;
 
 import api.File;
 import api.User;

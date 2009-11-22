@@ -11,7 +11,6 @@ import tango.io.Stdout;
 import Tango = tango.io.device.File;
 import tango.io.FilePath;
 
-import tango.io.protocol.Writer;
 import webserver.HttpRequest;
 import webserver.HttpResponse;
 

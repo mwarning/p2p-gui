@@ -18,10 +18,10 @@ import tango.io.compress.ZlibStream;
 import tango.io.Stdout;
 import tango.io.model.IFile;
 import tango.io.model.IConduit;
-import tango.io.digest.Md5;
 import tango.io.device.Array;
 static import Tango = tango.io.device.File;
 import tango.io.FilePath;
+import tango.util.digest.Md5;
 
 import clients.amule.ECCodes;
 import clients.amule.ECPacket;
