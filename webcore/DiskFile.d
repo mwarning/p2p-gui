@@ -7,7 +7,6 @@
 * licensed under GNU General Public License.
 */
 
-import tango.util.PathUtil;
 import tango.core.Exception;
 import tango.time.Clock;
 import tango.io.FilePath;
