@@ -91,7 +91,7 @@ final class HtmlConsole : HtmlElement
         }
         else
         {
-            o("<b>")(Phrase.Not_Supported)("<b>");
+            o("<b>")(Phrase.Not_Supported)("</b>");
         }
     }
     
