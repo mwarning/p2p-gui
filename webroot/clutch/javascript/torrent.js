@@ -27,12 +27,12 @@ Torrent._ErrTrackerWarning     = 1;
 Torrent._ErrTrackerError       = 2;
 Torrent._ErrLocalError         = 3;
 
-Torrent._StaticFields = [ 'addedDate', 'announceURL', 'comment', 'creator',
-    'dateCreated', 'hashString', 'id', 'isPrivate', 'name', 'totalSize' ]
+Torrent._StaticFields = [ 'addedDate', 'comment', 'creator', 'dateCreated',
+		'hashString', 'id', 'isPrivate', 'name', 'totalSize', 'pieceCount', 'pieceSize' ]
 Torrent._DynamicFields = [ 'downloadedEver', 'error', 'errorString', 'eta',
-    'haveUnchecked', 'haveValid', 'leechers', 'leftUntilDone', 'peersConnected',
+    'haveUnchecked', 'haveValid', 'leftUntilDone', 'metadataPercentComplete', 'peersConnected',
     'peersGettingFromUs', 'peersSendingToUs', 'rateDownload', 'rateUpload',
-    'recheckProgress', 'seeders', 'sizeWhenDone', 'status', 'swarmSpeed',
+    'recheckProgress', 'sizeWhenDone', 'status',
     'uploadedEver', 'uploadRatio', 'seedRatioLimit', 'seedRatioMode', 'downloadDir' ]
 
 Torrent.prototype =
@@ -46,7 +46,8 @@ Torrent.prototype =
 		this._hashString    = data.hashString;
 		this._date          = data.addedDate;
 		this._size          = data.totalSize;
-		this._tracker       = data.announceURL;
+		this._pieceCount    = data.pieceCount;
+		this._pieceSize     = data.pieceSize;
 		this._comment       = data.comment;
 		this._creator       = data.creator;
 		this._creator_date  = data.dateCreated;
@@ -62,7 +63,7 @@ Torrent.prototype =
 		top_e.id = 'torrent_' + data.id;
 		top_e._torrent = this;
 		var element = $(top_e);
-		$(element).bind('dblclick', function(e) { transmission.toggleInspector(); }); 
+                $(element).bind('dblclick', function(e) { transmission.toggleInspector(); });
 		element._torrent = this;
 		this._element = element;
 		this._controller = controller;
@@ -184,6 +185,7 @@ Torrent.prototype =
 	name: function() { return this._name; },
 	peersSendingToUs: function() { return this._peers_sending_to_us; },
 	peersGettingFromUs: function() { return this._peers_getting_from_us; },
+	needsMetaData: function(){ return this._metadataPercentComplete < 1 },
 	getPercentDone: function() {
 		if( !this._sizeWhenDone ) return 1.0;
 		if( !this._leftUntilDone ) return 1.0;
@@ -205,9 +207,6 @@ Torrent.prototype =
 			default:                            return 'error';
 		}
 	},
-	swarmSpeed: function() { return this._swarm_speed; },
-	totalLeechers: function() { return this._total_leechers; },
-	totalSeeders: function() { return this._total_seeders; },
 	uploadSpeed: function() { return this._upload_speed; },
 	uploadTotal: function() { return this._upload_total; },
 	showFileList: function() {
@@ -240,6 +239,9 @@ Torrent.prototype =
 		// Prevents click carrying to parent element
 		// which deselects all on click
 		event.stopPropagation();
+		// but still hide the context menu if it is showing
+		$('#jqContextMenu').hide();
+
 		var torrent = this;
 		
 		// 'Apple' button emulation on PC :
@@ -313,29 +315,27 @@ Torrent.prototype =
 	 * Refresh display
 	 */
 	refreshData: function(data) {
-		this._completed             = data.haveUnchecked + data.haveValid;
-		this._verified              = data.haveValid;
-		this._leftUntilDone         = data.leftUntilDone;
-		this._download_total        = data.downloadedEver;
-		this._upload_total          = data.uploadedEver;
-		this._upload_ratio          = data.uploadRatio;
-		this._seed_ratio_limit      = data.seedRatioLimit;
-		this._seed_ratio_mode       = data.seedRatioMode;
-		this._download_speed        = data.rateDownload;
-		this._upload_speed          = data.rateUpload;
-		this._peers_connected       = data.peersConnected;
-		this._peers_getting_from_us = data.peersGettingFromUs;
-		this._peers_sending_to_us   = data.peersSendingToUs;
-		this._sizeWhenDone          = data.sizeWhenDone;
-		this._recheckProgress       = data.recheckProgress;
-		this._error                 = data.error;
-		this._error_string          = data.errorString;
-		this._eta                   = data.eta;
-		this._swarm_speed           = data.swarmSpeed;
-		this._total_leechers        = Math.max( 0, data.leechers );
-		this._total_seeders         = Math.max( 0, data.seeders );
-		this._state                 = data.status;
-		this._download_dir          = data.downloadDir;
+		this._completed               = data.haveUnchecked + data.haveValid;
+		this._verified                = data.haveValid;
+		this._leftUntilDone           = data.leftUntilDone;
+		this._download_total          = data.downloadedEver;
+		this._upload_total            = data.uploadedEver;
+		this._upload_ratio            = data.uploadRatio;
+		this._seed_ratio_limit        = data.seedRatioLimit;
+		this._seed_ratio_mode         = data.seedRatioMode;
+		this._download_speed          = data.rateDownload;
+		this._upload_speed            = data.rateUpload;
+		this._peers_connected         = data.peersConnected;
+		this._peers_getting_from_us   = data.peersGettingFromUs;
+		this._peers_sending_to_us     = data.peersSendingToUs;
+		this._sizeWhenDone            = data.sizeWhenDone;
+		this._recheckProgress         = data.recheckProgress;
+		this._error                   = data.error;
+		this._error_string            = data.errorString;
+		this._eta                     = data.eta;
+		this._state                   = data.status;
+		this._download_dir            = data.downloadDir;
+		this._metadataPercentComplete = data.metadataPercentComplete;
 
 		if (data.fileStats)
 			this.refreshFileModel( data );
@@ -429,8 +429,25 @@ Torrent.prototype =
 		// when a verifying/downloading torrent gets state seeding
 		if( this._state === Torrent._StatusSeeding )
 			notDone = false ;
-		
-		if( notDone )
+
+		if( this.needsMetaData() ){
+			var metaPercentComplete = this._metadataPercentComplete * 1000 / 100
+			progress_details = "Magnetized transfer - retrieving metadata (";
+			progress_details += metaPercentComplete;
+			progress_details += "%)";
+
+			var empty = "";
+			if(metaPercentComplete == 0)
+				empty = "empty";
+
+			root._progress_complete_container.style.width = metaPercentComplete + "%";
+			root._progress_complete_container.className = 'torrent_progress_bar in_progress meta ' + empty;
+			root._progress_incomplete_container.style.width = 100 - metaPercentComplete + "%"
+			root._progress_incomplete_container.className = 'torrent_progress_bar incomplete meta';
+			root._progress_incomplete_container.style.display = 'block';
+
+		}
+		else if( notDone )
 		{
 			var eta = '';
 			
@@ -467,11 +484,7 @@ Torrent.prototype =
 			
 			// Update the 'incomplete' bar
 			e = root._progress_incomplete_container;
-			if( e.className.indexOf( 'incomplete' ) === -1 )
-				e.className = 'torrent_progress_bar in_progress';
-            // Clear the 'seeding' tag
-            if( e.className.indexOf( 'seeding' ) != -1 )
-                e.className = 'torrent_progress_bar incomplete';
+			e.className = 'torrent_progress_bar incomplete'
 			e.style.width =  (MaxBarWidth - css_completed_width) + '%';
 			e.style.display = 'block';
 		}
@@ -619,11 +632,6 @@ Torrent.compareByName = function( a, b ) {
 };
 
 /** Helper function for sortTorrents(). */
-Torrent.compareByTracker = function( a, b ) {
-	return a._tracker.compareTo( b._tracker );
-};
-
-/** Helper function for sortTorrents(). */
 Torrent.compareByState = function( a, b ) {
 	return a.state() - b.state();
 };
@@ -665,9 +673,6 @@ Torrent.sortTorrents = function( torrents, sortMethod, sortDirection )
 			break;
 		case Prefs._SortByState:
 			torrents.sort( this.compareByState );
-			break;
-		case Prefs._SortByTracker:
-			torrents.sort( this.compareByTracker );
 			break;
 		case Prefs._SortByName:
 			torrents.sort( this.compareByName );
@@ -806,18 +811,20 @@ TorrentFile.prototype = {
 		}
 	},
 	
-	setWanted: function(wanted) {
+	setWanted: function(wanted, process) {
 		this._dirty = true;
 		this._wanted = wanted;
 		if(!iPhone)
 		  this.element().toggleClass( 'skip', !wanted );
-		var command = wanted ? 'files-wanted' : 'files-unwanted';
-		this._torrent._controller.changeFileCommand(command, this._torrent, this);
+		if (process) {
+			var command = wanted ? 'files-wanted' : 'files-unwanted';
+			this._torrent._controller.changeFileCommand(command, this._torrent, this);
+		}
 	},
 	
 	toggleWanted: function() {
 		if (this.isEditable())
-			this.setWanted( !this._wanted );
+			this.setWanted( !this._wanted, true );
 	},
 	
 	refreshHTML: function() {

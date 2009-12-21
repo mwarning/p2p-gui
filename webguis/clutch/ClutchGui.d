@@ -52,6 +52,7 @@ class ClutchGui : Main.Gui
     JsonParser!() parser;
     
     char[] clutch_dir;
+    uint[] removed;
     
     static this()
     {
@@ -238,8 +239,8 @@ class ClutchGui : Main.Gui
         //build response
         auto res = new JsonObject();
         
-        res["result"] = result;
         res["arguments"] = res_args;
+        res["result"] = result;
         
         if(tag)
             res["tag"] = tag;
@@ -455,6 +456,9 @@ class ClutchGui : Main.Gui
         
         if(ids.length)
             files.removeFiles(File_.Type.DOWNLOAD, ids);
+        
+        //record removed ids to send back with torrent-get
+        removed = ids;
         
         return empty_json_object;
     }
@@ -730,6 +734,13 @@ class ClutchGui : Main.Gui
         }
         
         auto res_args = new JsonObject();
+        
+        if(removed.length)
+        {
+            res_args["removed"] = removed;
+            removed = null;
+        }
+        
         res_args["torrents"] = torrents;
         
         return res_args;

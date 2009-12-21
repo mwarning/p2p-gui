@@ -63,7 +63,7 @@
 		</div>
 		<div id="torrent_inspector" style="display:none;">
 			
-		<div style="display:none;" class="inspector_close" id="inspector_close"><img id="inspector_close_image" src="/clutch/images/buttons/cancel.png"/></div>
+			<div style="display:none;" class="inspector_close" id="inspector_close"><img id="inspector_close_image" src="/clutch/images/buttons/cancel.png"/></div>
 
 			<div id="inspector_tabs">
 				<div class="inspector_tab selected" id="inspector_tab_info"><a href="#info"><img src="/clutch/images/buttons/info_general.png" alt="Information"/></a></div>
@@ -80,8 +80,8 @@
 				<div class="inspector_group">
 					<div class="inspector_group_label">Information</div>
 					<div class="inspector_row">
-						<div class="inspector_label">Tracker:</div>
-						<div id="torrent_inspector_tracker"></div>
+						<div class="inspector_label">Pieces:</div>
+						<div id="torrent_inspector_pieces"></div>
 					</div>
 					<div class="inspector_row">
 						<div class="inspector_label">Hash:</div>
@@ -147,10 +147,6 @@
 						<div id="torrent_inspector_ratio">N/A</div>
 					</div>
 					<div class="inspector_row">
-						<div class="inspector_label">Swarm Rate:</div>
-						<div id="torrent_inspector_swarm_speed">N/A</div>
-					</div>
-					<div class="inspector_row">
 						<div class="inspector_label">Error:</div>
 						<div id="torrent_inspector_error">N/A</div>
 					</div>
@@ -174,19 +170,16 @@
 						<div class="inspector_label">DL From:</div>
 						<div id="torrent_inspector_download_from">N/A</div>
 					</div>
-					<div class="inspector_row">
-						<div class="inspector_label">Total Seeders:</div>
-						<div id="torrent_inspector_total_seeders">N/A</div>
-					</div>
-					<div class="inspector_row">
-						<div class="inspector_label">Total Leechers:</div>
-						<div id="torrent_inspector_total_leechers">N/A</div>
-					</div>
 				</div><!-- class="inspector_group"-->
 			</div><!-- id="inspector_tab_activity_container" -->
 
 			<div style="display:none;" class="inspector_container" id="inspector_tab_files_container">
-				<div id="inspector_file_list"></div>
+				<div id="inspector_file_list">
+					<ul id="select_all_button_container">
+						<li id="files_deselect_all" class="select_all_button">Deselect All</li>
+						<li id="files_select_all" class="select_all_button">Select All</li>
+					</ul>
+				</div>
 			</div><!-- id="inspector_tab_files_container" -->
 
 		</div>
@@ -214,54 +207,104 @@
 				<h2 class="dialog_heading">Preferences</h2>
 				<div id="pref_error"></div>
 				<form action="" id="prefs_form">
-					<div class="preference download_location">
-						<label class="category">Add transfers:</label>
-						<div class="formdiv">
-							<label for="download_location" class="item">Download to:</label>
-							<input type="text" name="download_location" id="download_location"/>
+					<div id="prefs_tabs">
+						<ul>
+							<li id="prefs_tab_general_tab" class="prefs_tab_enabled">General</li>
+							<li id="prefs_tab_speed_tab" class="prefs_tab_disabled">Speed</li>
+						</ul>
+						<div id="prefs_tab_general" class="prefs_tab">
+							<div class="preference download_location">
+								<label class="category">Add transfers:</label>
+								<div class="formdiv">
+									<label for="download_location" class="item">Download to:</label>
+									<input type="text" name="download_location" id="download_location"/>
+								</div>
+								<div class="formdiv checkbox auto_start">
+									<input type="checkbox" name="auto_start" id="auto_start"/>
+									<label for="auto_start" class="item">Start transfers when added</label>
+								</div>
+							</div>
+							<div class="preference port">
+								<label class="category">Network:</label>
+								<div class="formdiv">
+									<label for="port" class="item">Incoming TCP Port:</label>
+									<input type="text" id="port" name="port"/>
+								</div>
+							</div>
+							<div class="preference encryption">
+								<label class="category">Encryption:</label>
+								<div class="formdiv checkbox">
+									<input type="checkbox" name="encryption" id="encryption"/>
+									<label for="encryption" class="item">Ignore unencrypted peers</label>
+								</div>
+							</div>
+							<div class="preference web_gui">
+								<label class="category">Web Client:</label>
+								<div class="formdiv">
+									<label for="refresh_rate" class="item">Refresh Rate:</label>
+									<input type="text" name="refresh_rate" id="refresh_rate"/>
+									<label class="suffix">seconds</label>
+								</div>
+							</div>
+							<div style="clear: both; visibility: hidden;"/></div>
 						</div>
-						<div class="formdiv checkbox auto_start">
-							<input type="checkbox" name="auto_start" id="auto_start"/>
-							<label for="auto_start" class="item">Start transfers when added</label>
+						<div id="prefs_tab_speed" class="prefs_tab" style="display: none;">
+							<div class="preference limit_total">
+								<label class="category">Speed Limits:</label>
+								<div class="formdiv checkbox">
+									<input type="checkbox" name="limit_download" id="limit_download"/>
+									<label for="limit_download" class="item">Download Rate:</label>
+									<input type="text" name="download_rate" id="download_rate"/>
+									<label class="suffix">KB/s</label>
+								</div>
+								<div class="formdiv checkbox">
+									<input type="checkbox" name="limit_upload" id="limit_upload"/>
+									<label for="limit_upload" class="item">Upload Rate:</label>
+									<input type="text" name="upload_rate" id="upload_rate"/>
+									<label class="suffix">KB/s</label>
+								</div>
+							</div>
+							<div class="preference limit_turtle">
+								<label class="category">Temporary Speed Limits: (Turtle)</label>
+								<label>Override normal speed limits manually or at scheduled times</label>
+								<div class="formdiv">
+									<label for="turtle_download_rate" class="item">Download Rate:</label>
+									<input type="text" name="turtle_download_rate" id="turtle_download_rate"/>
+									<label class="suffix">KB/s</label>
+								</div>
+								<div class="formdiv">
+									<label for="turtle_upload_rate" class="item">Upload Rate:</label>
+									<input type="text" name="turtle_upload_rate" id="turtle_upload_rate"/>
+									<label class="suffix">KB/s</label>
+								</div>
+								<div class="formdiv checkbox">
+									<input type="checkbox" name="turtle_schedule" id="turtle_schedule"/>
+									<label for="turtle_schedule" class="item">Scheduled times:</label>
+									<select name="turtle_start_time" id="turtle_start_time" size="1">
+									</select>
+									<select name="turtle_end_time" id="turtle_end_time" size="1">
+									</select>
+								</div>
+								<div class="formdiv">
+									<label for="turtle_days" class="item">On days:</label>
+									<select name="turtle_days" id="turtle_days" size="1">
+										<option value="127">Everyday</option>
+										<option value="62">Weekdays</option>
+										<option value="65">Weekends</option>
+										<option value="1">Sunday</option>
+										<option value="2">Monday</option>
+										<option value="4">Tuesday</option>
+										<option value="8">Wednesday</option>
+										<option value="16">Thursday</option>
+										<option value="32">Friday</option>
+										<option value="64">Saturday</option>
+									</select>
+								</div>
+							</div>
+							<div style="clear: both; visibility: hidden;"/></div>
 						</div>
 					</div>
-					<div class="preference port">
-						<label class="category">Network:</label>
-						<div class="formdiv">
-							<label for="port" class="item">Incoming TCP Port:</label>
-							<input type="text" id="port" name="port"/>
-						</div>
-					</div>
-					<div class="preference encryption">
-						<label class="category">Encryption:</label>
-						<div class="formdiv checkbox">
-							<input type="checkbox" name="encryption" id="encryption"/>
-							<label for="encryption" class="item">Ignore unencrypted peers</label>
-						</div>
-					</div>
-					<div class="preference limit_total">
-						<label class="category">Limit total bandwidth:</label>
-						<div class="formdiv checkbox">
-							<input type="checkbox" name="limit_download" id="limit_download"/>
-							<label for="limit_download" class="item">Download Rate:</label>
-							<input type="text" name="download_rate" id="download_rate"/>
-							<label class="suffix">KB/s</label>
-						</div>
-						<div class="formdiv checkbox">
-							<input type="checkbox" name="limit_upload" id="limit_upload"/>
-							<label for="limit_upload" class="item">Upload Rate:</label>
-							<input type="text" name="upload_rate" id="upload_rate"/>
-							<label class="suffix">KB/s</label>
-						</div>
-					</div>
-					<div class="preference web_gui">
-						<label class="category">Web Client:</label>
-						<div class="formdiv">
-							<label for="refresh_rate" class="item">Refresh Rate:</label>
-							<input type="text" name="refresh_rate" id="refresh_rate"/>
-							<label class="suffix">seconds</label>
-						</div>
-					</div>
+					<span id="transmission_version"></span>
 					<a href="#save" id="prefs_save_button">Save</a>
 					<a href="#cancel" id="prefs_cancel_button">Cancel</a>
 				</form>
@@ -280,6 +323,8 @@
 							<input type="file" name="torrent_files[]" id="torrent_upload_file" multiple="multiple" />
 						<label for="torrent_upload_url">Or enter a URL:</label>
 							<input type="text" id="torrent_upload_url"/>
+							<input type="checkbox" id="torrent_auto_start" />
+						<label for="torrent_auto_start" id="auto_start_label">Start when added</label>
 					</div>
 					<a href="#upload" id="upload_confirm_button">Upload</a>
 					<a href="#cancel" id="upload_cancel_button">Cancel</a>
@@ -342,7 +387,6 @@
 								<li id="sort_by_percent_completed">Progress</li>
 								<li id="sort_by_queue_order">Queue Order</li>
 								<li id="sort_by_state">State</li>
-								<li id="sort_by_tracker">Tracker</li>
 								<li class="separator"></li>
 								<li id="reverse_sort_order">Reverse Sort Order</li>
 							</ul>
@@ -350,6 +394,8 @@
 					</ul>
 				</li>
 			</ul>
+			<div id="turtle_button">&nbsp;</div>
+			<div style="clear: both; visibility: hidden;"></div>
 		</div>
 		
 <div class="contextMenu" id="torrent_context_menu">

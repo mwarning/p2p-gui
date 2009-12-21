@@ -11,6 +11,7 @@ function RPC() { }
 
 // Constants
 RPC._Root                   = '/clutch/rpc';
+RPC._DaemonVersion          = 'version';
 RPC._Encryption             = 'encryption';
 RPC._EncryptionPreferred    = 'preferred';
 RPC._EncryptionRequired     = 'required';
@@ -20,6 +21,13 @@ RPC._DownloadDir            = 'download-dir';
 RPC._PeerPort               = 'peer-port';
 RPC._UpSpeedLimited         = 'speed-limit-up-enabled';
 RPC._DownSpeedLimited       = 'speed-limit-down-enabled';
+RPC._TurtleState            = 'alt-speed-enabled';
+RPC._TurtleUpSpeedLimit     = 'alt-speed-up';
+RPC._TurtleDownSpeedLimit   = 'alt-speed-down';
+RPC._TurtleTimeEnabled      = 'alt-speed-time-enabled';
+RPC._TurtleTimeBegin        = 'alt-speed-time-begin';
+RPC._TurtleTimeEnd          = 'alt-speed-time-end';
+RPC._TurtleTimeDay          = 'alt-speed-time-day';
 
 function TransmissionRemote( controller )
 {
@@ -66,6 +74,7 @@ TransmissionRemote.prototype =
 			null,
 			'Dismiss');
 		remote._controller.togglePeriodicRefresh(false);
+		remote._controller.togglePeriodicSessionRefresh(false);
 	},
 
 	appendSessionId: function(XHR) {
@@ -146,10 +155,12 @@ TransmissionRemote.prototype =
 		} );
 	},
 	
-	sendTorrentActionRequests: function( method, torrent_ids, callback ) {
+	sendTorrentSetRequests: function( method, torrent_ids, args, callback ) {
+		if (!args) args = { };
+		args['ids'] = torrent_ids;
 		var o = {
 			method: method,
-			arguments: { ids: torrent_ids }
+			arguments: args
 		};
 
 		this.sendRequest( o, function( data ) {
@@ -157,6 +168,10 @@ TransmissionRemote.prototype =
 		});
 	},
 	
+	sendTorrentActionRequests: function( method, torrent_ids, callback ) {
+		this.sendTorrentSetRequests( method, torrent_ids, null, callback );
+	},
+
 	startTorrents: function( torrent_ids, callback ) {
 		this.sendTorrentActionRequests( 'torrent-start', torrent_ids, callback );
 	},
@@ -191,7 +206,7 @@ TransmissionRemote.prototype =
 		var o = {
 			method: 'torrent-add',
 			arguments: {
-				paused: (options.paused ? 'true' : 'false'),
+				paused: (options.paused),
 				filename: url
 			}
 		};
@@ -209,5 +224,11 @@ TransmissionRemote.prototype =
 		this.sendRequest( o, function() {
 			remote._controller.loadDaemonPrefs();
 		} );
+	},
+	filesSelectAll: function( torrent_ids, files, callback ) {
+		this.sendTorrentSetRequests( 'torrent-set', torrent_ids, { 'files-wanted': files }, callback );
+	},
+	filesDeselectAll: function( torrent_ids, files, callback ) {
+		this.sendTorrentSetRequests( 'torrent-set', torrent_ids, { 'files-unwanted': files }, callback );
 	}
 };

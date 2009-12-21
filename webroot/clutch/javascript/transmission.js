@@ -49,9 +49,15 @@ Transmission.prototype =
 		$('.inspector_tab').bind('click', function(e){ tr.inspectorTabClicked(e, this); });
 		$('.file_wanted_control').live('click', function(e){ tr.fileWantedClicked(e, this); });
 		$('.file_priority_control').live('click', function(e){ tr.filePriorityClicked(e, this); });
+		$('#files_select_all').live('click', function(e){ tr.filesSelectAllClicked(e, this); });
+		$('#files_deselect_all').live('click', function(e){ tr.filesDeselectAllClicked(e, this); });
 		$('#open_link').bind('click', function(e){ tr.openTorrentClicked(e); });
 		$('#upload_confirm_button').bind('click', function(e){ tr.confirmUploadClicked(e); return false;});
 		$('#upload_cancel_button').bind('click', function(e){ tr.cancelUploadClicked(e); return false; });
+		$('#turtle_button').bind('click', function(e){ tr.toggleTurtleClicked(e); return false; });
+		$('#prefs_tab_general_tab').click(function(e){ changeTab(this, 'prefs_tab_general') });
+		$('#prefs_tab_speed_tab').click(function(e){ changeTab(this, 'prefs_tab_speed') });
+
 		if (iPhone) {
 			$('#inspector_close').bind('click', function(e){ tr.hideInspector(); });
 			$('#preferences_link').bind('click', function(e){ tr.releaseClutchPreferencesButton(e); });
@@ -65,6 +71,7 @@ Transmission.prototype =
 			this.createContextMenu();
 			this.createSettingsMenu();
 		}
+		this.initTurtleDropDowns();
 
 		this._torrent_list             = $('#torrent_list')[0];
 		this._inspector_file_list      = $('#inspector_file_list')[0];
@@ -97,10 +104,7 @@ Transmission.prototype =
 		this._inspector._info_tab.secure = $(ti+'secure')[0];
 		this._inspector._info_tab.size = $(ti+'size')[0];
 		this._inspector._info_tab.state = $(ti+'state')[0];
-		this._inspector._info_tab.swarm_speed = $(ti+'swarm_speed')[0];
-		this._inspector._info_tab.total_leechers = $(ti+'total_leechers')[0];
-		this._inspector._info_tab.total_seeders = $(ti+'total_seeders')[0];
-		this._inspector._info_tab.tracker = $(ti+'tracker')[0];
+		this._inspector._info_tab.pieces = $(ti+'pieces')[0];
 		this._inspector._info_tab.uploaded = $(ti+'uploaded')[0];
 		this._inspector._info_tab.upload_speed = $(ti+'upload_speed')[0];
 		this._inspector._info_tab.upload_to = $(ti+'upload_to')[0];
@@ -118,6 +122,7 @@ Transmission.prototype =
 		this.initializeAllTorrents();
 
 		this.togglePeriodicRefresh( true );
+		this.togglePeriodicSessionRefresh( true );
 	},
 
 	loadDaemonPrefs: function( async ){
@@ -310,6 +315,23 @@ Transmission.prototype =
 		$('#unlimited_upload_rate').selectMenuItem();
 	},
 
+
+	initTurtleDropDowns: function() {
+		var i, out, hour, mins, start, end, value, content;
+		// Build the list of times
+		out = "";
+		start = $('#turtle_start_time')[0];
+		end = $('#turtle_end_time')[0];
+		for (i = 0; i < 24 * 4; i++) {
+			hour = parseInt(i / 4);
+			mins = ((i % 4) * 15);
+
+			value = (i * 15);
+			content = hour + ":" + (mins == 0 ? "00" : mins);
+			start.options[i] = new Option(content, value);
+			end.options[i]  = new Option(content, value);
+		}
+	},
 
 	/*--------------------------------------------
 	 *
@@ -606,15 +628,22 @@ Transmission.prototype =
 		
 		// pass the new prefs upstream to the RPC server
 		var o = { };
-		o[RPC._PeerPort]         = parseInt( $('#prefs_form #port')[0].value );
-		o[RPC._UpSpeedLimit]     = parseInt( $('#prefs_form #upload_rate')[0].value );
-		o[RPC._DownSpeedLimit]   = parseInt( $('#prefs_form #download_rate')[0].value );
-		o[RPC._DownloadDir]      = $('#prefs_form #download_location')[0].value;
-		o[RPC._UpSpeedLimited]   = $('#prefs_form #limit_upload')[0].checked;
-		o[RPC._DownSpeedLimited] = $('#prefs_form #limit_download')[0].checked;
-		o[RPC._Encryption]       = $('#prefs_form #encryption')[0].checked
-		                               ? RPC._EncryptionRequired
-		                               : RPC._EncryptionPreferred;
+		o[RPC._PeerPort]             = parseInt( $('#prefs_form #port')[0].value );
+		o[RPC._UpSpeedLimit]         = parseInt( $('#prefs_form #upload_rate')[0].value );
+		o[RPC._DownSpeedLimit]       = parseInt( $('#prefs_form #download_rate')[0].value );
+		o[RPC._DownloadDir]          = $('#prefs_form #download_location')[0].value;
+		o[RPC._UpSpeedLimited]       = $('#prefs_form #limit_upload')[0].checked;
+		o[RPC._DownSpeedLimited]     = $('#prefs_form #limit_download')[0].checked;
+		o[RPC._Encryption]           = $('#prefs_form #encryption')[0].checked
+		                                   ? RPC._EncryptionRequired
+		                                   : RPC._EncryptionPreferred;
+		o[RPC._TurtleDownSpeedLimit] = parseInt( $('#prefs_form #turtle_download_rate')[0].value );
+		o[RPC._TurtleUpSpeedLimit]   = parseInt( $('#prefs_form #turtle_upload_rate')[0].value );
+		o[RPC._TurtleTimeEnabled]    = $('#prefs_form #turtle_schedule')[0].checked;
+		o[RPC._TurtleTimeBegin]      = parseInt( $('#prefs_form #turtle_start_time').val() );
+		o[RPC._TurtleTimeEnd]        = parseInt( $('#prefs_form #turtle_end_time').val() );
+		o[RPC._TurtleTimeDay]        = parseInt( $('#prefs_form #turtle_days').val() );
+
 		tr.remote.savePrefs( o );
 		
 		tr.hidePrefsDialog( );
@@ -664,12 +693,48 @@ Transmission.prototype =
 		this.extractFileFromElement(element).filePriorityControlClicked(event, element);
 	},
 
+	filesSelectAllClicked: function(event) {
+		var tr = this;
+		var ids = jQuery.map(this.getSelectedTorrents( ), function(t) { return t.id(); } );
+		var files_list = this.toggleFilesWantedDisplay(ids, true);
+		for (i = 0; i < ids.length; ++i) {
+			if (files_list[i].length)
+				this.remote.filesSelectAll( [ ids[i] ], files_list[i], function() { tr.refreshTorrents( ids ); } );
+		}
+	},
+
+	filesDeselectAllClicked: function(event) {
+		var tr = this;
+		var ids = jQuery.map(this.getSelectedTorrents( ), function(t) { return t.id(); } );
+		var files_list = this.toggleFilesWantedDisplay(ids, false);
+		for (i = 0; i < ids.length; ++i) {
+			if (files_list[i].length)
+				this.remote.filesDeselectAll( [ ids[i] ], files_list[i], function() { tr.refreshTorrents( ids ); } );
+		}
+	},
+
 	extractFileFromElement: function(element) {
 		var match = $(element).closest('.inspector_torrent_file_list_entry').attr('id').match(/^t(\d+)f(\d+)$/);
 		var torrent_id = match[1];
 		var file_id = match[2];
 		var torrent = this._torrents[torrent_id];
 		return torrent._file_view[file_id];
+	},
+
+	toggleFilesWantedDisplay: function(ids, wanted) {
+		var i, j, k, torrent, files_list = [ ];
+		for (i = 0; i < ids.length; ++i) {
+			torrent = this._torrents[ids[i]];
+			files_list[i] = [ ];
+			for (j = k = 0; j < torrent._file_view.length; ++j) {
+				if (torrent._file_view[j].isEditable() && torrent._file_view[j]._wanted != wanted) {
+					torrent._file_view[j].setWanted(wanted, false);
+					files_list[i][k++] = j;
+				}
+			}
+			torrent.refreshFileView;
+		}
+		return files_list;
 	},
 
 	toggleFilterClicked: function(event) {
@@ -716,7 +781,7 @@ Transmission.prototype =
 	},
 
 	/*
-	 * Turn the periodic ajax-refresh on & off
+	 * Turn the periodic ajax torrents refresh on & off
 	 */
 	togglePeriodicRefresh: function(state) {
 		var tr = this;
@@ -729,6 +794,44 @@ Transmission.prototype =
 		} else {
 			clearInterval(this._periodic_refresh);
 			this._periodic_refresh = null;
+		}
+	},
+
+	/*
+	 * Turn the periodic ajax session refresh on & off
+	 */
+	togglePeriodicSessionRefresh: function(state) {
+		var tr = this;
+		if (state && this._periodic_session_refresh == null) {
+			// sanity check
+			if( !this[Prefs._SessionRefreshRate] )
+			     this[Prefs._SessionRefreshRate] = 5;
+			remote = this.remote;
+			this._periodic_session_refresh = setInterval(
+				function(){ tr.loadDaemonPrefs(); }, this[Prefs._SessionRefreshRate] * 1000
+			);
+		} else {
+			clearInterval(this._periodic_session_refresh);
+			this._periodic_session_refresh = null;
+		}
+	},
+
+	toggleTurtleClicked: function() {
+		// Toggle the value
+		this[Prefs._TurtleState] = !this[Prefs._TurtleState];
+		// Store the result
+		var args = { };
+		args[RPC._TurtleState] = this[Prefs._TurtleState];
+		this.remote.savePrefs( args );
+	},
+
+	updateTurtleButton: function() {
+		if ( this[Prefs._TurtleState] ) {
+			$('#turtle_button').addClass('turtleEnabled');
+			$('#turtle_button').removeClass('turtleDisabled');
+		} else {
+			$('#turtle_button').removeClass('turtleEnabled');
+			$('#turtle_button').addClass('turtleDisabled');
 		}
 	},
 
@@ -745,6 +848,7 @@ Transmission.prototype =
 		if( Safari3 )
 			setTimeout("$('div#prefs_container div.dialog_window').css('top', '0px');",10);
 		this.updateButtonStates( );
+		this.togglePeriodicSessionRefresh(false);
 	},
 
 	hidePrefsDialog: function( )
@@ -760,6 +864,7 @@ Transmission.prototype =
 			$('#prefs_container').hide();
 		}
 		this.updateButtonStates( );
+		this.togglePeriodicSessionRefresh(true);
 	},
 
 	/*
@@ -774,16 +879,23 @@ Transmission.prototype =
 		var down_limited  = prefs[RPC._DownSpeedLimited];
 		var up_limit      = prefs[RPC._UpSpeedLimit];
 		var up_limited    = prefs[RPC._UpSpeedLimited];
-		
+
 		$('div.download_location input')[0].value = prefs[RPC._DownloadDir];
 		$('div.port input')[0].value              = prefs[RPC._PeerPort];
 		$('div.auto_start input')[0].checked      = prefs[Prefs._AutoStart];
-		$('input#limit_download')[0].checked      = down_limited == 1;
+		$('input#limit_download')[0].checked      = down_limited;
 		$('input#download_rate')[0].value         = down_limit;
-		$('input#limit_upload')[0].checked        = up_limited == 1;
+		$('input#limit_upload')[0].checked        = up_limited;
 		$('input#upload_rate')[0].value           = up_limit;
 		$('input#refresh_rate')[0].value          = prefs[Prefs._RefreshRate];
 		$('div.encryption input')[0].checked      = prefs[RPC._Encryption] == RPC._EncryptionRequired;
+		$('input#turtle_download_rate')[0].value  = prefs[RPC._TurtleDownSpeedLimit];
+		$('input#turtle_upload_rate')[0].value    = prefs[RPC._TurtleUpSpeedLimit];
+		$('input#turtle_schedule')[0].checked     = prefs[RPC._TurtleTimeEnabled];
+		$('select#turtle_start_time').val(          prefs[RPC._TurtleTimeBegin] );
+		$('select#turtle_end_time').val(            prefs[RPC._TurtleTimeEnd] );
+		$('select#turtle_days').val(                prefs[RPC._TurtleTimeDay] );
+		$('#transmission_version').text(            prefs[RPC._DaemonVersion] );
 
 		if (!iPhone)
 		{
@@ -797,6 +909,9 @@ Transmission.prototype =
 			                 : '#unlimited_upload_rate';
 			$(key).deselectMenuSiblings().selectMenuItem();
 		}
+
+		this[Prefs._TurtleState] = prefs[RPC._TurtleState];
+		this.updateTurtleButton();
 	},
 
 	setSearch: function( search ) {
@@ -936,12 +1051,9 @@ Transmission.prototype =
 		var total_download_peers = 0;
 		var total_download_speed = 0;
 		var total_have = 0;
-		var total_leechers = 0;
 		var total_size = 0;
-		var total_seeders = 0;
 		var total_state = null;
-		var total_swarm_speed = 0;
-		var total_tracker = null;
+		var pieces = 'N/A';
 		var total_upload = 0;
 		var total_upload_peers = 0;
 		var total_upload_speed = 0;
@@ -955,7 +1067,7 @@ Transmission.prototype =
 		{
 			setInnerHTML( tab.name, 'No Selection' );
 			setInnerHTML( tab.size, na );
-			setInnerHTML( tab.tracker, na );
+			setInnerHTML( tab.pieces, na );
 			setInnerHTML( tab.hash, na );
 			setInnerHTML( tab.state, na );
 			setInnerHTML( tab.download_speed, na );
@@ -963,9 +1075,6 @@ Transmission.prototype =
 			setInnerHTML( tab.uploaded, na );
 			setInnerHTML( tab.downloaded, na );
 			setInnerHTML( tab.ratio, na );
-			setInnerHTML( tab.total_seeders, na );
-			setInnerHTML( tab.total_leechers, na );
-			setInnerHTML( tab.swarm_speed, na );
 			setInnerHTML( tab.have, na );
 			setInnerHTML( tab.upload_to, na );
 			setInnerHTML( tab.download_from, na );
@@ -998,6 +1107,7 @@ Transmission.prototype =
 				download_dir = t._download_dir;
 
 			hash = t.hash();
+			pieces = t._pieceCount + ', ' + Math.formatBytes(t._pieceSize);
 			date_created = Math.formatTimestamp( t._creator_date );
 		}
 
@@ -1011,20 +1121,12 @@ Transmission.prototype =
 			total_download       += t.downloadTotal();
 			total_upload_speed   += t.uploadSpeed();
 			total_download_speed += t.downloadSpeed();
-			total_seeders        += t.totalSeeders();
-			total_leechers       += t.totalLeechers();
 			total_upload_peers   += t.peersGettingFromUs();
 			total_download_peers += t.peersSendingToUs();
-			total_swarm_speed    += t.swarmSpeed();
 			if( total_state == null )
 				total_state = t.stateStr();
 			else if ( total_state.search ( t.stateStr() ) == -1 )
 				total_state += '/' + t.stateStr();
-			var tracker = t._tracker;
-			if( total_tracker == null )
-				total_tracker = tracker;
-			else if ( total_tracker.search ( tracker ) == -1 )
-				total_tracker += ', ' + tracker;
 			if( t._is_private )
 				have_private = true;
 			else
@@ -1038,7 +1140,7 @@ Transmission.prototype =
 
 		setInnerHTML( tab.name, name );
 		setInnerHTML( tab.size, torrents.length ? Math.formatBytes( total_size ) : na );
-		setInnerHTML( tab.tracker, total_tracker.replace(/\//g, '/&#8203;') );
+		setInnerHTML( tab.pieces, pieces );
 		setInnerHTML( tab.hash, hash );
 		setInnerHTML( tab.state, total_state );
 		setInnerHTML( tab.download_speed, torrents.length ? Math.formatBytes( total_download_speed ) + '/s' : na );
@@ -1046,9 +1148,6 @@ Transmission.prototype =
 		setInnerHTML( tab.uploaded, torrents.length ? Math.formatBytes( total_upload ) : na );
 		setInnerHTML( tab.downloaded, torrents.length ? Math.formatBytes( total_download ) : na );
 		setInnerHTML( tab.ratio, torrents.length ? Math.ratio( total_upload, total_download ) : na );
-		setInnerHTML( tab.total_seeders, torrents.length ? total_seeders : na );
-		setInnerHTML( tab.total_leechers, torrents.length ? total_leechers : na );
-		setInnerHTML( tab.swarm_speed, torrents.length ? Math.formatBytes(total_swarm_speed) + '/s' : na );
 		setInnerHTML( tab.have, torrents.length ? Math.formatBytes(total_completed) + ' (' + Math.formatBytes(total_verified) + ' verified)' : na );
 		setInnerHTML( tab.upload_to, torrents.length ? total_upload_peers : na );
 		setInnerHTML( tab.download_from, torrents.length ? total_download_peers : na );
@@ -1070,8 +1169,17 @@ Transmission.prototype =
 	
 	updateVisibleFileLists: function() {
 		if( this.fileListIsVisible( ) === true ) {
-			jQuery.each( this.getSelectedTorrents(), function() { this.showFileList(); } );
+			var selected = this.getSelectedTorrents();
+			jQuery.each( selected, function() { this.showFileList(); } );
 			jQuery.each( this.getDeselectedTorrents(), function() { this.hideFileList(); } );
+			// Check if we need to display the select all buttions
+			if ( !selected.length ) {
+				if ( $("#select_all_button_container").is(':visible') )
+					$("#select_all_button_container").hide();
+			} else {
+				if ( !$("#select_all_button_container").is(':visible') )
+					$("#select_all_button_container").show();
+			}
 		}
 	},
 
@@ -1307,6 +1415,7 @@ Transmission.prototype =
 		if (! confirmed) {
 				$('input#torrent_upload_file').attr('value', '');
 				$('input#torrent_upload_url').attr('value', '');
+				$('input#torrent_auto_start').attr('checked', this[Prefs._AutoStart]);
 				$('#upload_container').show();
 			if (!iPhone && Safari3) {
 				setTimeout("$('div#upload_container div.dialog_window').css('top', '0px');",10);
@@ -1316,10 +1425,11 @@ Transmission.prototype =
 		} else {
 			var tr = this;
 			var args = { };
+			var paused = !$('#torrent_auto_start').is(':checked');
 			if ('' != $('#torrent_upload_url').val()) {
-				tr.remote.addTorrentByUrl($('#torrent_upload_url').val(), { paused: !this[Prefs._AutoStart] });
+				tr.remote.addTorrentByUrl($('#torrent_upload_url').val(), { paused: paused });
 			} else {
-				args.url = '/clutch/upload?paused=' + (this[Prefs._AutoStart] ? 'false' : 'true');
+				args.url = '/clutch/upload?paused=' + paused;
 				args.type = 'POST';
 				args.data = { 'X-Transmission-Session-Id' : tr.remote._token };
 				args.dataType = 'xml';
