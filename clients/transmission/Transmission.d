@@ -63,7 +63,11 @@ private:
     uint id;
     char[] host = "127.0.0.1";
     ushort port = 9091;
-    char[] session_id; //value for request header key X-Transmission-Session-Id
+
+    char[] session_id; //value for request header key X-Transmission-Session-I
+    char[] basic_auth;
+    char[] username;
+    char[] password;
     
     bool is_connected;
     TSetting preview_directory;
@@ -133,6 +137,9 @@ public:
     {
         if(is_connected) return;
         is_connected = true;
+
+        if(username.length)
+            basic_auth = Base64.encode(cast(ubyte[]) (username ~ ":" ~ password));
         
         Timer.add(&updateSlow, 0.5, 5);
         Timer.add(&updateFast, 1, 2);
@@ -149,6 +156,7 @@ public:
         if(!is_connected) return;
         is_connected = false;
         session_id = null;
+        basic_auth = null;
         
         buffer.clear();
         
@@ -168,13 +176,20 @@ public:
     
     char[] getSoftware() { return "Transmission"; }
     char[] getVersion() { return client_version; }
-    char[] getUsername() { return null; }
     char[] getName() { return null; }
-    char[] getPassword() { return null; }
+    char[] getUsername() { return username; }
+    char[] getPassword() { return password; }
     char[] getProtocol() { return "json-rpc"; }
     
-    void setUsername(char[] user) {}
-    void setPassword(char[] pass) {}
+    void setUsername(char[] username)
+    {
+        this.username = username;
+    }
+    
+    void setPassword(char[] password)
+    {
+        this.password = password;
+    }
     
     void addLink(char[] link)
     {
@@ -641,7 +656,13 @@ public:
         buffer.append("POST /transmission/rpc HTTP/1.1\r\n");
         buffer.append("User-Agent: " ~ Host.main_name ~ "\r\n");
         buffer.append("Content-Type: application/json; charset=UTF-8\r\n");
-        buffer.append("X-Transmission-Session-Id: " ~ session_id ~ "\r\n");
+        
+        if(session_id.length)
+            buffer.append("X-Transmission-Session-Id: " ~ session_id ~ "\r\n");
+        
+        if(basic_auth.length)
+            buffer.append("Authorization: Basic " ~ basic_auth ~  "\r\n");
+        
         buffer.append("Content-Length: " ~ Integer.toString(query.length) ~ "\r\n\r\n");
         buffer.append(query);
 
@@ -712,6 +733,7 @@ public:
                 }
                 
                 session_id = getHeaderValue(packet_header, "X-Transmission-Session-Id: ");
+        
                 if(session_id.length != 0)
                 {
                     //resend message
