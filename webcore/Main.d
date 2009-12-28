@@ -635,7 +635,7 @@ private void main(char[][] args)
     //global hook :(
     Host.saveFile = &Session.setSource;
     
-    Host.main_version = "0.2.1svn";
+    Host.main_version = "0.2.1";
     Host.main_name = "P2P-GUI";
     Host.main_weblink = "http://p2p-gui.sourceforge.net";
     
