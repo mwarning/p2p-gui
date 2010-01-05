@@ -54,11 +54,8 @@ public void register(Socket sc, void delegate() dl)
     debug(Selector)
         Logger.addDebug("Selector: register called");
     
-    //workaound for Tango trunk bug
-    sc.timeout = 0;
-    
     assert(sc.socket.blocking == false, "Socket must be non-blocking");
-    assert(sc.timeout == false, "Socket timout must be 0");
+    assert(sc.timeout == -1, "Socket timeout must be -1");
     
     synchronized(token)
     {
