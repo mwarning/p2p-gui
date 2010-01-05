@@ -270,9 +270,9 @@ public:
         server_socket.socket.shutdown( SocketShutdown.BOTH );
         server_socket = null;
         
-        version(Windows)
+        version(linux) {} else
         {
-            //we must interrupt server.accept() manually on windows :/
+            //we must interrupt server.accept() manually on Windows/Solaris :/
             auto sock = new Socket();
             sock.connect(new InternetAddress("127.0.0.1", port));
         }
