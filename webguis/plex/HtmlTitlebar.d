@@ -149,7 +149,8 @@ private:
     override public void handle(HttpResponse res, Session session)
     {
         //create output wrapper
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         //insert navigation bar
         insert_navigation(o);
@@ -263,7 +264,8 @@ private:
     
     void insertInfoBar(HttpResponse res, Session session)
     {
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         o("<table>\n");
         o("<tr align=\"center\">\n");

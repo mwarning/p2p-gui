@@ -378,7 +378,8 @@ final class PlexGui : HtmlElement, Main.Gui
         res.addHeader("Cache-Control: no-cache, must-revalidate");
         res.addHeader("Pragma: no-cache");
 
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
 
         o("<!DOCTYPE html>\n\n");
         o("<html>\n");

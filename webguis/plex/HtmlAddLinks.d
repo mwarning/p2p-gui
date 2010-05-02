@@ -80,7 +80,8 @@ final class HtmlAddLinks : HtmlElement
     
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         if(session.getGui!(PlexGui).getClientId == 0)
         {

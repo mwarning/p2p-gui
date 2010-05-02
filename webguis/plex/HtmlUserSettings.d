@@ -49,8 +49,9 @@ public:
     void handle(HttpResponse res, Session session)
     {
         auto me = session.getUser;
-        HtmlOut o = { res.getWriter(), &session.getUser.translate};
-
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
+        
         o("<h2>Me: '")(me.getName)("'</h2>\n");
         
         auto source_id = me.getId;

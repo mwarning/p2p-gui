@@ -204,7 +204,8 @@ public:
     void handle(HttpResponse res, Session session)
     {
         auto client_sel = session.getGui!(PlexGui).getClient();
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         Node[] clients = null;
         

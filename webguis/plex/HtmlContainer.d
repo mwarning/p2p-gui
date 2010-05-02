@@ -92,7 +92,8 @@ final class HtmlContainer : HtmlElement
     
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = { res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         if(reload_content && file_path.length)
         {

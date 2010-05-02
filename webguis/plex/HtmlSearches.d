@@ -227,7 +227,8 @@ public:
     
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         Searches s;
         if(auto client = session.getGui!(PlexGui).getClient)

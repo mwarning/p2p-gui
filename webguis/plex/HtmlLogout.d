@@ -36,7 +36,9 @@ final class HtmlLogout : HtmlElement
     
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
+        
         if(Main.use_basic_auth)
         {
             o("<b><center>Please clear the browser cache to logout.</center></b>\n");

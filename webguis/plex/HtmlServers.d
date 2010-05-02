@@ -177,7 +177,9 @@ final class HtmlServers : HtmlElement
 
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = { res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
+        
         Node client = session.getGui!(PlexGui).getClient();
         
         if(client is null)

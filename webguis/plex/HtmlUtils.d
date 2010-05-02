@@ -41,6 +41,12 @@ struct HtmlOut
     FormatOutput!(char) o;
     char[] delegate(Phrase) translate;
     
+    void init(FormatOutput!(char) o, char[] delegate(Phrase) translate)
+    {
+        this.o = o;
+        this.translate = translate;
+    }
+    
     HtmlOut format(T...)(char[] fmt, T params)
     {
         o.format(fmt, params);

@@ -89,7 +89,8 @@ private:
             break;
         }
         
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         o("<form action=\"" ~ target_uri ~ "\" method=\"get\" id=\"PageRefresh\" name=\"PageRefresh\">\n"); //name for JS submit
         o("<input type=\"hidden\" name=\"to\" value=\"")(this.getId)("\">\n");

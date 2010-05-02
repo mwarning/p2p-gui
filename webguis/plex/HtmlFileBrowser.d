@@ -247,7 +247,9 @@ public:
     
     void handle(HttpResponse res, Session session)
     {
-        HtmlOut o = {res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
+        
         auto user = session.getUser();
         
         bool client_available = (session.getGui!(PlexGui).getClient !is null);

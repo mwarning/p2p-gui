@@ -76,7 +76,8 @@ public:
     void handle(HttpResponse res, Session session)
     {
         auto me = session.getUser;
-        HtmlOut o = { res.getWriter(), &session.getUser.translate};
+        HtmlOut o;
+        o.init(res.getWriter(), &session.getUser.translate);
         
         //add user
         o("<form action=\"" ~ target_uri ~ "\" method=\"get\">\n");
