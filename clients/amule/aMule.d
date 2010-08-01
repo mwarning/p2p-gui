@@ -14,7 +14,7 @@ import tango.text.Ascii;
 static import Convert = tango.util.Convert;
 static import Integer = tango.text.convert.Integer;
 import tango.net.device.Socket;
-import tango.io.compress.ZlibStream;
+import tango.io.stream.Zlib;
 import tango.io.Stdout;
 import tango.io.model.IFile;
 import tango.io.model.IConduit;
