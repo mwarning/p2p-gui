@@ -200,7 +200,7 @@ gdc-mac : clean
 
 #just use posix gdc
 gdc : clean
-	$(GDC) -o p2p-gui $(ALL) $(GDC_RELEASE) -fversion=Tango -fversion=Posix $(ADD_GDC_PARAMS) $(LIBS_POSIX_GDC)
+	$(GDC) -o p2p-gui -L-L/opt/gdc/import $(ALL) $(GDC_RELEASE) -fversion=Tango -fversion=Posix $(ADD_GDC_PARAMS) $(LIBS_POSIX_GDC)
 
 ##causes troubles
 ##dmd forget symbols when we have circular dependencies
