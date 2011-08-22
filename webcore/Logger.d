@@ -18,7 +18,7 @@ import api.Client;
 
 import webcore.UserManager;
 import Main = webcore.Main;
-
+import tango.stdc.stdarg;
 
 struct Logger
 {
