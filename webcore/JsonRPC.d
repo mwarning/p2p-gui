@@ -312,30 +312,45 @@ private void addLink(uint client_id, char[] link)
 
 //end workarounds
 
-
-//split string at compile time
-class Split(char[] a)
+template find(char[] str, char c, int i = 0)
 {
-    private template find(char[] str, char c, int i = 0)
-    {
-        static if (i >= str.length) const int pos = str.length;
-        else static if (str[i] == c) const int pos = i;
-        else const int pos = find!(str, c, i + 1).pos;
+    static if (i >= str.length) const int pos = str.length;
+    else static if (str[i] == c) const int pos = i;
+    else const int pos = find!(str, c, i + 1).pos;
+}
+
+template get_base_name(char[] a)
+{
+    static if(find!(a, '.').pos == a.length) {
+        const char[] get_base_name = "void";
+    } else {
+        const char[] get_base_name = a[0..find!(a, '.').pos];
     }
-    
-    static if(find!(a, '.').pos == a.length)
-    {
-        const char[] base_name = "void";
-        const char[] func_name = a;
-        //alias typeof(mixin(base_name)) base_type;
+}
+
+template get_func_name(char[] a)
+{
+    static if(find!(a, '.').pos == a.length) {
+        const char[] get_func_name = a;
+    } else {
+        const char[] get_func_name = a[find!(a, '.').pos + 1..$];
+    }
+}
+
+template base_type(char[] a)
+{
+    static if(find!(a, '.').pos == a.length) {
         alias Object base_type; //void?
-        mixin("alias typeof(" ~ func_name ~ ") func_type;");
+    } else {
+        mixin("alias " ~ get_base_name!(a) ~ " base_type;");
     }
-    else
-    {
-        const char[] base_name = a[0..find!(a, '.').pos];
-        const char[] func_name = a[find!(a, '.').pos + 1..$];
-        mixin("alias " ~ base_name ~ " base_type;");
+}
+
+template func_type(char[] a)
+{
+    static if(find!(a, '.').pos == a.length) {
+        mixin("alias typeof(" ~ get_func_name!(a) ~ ") func_type;");
+    } else {
         mixin("alias typeof(" ~ a ~ ") func_type;");
     }
 }
@@ -363,11 +378,11 @@ void add(char[] token_name, char[] alt_name = "")()
         const bool use_token_name = true;
     }
     
-    alias Split!(full_method_name).base_type B;
-    alias Split!(full_method_name).func_type F;
+    alias base_type!(full_method_name) B;
+    alias func_type!(full_method_name) F;
     
-    const char[] func_name = Split!(full_method_name).func_name;
-    const char[] base_name = Split!(full_method_name).base_name;
+    const char[] func_name = get_func_name!(full_method_name);
+    const char[] base_name = get_base_name!(full_method_name);
     
     alias ReturnTypeOf!(F) R;
     alias ParameterTupleOf!(F) Params;
@@ -399,11 +414,11 @@ void add(char[] token_name, char[] alt_name = "")()
 
 template Parser(char[] full_method_name)
 {
-    alias Split!(full_method_name).base_type B;
-    alias Split!(full_method_name).func_type F;
+    alias base_type!(full_method_name) B;
+    alias func_type!(full_method_name) F;
     
-    const char[] func_name = Split!(full_method_name).func_name;
-    const char[] base_name = Split!(full_method_name).base_name;
+    const char[] func_name = get_func_name!(full_method_name);
+    const char[] base_name = get_base_name!(full_method_name);
     
     alias ReturnTypeOf!(F) R;
     alias ParameterTupleOf!(F) Params;
