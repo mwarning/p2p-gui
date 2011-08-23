@@ -193,11 +193,7 @@ public:
     
     void addLink(char[] link)
     {
-        if(link.length < 512)
-        {
-            Logger.addError(this, "Transmission: Links are not supported.");
-        }
-        else if(link.length < 200 * 1024)
+        if(link.length < 200 * 1024)
         {
             addTorrent(link);
         }
