@@ -20,7 +20,7 @@ For help with common problems go to http://p2p-gui.sourceforge.net/
     Parts of this program may rely on other (GPL compatible) licenses.
 
    Authors:
-   - Moritz Warning <mwarning@users.sourceforge.net>
+   - Moritz Warning <moritzwarning@web.de>
 
 1. Compiling:
     Following programs and libraries are needed in order to compile P2P-GUI:
