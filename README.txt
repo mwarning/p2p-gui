@@ -1,6 +1,6 @@
 Check the wiki for screenshots and more.
-This project was big and a mostly complete project (multiple protocols/GUIs/Skins/Translations)
-but the D environment has changed a lot - still, this project hash a lot of interesting code.
+This project was big and a mostly complete (multiple protocols/GUIs/Skins/Translations).
+But the D environment has changed a lot - still, this project hash a lot of interesting code.
 
 P2P-GUI is a web GUI for different p2p programs
 written in the D programming language.
