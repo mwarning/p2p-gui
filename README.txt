@@ -1,4 +1,8 @@
-﻿P2P-GUI is a web GUI for different p2p programs
+Check the wiki for screenshots and more.
+This project was big and a mostly complete project (multiple protocols/GUIs/Skins/Translations)
+but the D environment has changed a lot - still, this project hash a lot of interesting code.
+
+P2P-GUI is a web GUI for different p2p programs
 written in the D programming language.
 
 This program combines a simple web server with gui-protocol interfaces to MLDonkey/aMule/rTorrent and giFT
