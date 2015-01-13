@@ -1,19 +1,38 @@
 #P2P-GUI
 
-P2P-GUI was a project to have grahical web interface to control multiple P2P-applications at the same time including support for multiple users.
+P2P-GUI is a grahical web interface to control multiple P2P-applications
+at the same time including support for multiple user accounts.
+Some [Screenshots](docs/screenshots.md).
+
+This project was big and a mostly complete (multiple protocols/GUIs/Skins/Translations).
+But it was abondoned because the the D environment changed a lot and the
+authors interests changed. Still, this project has a lot of interesting code.
 
 * Supports MLDonkey/aMule/rTorrent and giFT (uses the remote GUI protocol!)
 * Integrated web server
-* All in a single binary! No installation needed: download & run
+* All in a single binary
+ * No installation needed
+ * Download & Run
 * Multi user account support
 * HTTPS support
 * UTF-8 support
 * Written in D + CSS/JS/HTML
 * Download unfinished files for preview
-* Three different web GUIs ([screenshots][])
+* Three different web GUIs
   * Plex:
    * Server side and HTML based.
-   * Languages: English, French, German, Italian, Spanish, Polish, Galician, Brazilian Portuguese, Dutch, Danish, Swedish.
+   * Languages:
+    * English
+    * French
+    * German
+    * Italian
+    * Spanish
+    * Polish
+    * Galician
+    * Brazilian Portuguese
+    * Dutch
+    * Danish
+    * Swedish
    * Themes.
    * File browser.
      * User management.
@@ -27,20 +46,13 @@ P2P-GUI was a project to have grahical web interface to control multiple P2P-app
   * Jay:
    * Browser side JavaScript gui.
     * Uses the JSON rpc api.
-    * Country flags for IPs.
+    * Country flags for IP addresses.
     * Still alpha.
-
-
-This project was big and a mostly complete (multiple protocols/GUIs/Skins/Translations).
-But the D environment has changed a lot - still, this project hash a lot of interesting code.
-
-This program combines a simple web server with gui-protocol interfaces to 
-and a customizeable server-side html GUI (written in D) as well as a client-side GUI (written in JavaScript).
 
 
 0. About
 1. Compiling
-2. Change Translations 
+2. Change Translations
 3. Modify Included Files
 4. Source Code Organisation
 
@@ -114,7 +126,7 @@ and a customizeable server-side html GUI (written in D) as well as a client-side
     For every release all files from the ./webroot/ directory are included into the binary.
     This is done by writing the file data into a D source file (./webcore/Webroot.d)
     with a helper tool (./utils/Includer.d).
-    
+
     P2P-GUI ignores included files and uses an external directory
     if it's specified on the command line  ("p2p-gui -d <directory>")
     or if a directory called ./webroot/ is located in the settings directory.
@@ -131,7 +143,7 @@ and a customizeable server-side html GUI (written in D) as well as a client-side
    - /clients/ - several client interfaces on top of the api
    - ./webserver/ - a webserver to serve data
    - ./webroot/ - repository of files in for html, css, js or image files to be severed by the webserver
-   - ./webguis/ - server side code for GUIs 
+   - ./webguis/ - server side code for GUIs
       - ./clutch/: interface for the Transmission web ui
       - ...
    - ./webcore/ - core files
