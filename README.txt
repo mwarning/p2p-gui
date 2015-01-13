@@ -1,11 +1,40 @@
-Check the wiki for screenshots and more.
+#P2P-GUI
+
+P2P-GUI was a project to have grahical web interface to control multiple P2P-applications at the same time including support for multiple users.
+
+* Supports MLDonkey/aMule/rTorrent and giFT (uses the remote GUI protocol!)
+* Integrated web server
+* All in a single binary! No installation needed: download & run
+* Multi user account support
+* HTTPS support
+* UTF-8 support
+* Written in D + CSS/JS/HTML
+* Download unfinished files for preview
+* Three different web GUIs ([screenshots][])
+  * Plex:
+   * Server side and HTML based.
+   * Languages: English, French, German, Italian, Spanish, Polish, Galician, Brazilian Portuguese, Dutch, Danish, Swedish.
+   * Themes.
+   * File browser.
+     * User management.
+     * Country flags for IPs
+     * rot13 and l33t text transform ;-)
+  * Clutch:
+   * Browser side Javascript gui.
+   * Copied from the Transmission web interface.
+   * Slick design.
+   * English only.
+  * Jay:
+   * Browser side JavaScript gui.
+    * Uses the JSON rpc api.
+    * Country flags for IPs.
+    * Still alpha.
+
+
 This project was big and a mostly complete (multiple protocols/GUIs/Skins/Translations).
 But the D environment has changed a lot - still, this project hash a lot of interesting code.
 
-P2P-GUI is a web GUI for different p2p programs
-written in the D programming language.
-
-This program combines a simple web server with gui-protocol interfaces to MLDonkey/aMule/rTorrent and giFT
+This program combines a simple web server with gui-protocol interfaces to 
 and a customizeable server-side html GUI (written in D) as well as a client-side GUI (written in JavaScript).
 
 
