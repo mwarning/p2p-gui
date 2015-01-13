@@ -35,7 +35,7 @@ Settings...
 
 This gui is based on JavaScript and runs on the client side.
 Data is updated by requests in background
-using the (JSON)[http://en.wikipedia.org/wiki/JSON] format.
+using the [JSON](http://en.wikipedia.org/wiki/JSON) format.
 
 ![Jay GUI](https://raw.githubusercontent.com/mwarning/p2p-gui/master/docs/screenshots/JsonGui.png)
 
