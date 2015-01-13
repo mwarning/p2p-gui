@@ -41,7 +41,7 @@ using the [JSON](http://en.wikipedia.org/wiki/JSON) format.
 
 ##The Clutch Gui
 
-It's the web frontend from the (Transmission BT)[http://www.transmissionbt.com/] client.
+It's the web frontend from the [Transmission BT](http://www.transmissionbt.com) client.
 (MLDonkey is actually downloading the file)
 
 ![Clutch GUI](https://raw.githubusercontent.com/mwarning/p2p-gui/master/docs/screenshots/clutch.png)
