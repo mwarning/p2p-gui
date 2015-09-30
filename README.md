@@ -5,7 +5,7 @@ at the same time including support for multiple user accounts.
 Some [Screenshots](docs/screenshots.md).
 
 This project was big and a mostly complete (multiple protocols/GUIs/Skins/Translations).
-But it was abondoned because the the D environment changed a lot and the
+But it was abandoned because the the D environment changed a lot and the
 authors interests changed. Still, this project has a lot of interesting code.
 
 * Supports MLDonkey/aMule/rTorrent and giFT (uses the remote GUI protocol!)
