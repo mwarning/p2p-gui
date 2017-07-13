@@ -1,11 +1,11 @@
 
 P2P-GUI features three Web-GUIs called Plex, Jay and Clutch.
 
-Login Screen
+## Login Screen
 
 ![login](https://raw.githubusercontent.com/mwarning/p2p-gui/master/docs/screenshots/login.png)
 
-##The Plex GUI
+## The Plex GUI
 
 The most advanced and somewhat complex GUI.
 It's HTML based with a very small amount of Javascript.
@@ -31,7 +31,7 @@ Settings...
 ![settings](https://raw.githubusercontent.com/mwarning/p2p-gui/master/docs/screenshots/plex_downloads_settings.png)
 
 
-##The Jay Gui
+## The Jay Gui
 
 This gui is based on JavaScript and runs on the client side.
 Data is updated by requests in background
@@ -39,7 +39,7 @@ using the [JSON](http://en.wikipedia.org/wiki/JSON) format.
 
 ![Jay GUI](https://raw.githubusercontent.com/mwarning/p2p-gui/master/docs/screenshots/JsonGui.png)
 
-##The Clutch Gui
+## The Clutch Gui
 
 It's the web frontend from the [Transmission BT](http://www.transmissionbt.com) client.
 (MLDonkey is actually downloading the file)
