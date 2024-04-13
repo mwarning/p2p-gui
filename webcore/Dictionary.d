@@ -282,7 +282,8 @@ struct Dictionary
             Language(Phrase.Polish, "pl_PL", polish_dict),
             Language(Phrase.Spanish, "es_ES", spanish_dict),
             Language(Phrase.Swedish, "se_SE", swedish_dict),
-            Language(Phrase.Italian, "it_IT", italian_dict)
+            Language(Phrase.Italian, "it_IT", italian_dict),
+            Language(Phrase.Turkish, "tr_TR", turkish_dict)
         ];
         
         default_language = languages[0];
@@ -291,7 +292,8 @@ struct Dictionary
     //language ids
     static const Phrase[] all_languages = [
         Phrase.Brazilian_Portuguese, Phrase.Danish, Phrase.Dutch, Phrase.English, Phrase.French,
-        Phrase.Galician, Phrase.German, Phrase.Polish, Phrase.Spanish, Phrase.Swedish, Phrase.Italian
+        Phrase.Galician, Phrase.German, Phrase.Polish, Phrase.Spanish, Phrase.Swedish, Phrase.Italian, 
+        Phrase.Turkish
     ];
 
     static char[][] getDictionary(Phrase id)
@@ -371,6 +373,7 @@ struct Dictionary
         Phrase.Swedish : "Swedish",
         Phrase.French : "French",
         Phrase.Italian : "Italian",
+        Phrase.Turkish : "Turkish",
         
         /*setting names*/
         Phrase.basic_auth : "Basic Authentification",
@@ -613,6 +616,7 @@ struct Dictionary
         Phrase.Swedish : "Schwedisch",
         Phrase.French : "Französisch",
         Phrase.Italian : "Italienisch",
+        Phrase.Turkish : "Türkisch",
         
         /*Einstellungen*/
         Phrase.basic_auth : "Basic Authentifikation",
@@ -838,6 +842,8 @@ struct Dictionary
         Phrase.Files : "Ficheros",
         Phrase.Users : "Usuarios",
         //Phrase.Status : "Status",
+        
+        /*download/server table headers names*/
         Phrase.Id : "Id",
         Phrase.Connected : "Conectado",
         Phrase.Connect : "Conectar",
@@ -934,6 +940,8 @@ struct Dictionary
         Phrase.Files : "Pliki",
         Phrase.Users : "Użytkownicy",
         //Phrase.Status : "Status",
+        
+        /*download/server table headers names*/
         Phrase.Id : "Id",
         Phrase.Connected : "Połączony",
         Phrase.Connect : "Połącz",
@@ -1027,6 +1035,8 @@ struct Dictionary
         Phrase.Files : "Arquivos",
         Phrase.Users : "Usuários",
         //Phrase.Status : "Status",
+        
+        /*download/server table headers names*/
         Phrase.Id : "Id",
         Phrase.Connected : "Conectado",
         Phrase.Connect : "Conectar",
@@ -1119,6 +1129,8 @@ struct Dictionary
         Phrase.Files : "Ficheiros",
         Phrase.Users : "Usuarios",
         //Phrase.Status : "Estado",
+        
+        /*download/server table headers names*/
         Phrase.Id : "Id",
         Phrase.Connected : "Conectado",
         Phrase.Connect : "Conectar",
@@ -1285,6 +1297,8 @@ struct Dictionary
     static char[][Phrase.max+1] french_dict =
     [
         Phrase.Nil : " ",
+
+        /*module names*/
         Phrase.Core : "Centre",
         Phrase.Titlebar : "Barre De Navigation",
         Phrase.FileBrowser : "Fichier Browser",
@@ -1303,6 +1317,8 @@ struct Dictionary
         Phrase.QuickConnect : "Connection Rapide",
         Phrase.Uploads : "Téléchargements",
         Phrase.Translator : "Traduction",
+
+        /*languages*/
         Phrase.English : "Anglais",
         Phrase.German : "Allemand",
         Phrase.Spanish : "Espagnol",
@@ -1313,9 +1329,14 @@ struct Dictionary
         Phrase.Dutch : "Hollandais",
         Phrase.Swedish : "Suédois",
         Phrase.French : "Français",
+        Phrase.Italian : "Italien",
+        Phrase.Turkish : "Turc",
+        
         Phrase.Default_Titlebar : "Défaut",
         Phrase.Icon_Titlebar : "Icônes",
         Phrase.Plain_Titlebar : "Plain",
+        
+        /*setting names*/
         Phrase.basic_auth : "Authentification de Base",
         Phrase.enable_ssl : "Activer SSL",
         Phrase.password : "Mot De Passe",
@@ -1444,6 +1465,8 @@ struct Dictionary
     static char[][Phrase.max+1] italian_dict =
     [
         Phrase.Nil : " ",
+
+        /*module names*/
         Phrase.Core : "Nucleo (pragramma Centrale)",
         Phrase.Titlebar : "Barra dei Titoli",
         Phrase.FileBrowser : "Sfoglia File",
@@ -1463,6 +1486,8 @@ struct Dictionary
         Phrase.Uploads : "Uploads",
         Phrase.Translator : "Traduttore",
         Phrase.Logout : "Esci",
+
+        /*languages*/
         Phrase.English : "Inglese",
         Phrase.German : "Tedesco",
         Phrase.Spanish : "Spagnolo",
@@ -1474,9 +1499,14 @@ struct Dictionary
         Phrase.Swedish : "Svedese",
         Phrase.French : "Francese",
         Phrase.Italian : "Italiano",
+        Phrase.Turkish : "Turco",
+
+        /*setting names*/
         Phrase.Default_Titlebar : "Default",
         Phrase.Icon_Titlebar : "Icone",
         Phrase.Plain_Titlebar : "Semplice",
+        
+        /*setting names*/
         Phrase.basic_auth : "Identificazione di Base",
         Phrase.enable_ssl : "Abilita SSL",
         Phrase.password : "Password",
@@ -1509,6 +1539,8 @@ struct Dictionary
         Phrase.Exit_Program : "Esci dal Programma",
         Phrase.enable_rotX : "Abilita ROT-X",
         Phrase.enable_l33t : "Abilita l33t",
+
+        /*download/server table headers names*/
         Phrase.Id : "Id",
         Phrase.Size : "Dimensione",
         Phrase.Name : "Nome",
@@ -1538,23 +1570,35 @@ struct Dictionary
         Phrase.Networks : "Reti",
         Phrase.Ping : "Ping",
         Phrase.Filename : "Nome File",
+
+        /*file states*/
         Phrase.Active : "Attivo",
         Phrase.Paused : "In Pausa",
         Phrase.Stopped : "Stoppato",
         Phrase.Complete : "Completo",
         Phrase.Process : "Processo",
+
+        Phrase.Default_Titlebar : "Predefinito",
+        Phrase.Icon_Titlebar : "Icone",
+        Phrase.Plain_Titlebar : "Semplice",
+
+        /*Servers*/
         Phrase.Connect : "Connetti",
         Phrase.Disconnect : "Disconnetti",
         Phrase.Block : "Blocca",
         Phrase.Unblock : "Sblocca",
         Phrase.Remove : "Rimuovi",
-        Phrase.Type : "Tipo",
+
+        /*File Browser*/
         Phrase.Delete : "Cancella",
+        Phrase.Type : "Tipo",
         Phrase.Load_Torrent : "Load Torrent",
         Phrase.Upload : "Upload",
         Phrase.Directory : "Directory",
         Phrase.Upload_File : "Upload File",
         Phrase.No_Home_Directory : "Nessuna Home Directory",
+
+        /*Downloads*/
         Phrase.Cancel : "Cancella",
         Phrase.Pause : "Pausa",
         Phrase.Stop : "Stop",
@@ -1576,6 +1620,8 @@ struct Dictionary
         Phrase.Invert : "Inverti",
         Phrase.Range : "Range (Da -> A)",
         Phrase.Refreshing_every_x_seconds : "Aggiorna ogni {} secondi.",
+
+        /*for priorities*/
         Phrase.Auto : "Auto",
         Phrase.None__empty : "Nessuna",
         Phrase.Very_Low : "Bassissima",
@@ -1583,10 +1629,16 @@ struct Dictionary
         Phrase.Normal : "Normale",
         Phrase.High : "Alta",
         Phrase.Very_High : "Altissima",
+
+        /*Page Refresh*/
         Phrase.Refresh : "Aggiorna",
+
+        /*Settings*/
         Phrase.Value : "Valore",
         Phrase.Save : "Salva",
         Phrase.Apply : "Applica",
+
+        /*Searches*/
         Phrase.Text : "Text",
         Phrase.Results : "Risultati",
         Phrase.Content_Type : "Tipo Contenuto",
@@ -1607,27 +1659,297 @@ struct Dictionary
         Phrase.Download : "Download",
         Phrase.Format : "Formato",
         Phrase.Nothing_found_yet : "Non Ancora Trovato!",
+
+        /*Clients*/
         Phrase.Selected : "Selezionato",
         Phrase.Select : "Seleziona",
         Phrase.Shutdown : "Spengi",
         Phrase.Password : "Password",
+
+        /*Console*/
         Phrase.Not_Available : "Non Disponibile!",
         Phrase.Not_Supported : "Non Supportato!",
         Phrase.Send : "Inviato",
+
+        /*Module Settings*/
         Phrase.Nothing_Selected : "Nessuna Scelta",
         Phrase.Categories : "Categoria",
         Phrase.User : "Utente",
         Phrase.Modules : "Moduli",
+
+        /*Client Settings*/
         Phrase.Not_Found : "Non Trovato!",
+
+        /*User Management*/
         Phrase.Add : "Aggiungi",
         Phrase.Set_Password : "Imposta Password",
+
+        /*Links*/
         Phrase.Load_Link : "Carcia Link",
+
+        /*misc. comments*/
         Phrase.Not_Tested : "Non Testato!",
         Phrase.Not_Working : "Non Funzionante!",
+
+        /*Shutdown*/
         Phrase.Really_Shutdown : "Vuoi Realmente Spengere?",
         Phrase.Yes : "Si",
         Phrase.No : "No",
+
+        /*Translator*/
         Phrase.Show : "Mostra"
+
+        /*Client Settings*/
+        Phrase.download_dir__setting: "Cartella download";
+        Phrase.peer_limit__setting: "Limite peer";
+        Phrase.port__setting: "Porta";
+        Phrase.port_forwarding_enabled__setting: "Port forwarding attivo";
+        Phrase.speed_limit_down__setting: "Limite velocità download";
+        Phrase.speed_limit_up__setting: "Limite velocità upload";
+        Phrase.Preview_Directory__setting: "Cartella anteprima";
+    ];
+
+    static char[][Phrase.max+1] turkish_dict =
+    [
+        Phrase.Nil : " ", //not empty! Empty strings are considered not to be set!
+        
+        /*module names*/
+        Phrase.Core : "Çekirdek",
+        Phrase.Titlebar : "Başlık çubuğu",
+        Phrase.FileBrowser : "Dosya tarayıcısı",
+        Phrase.Downloads : "İndirilenler",
+        Phrase.Servers : "Sunucular",
+        Phrase.Clients : "İstemciler",
+        Phrase.Console : "Konsol",
+        Phrase.Searches : "Aramalar",
+        Phrase.PageRefresh : "Sayfa Yenile",
+        Phrase.UserManagement : "Kullanıcı Yönetimi",
+        Phrase.UserSettings : "Kullanıcı Ayarları",
+        Phrase.ModuleSettings : "Modül Ayarları",
+        Phrase.ClientSettings : "İstemci Ayarları",
+        Phrase.Container : "Konteyner",
+        Phrase.AddLinks : "Bağlantı Ekle",
+        Phrase.QuickConnect : "Hızlı Bağlantı",
+        Phrase.Uploads : "Yükelemeler",
+        Phrase.Translator : "Çevirmen",
+        Phrase.Logout : "Çıkış",
+        
+        /*languages*/
+        Phrase.English : "İngilizce",
+        Phrase.German : "Almanca",
+        Phrase.Spanish : "İspanyolca",
+        Phrase.Polish : "Lehçe",
+        Phrase.Galician : "Galiçyaca",
+        Phrase.Brazilian_Portuguese : "Brezilya Portekizcesi",
+        Phrase.Danish : "Danca (Danimarka)",
+        Phrase.Dutch : "Flemenkçe",
+        Phrase.Swedish : "İsveççe",
+        Phrase.French : "Fransızca",
+        Phrase.Italian : "İtalyanca",
+        Phrase.Turkish : "Türkçe",
+        
+        /*setting names*/
+        Phrase.basic_auth : "Temel Kimlik Doğrulaması"
+        Phrase.enable_ssl : "SSL'yi etkinleştir"
+        Phrase.password : "Parola"
+        Phrase.Home_Directory : "Ana Dizin"
+        Phrase.language : "Dil"
+        Phrase.style : "Stil"
+        Phrase.design : "Tasarım"
+        Phrase.elements : "Elementler"
+        Phrase.use_javascript : "Javascript Kullan"
+        Phrase.min_refresh : "Min Yenileme"
+        Phrase.cmd_on_top : "Komut Satırı Üstte"
+        Phrase.content_source : "İçerik Kaynağı"
+        Phrase.reload_content : "İçeriği Yeniden Yükle"
+        Phrase.column_order : "Sütun Sırası"
+        Phrase.show_columns : "Sütunları Göster"
+        Phrase.allow_file_upload : "Dosya Yüklemeye İzin Ver"
+        Phrase.show_directories : "Dizinleri Göster"
+        Phrase.show_hidden_files : "Gizli Dosyaları Göster"
+        Phrase.Number_of_Lines : "Satır Sayısı"
+        Phrase.Load_Modules : "Modülleri Yükle"
+        Phrase.Unload_Modules : "Modülleri Kaldır"
+        Phrase.default_interface : "Varsayılan Arayüz"
+        Phrase.show_description : "Açıklamayı Göster"
+        Phrase.auto_disconnect_clients : "İstemcileri Otomatik Kes"
+        Phrase.show_help : "Yardımı Göster"
+        Phrase.enable_sessions : "Oturumları Etkinleştir"
+        Phrase.show_percent_bar : "Yüzde Çubuğunu Göster"
+        Phrase.enable_row_colors : "Satır Renklerini Etkinleştir"
+        Phrase.Disable_Account : "Hesabı Devre Dışı Bırak"
+        Phrase.Exit_Program : "Programdan Çık"
+        Phrase.enable_rotX : "ROT-X'i Etkinleştir"
+        Phrase.enable_l33t : "l33t'i Etkinleştir"
+
+        /*download/server table headers names*/
+        Phrase.Id : "Kimlik"
+        Phrase.Size : "Boyut"
+        Phrase.Name : "Adı"
+        Phrase.State : "Durum"
+        Phrase.Speed : "Hız"
+        Phrase.UploadRate : "Yükleme Hızı"
+        Phrase.DownloadRate : "İndirme Hızı"
+        Phrase.Downloaded : "İndirilen"
+        Phrase.Uploaded : "Yüklenen"
+        Phrase.Priority : "Öncelik"
+        Phrase.Users : "Kullanıcılar"
+        Phrase.Check : "[x]"
+        Phrase.ETA : "Kalan Süre"
+        Phrase.Percent : "Yüzde"
+        Phrase.Description : "Açıklama"
+        Phrase.Files : "Dosyalar"
+        Phrase.Flag : "İşaret"
+        Phrase.IP_Address : "IP Adresi"
+        Phrase.Host : "Sunucu"
+        Phrase.Port : "Port"
+        Phrase.Action : "İşlem"
+        Phrase.Last_Seen : "Son Görülme"
+        Phrase.Sources : "Kaynaklar"
+        Phrase.Software : "Yazılım"
+        Phrase.Hash : "Hash"
+        Phrase.Chunks : "Parçalar"
+        Phrase.Networks : "Ağlar"
+        Phrase.Ping : "Ping"
+        Phrase.Filename : "Dosya Adı"
+        
+        /*file states*/
+        Phrase.Active : "Aktif",
+        Phrase.Paused : "Duraklatıldı",
+        Phrase.Stopped : "Durduruldu",
+        Phrase.Complete : "Tamamlandı",
+        Phrase.Process : "İşleniyor",
+        
+        Phrase.Default_Titlebar : "Varsayılan",
+        Phrase.Icon_Titlebar : "Simgeli",
+        Phrase.Plain_Titlebar : "Sade",
+        
+        /*Servers*/
+        Phrase.Connect : "Bağlan",
+        Phrase.Disconnect : "Bağlantıyı Kes",
+        Phrase.Block : "Engelle",
+        Phrase.Unblock : "Engelini Kaldır",
+        Phrase.Remove : "Kaldır",
+        
+        /*File Browser*/
+        Phrase.Delete: "Sil";
+        Phrase.Type: "Tür";
+        Phrase.Load_Torrent: "Torrent Yükle";
+        Phrase.Upload: "Yükle";
+        Phrase.Directory: "Dizin";
+        Phrase.Upload_File: "Dosya Yükle";
+        Phrase.No_Home_Directory: "Ana Dizin Yok";
+        
+        /*Downloads*/
+        Phrase.Cancel: "İptal";
+        Phrase.Pause: "Duraklat";
+        Phrase.Stop: "Durdur";
+        Phrase.Resume: "Devam Et";
+        Phrase.Prioritize: "Önceliklendir";
+        Phrase.Rename: "Adlandır";
+        Phrase.Hide: "Gizle";
+        Phrase.Preview: "Önizleme";
+        Phrase.No_Items_Found: "Hiç öğe bulunamadı.";
+        Phrase.Commit: "Onayla";
+        Phrase.FileNames: "Dosya Adları";
+        Phrase.SubFiles: "Alt Dosyalar";
+        Phrase.Comments: "Yorumlar";
+        Phrase.Connecting: "Bağlanıyor";
+        Phrase.Connected: "Bağlandı";
+        Phrase.Disconnected: "Bağlantı Kesildi";
+        Phrase.Blocked: "Engellendi";
+        Phrase.Add_Owner: "Sahip Ekله";
+        Phrase.Invert: "Ters Çevir";
+        Phrase.Range: "Aralık";
+        Phrase.Refreshing_every_x_seconds: "Her {} saniyede yenileniyor.";
+        
+        /*for priorities*/
+        Phrase.Auto: "Otomatik";
+        Phrase.None__empty: "Yok";
+        Phrase.None__priority: "Yok";
+        Phrase.Very_Low: "Çok Düşük";
+        Phrase.Low: "Düşük";
+        Phrase.Normal: "Normal";
+        Phrase.High: "Yüksek";
+        Phrase.Very_High: "Çok Yüksek";
+        
+        /*Page Refresh*/
+        Phrase.Refresh: "Yenile";
+        
+        /*Settings*/
+        Phrase.Value: "Değer";
+        Phrase.Save: "Kaydet";
+        Phrase.Apply: "Uygula";
+        
+        /*Searches*/
+        Phrase.Text: "Metin";
+        Phrase.Results: "Sonuçlar";
+        Phrase.Content_Type: "İçerik Türü";
+        Phrase.Availability: "Kullanılabilirlik";
+        Phrase.Search: "Ara";
+        Phrase.Keywords: "Anahtar Kelimeler";
+        Phrase.Found: "Bulunan";
+        Phrase.Actions: "İşlemler";
+        Phrase.Not_Connected: "Bağlı Değil";
+        Phrase.Network: "Ağ";
+        Phrase.All: "Tümü";
+        Phrase.Program: "Program";
+        Phrase.Document: "Belge";
+        Phrase.Image: "Resim";
+        Phrase.Audio: "Ses";
+        Phrase.Video: "Video";
+        Phrase.Archive: "Arşiv";
+        Phrase.Download: "İndir";
+        Phrase.Format: "Biçim";
+        Phrase.Nothing_found_yet: "Henüz bir şey bulunamadı!";
+        
+        /*Clients*/
+        Phrase.Selected: "Seçili";
+        Phrase.Select: "Seç";
+        Phrase.Shutdown: "Kapat";
+        Phrase.Password: "Parola";
+        
+        /*Console*/
+        Phrase.Not_Available: "Kullanılamaz!";
+        Phrase.Not_Supported: "Desteklenmiyor!";
+        Phrase.Send: "Gönder";
+        
+        /*Module Settings*/
+        Phrase.Nothing_Selected: "Hiçbir Şey Seçili Değil";
+        Phrase.Categories: "Kategoriler";
+        Phrase.User: "Kullanıcı";
+        Phrase.Modules: "Modüller";
+        
+        /*Client Settings*/
+        Phrase.Not_Found: "Bulunamadı!";
+        
+        /*User Management*/
+        Phrase.Add: "Ekle";
+        Phrase.Set_Password: "Parola Belirle";
+        
+        /*Links*/
+        Phrase.Load_Link: "Bağlantı Yükle";
+        
+        /*misc. comments*/
+        Phrase.Not_Tested: "Test Edilmedi!";
+        Phrase.Not_Working: "Çalışmıyor!";
+        
+        /*Shutdown*/
+        Phrase.Really_Shutdown: "%s gerçekten kapatmak istiyor musunuz?";
+        Phrase.Yes: "Evet";
+        Phrase.No: "Hayır";
+        
+        /*Translator*/
+        Phrase.Show: "Göster";
+        
+        /*Client Settings*/
+        Phrase.download_dir__setting: "İndirme Dizini";
+        Phrase.peer_limit__setting: "Eş Limiti";
+        Phrase.port__setting: "Port";
+        Phrase.port_forwarding_enabled__setting: "Port Yönlendirme Etkin";
+        Phrase.speed_limit_down__setting: "İndirme Hız Limiti";
+        Phrase.speed_limit_up__setting: "Yükleme Hız Limiti";
+        Phrase.Preview_Directory__setting: "Önizleme Dizini";
     ];
 
     static ushort toId(char[] str)
@@ -1654,6 +1976,8 @@ struct Dictionary
     static const char[][Phrase.max+1] string_dict =
     [
         Phrase.Nil : "Nil",
+
+        /*module names*/
         Phrase.Core : "Core",
         Phrase.Titlebar : "Titlebar",
         Phrase.FileBrowser : "FileBrowser",
@@ -1673,6 +1997,8 @@ struct Dictionary
         Phrase.Uploads : "Uploads",
         Phrase.Translator : "Translator",
         Phrase.Logout : "Logout",
+
+        /*languages*/
         Phrase.English : "English",
         Phrase.German : "German",
         Phrase.Spanish : "Spanish",
@@ -1684,6 +2010,8 @@ struct Dictionary
         Phrase.Swedish : "Swedish",
         Phrase.French : "French",
         Phrase.Italian : "Italian",
+
+        /*setting names*/
         Phrase.basic_auth : "basic_auth",
         Phrase.enable_ssl : "enable_ssl",
         Phrase.password : "password",
@@ -1716,6 +2044,8 @@ struct Dictionary
         Phrase.Exit_Program : "Exit_Program",
         Phrase.enable_rotX : "enable_rotX",
         Phrase.enable_l33t : "enable_l33t",
+
+        /*download/server table headers names*/
         Phrase.Id : "Id",
         Phrase.Size : "Size",
         Phrase.Name : "Name",
@@ -1745,19 +2075,26 @@ struct Dictionary
         Phrase.Networks : "Networks",
         Phrase.Ping : "Ping",
         Phrase.Filename : "Filename",
+
+        /*file states*/
         Phrase.Active : "Active",
         Phrase.Paused : "Paused",
         Phrase.Stopped : "Stopped",
         Phrase.Complete : "Complete",
         Phrase.Process : "Process",
+
         Phrase.Default_Titlebar : "Default_Titlebar",
         Phrase.Icon_Titlebar : "Icon_Titlebar",
         Phrase.Plain_Titlebar : "Plain_Titlebar",
+
+        /*Servers*/
         Phrase.Connect : "Connect",
         Phrase.Disconnect : "Disconnect",
         Phrase.Block : "Block",
         Phrase.Unblock : "Unblock",
         Phrase.Remove : "Remove",
+
+        /*File Browser*/
         Phrase.Delete : "Delete",
         Phrase.Type : "Type",
         Phrase.Load_Torrent : "Load_Torrent",
@@ -1765,6 +2102,8 @@ struct Dictionary
         Phrase.Directory : "Directory",
         Phrase.Upload_File : "Upload_File",
         Phrase.No_Home_Directory : "No_Home_Directory",
+
+        /*Downloads*/
         Phrase.Cancel : "Cancel",
         Phrase.Pause : "Pause",
         Phrase.Stop : "Stop",
@@ -1786,6 +2125,8 @@ struct Dictionary
         Phrase.Invert : "Invert",
         Phrase.Range : "Range",
         Phrase.Refreshing_every_x_seconds : "Refreshing_every_x_seconds",
+
+        /*for priorities*/
         Phrase.Auto : "Auto",
         Phrase.None__empty : "None__empty",
         Phrase.None__priority : "None__priority",
@@ -1794,10 +2135,16 @@ struct Dictionary
         Phrase.Normal : "Normal",
         Phrase.High : "High",
         Phrase.Very_High : "Very_High",
+
+        /*Page Refresh*/
         Phrase.Refresh : "Refresh",
+
+        /*Settings*/
         Phrase.Value : "Value",
         Phrase.Save : "Save",
         Phrase.Apply : "Apply",
+
+        /*Searches*/
         Phrase.Text : "Text",
         Phrase.Results : "Results",
         Phrase.Content_Type : "Content_Type",
@@ -1818,27 +2165,47 @@ struct Dictionary
         Phrase.Download : "Download",
         Phrase.Format : "Format",
         Phrase.Nothing_found_yet : "Nothing_found_yet",
+
+        /*Clients*/
         Phrase.Selected : "Selected",
         Phrase.Select : "Select",
         Phrase.Shutdown : "Shutdown",
         Phrase.Password : "Password",
+
+        /*Console*/
         Phrase.Not_Available : "Not_Available",
         Phrase.Not_Supported : "Not_Supported",
         Phrase.Send : "Send",
+
+        /*Module Settings*/
         Phrase.Nothing_Selected : "Nothing_Selected",
         Phrase.Categories : "Categories",
         Phrase.User : "User",
         Phrase.Modules : "Modules",
+
+        /*Client Settings*/
         Phrase.Not_Found : "Not_Found",
+
+        /*User Management*/
         Phrase.Add : "Add",
         Phrase.Set_Password : "Set_Password",
+
+        /*Links*/
         Phrase.Load_Link : "Load_Link",
+
+        /*misc. comments*/
         Phrase.Not_Tested : "Not_Tested",
         Phrase.Not_Working : "Not_Working",
+
+        /*Shutdown*/
         Phrase.Really_Shutdown : "Really_Shutdown",
         Phrase.Yes : "Yes",
         Phrase.No : "No",
+
+        /*Translator*/
         Phrase.Show : "Show",
+
+        /*Client Settings*/
         Phrase.download_dir__setting : "download_dir__setting",
         Phrase.peer_limit__setting : "peer_limit__setting",
         Phrase.port__setting : "port__setting",
